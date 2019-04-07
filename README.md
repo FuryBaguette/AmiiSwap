@@ -3,7 +3,7 @@ Nintendo Switch Amiibo switcher homebrew for nfp_mitm
 
 ## How to use
 - Compile and use [switch-nfp-mitm](https://github.com/spx01/switch-nfp-mitm)
-- Download [AmiiSwap]() and place the nro file in the "switch" folder of your sd card
+- Download [AmiiSwap](https://github.com/FuryBaguette/AmiiSwap/releases) and place the nro file in the "switch" folder of your sd card
 - Create a folder named "amiibos" at the root of your sd card
 - Create folders for each games you have amiibos for (Example: Mario Kart 8, Zelda BOTW, Super Mario Odyssey)
 - Place your amiibos in the corresponding folders
