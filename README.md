@@ -13,6 +13,11 @@ Nintendo Switch Amiibo switcher homebrew for nfp_mitm
 
 You can change amiibos whenever you want by just going back into AmiiSwap and selecting another amiibo.
 
+## How to navigate
+- Use the dpad or the left stick to navigate menus
+- Use A to select
+- Use Y to go back to the main menu
+
 ## Screenshot
 Main menu showing the games:
 ![](https://github.com/FuryBaguette/AmiiSwap/blob/master/Screenshots/MainScreen.jpg)
