@@ -25,7 +25,7 @@ Main menu showing the games:
 Amiibo list for the selected game:
 ![](https://github.com/FuryBaguette/AmiiSwap/blob/master/Screenshots/AmiiboList.jpg)
 
-Main menu showing the games:
+Confirmation dialog:
 ![](https://github.com/FuryBaguette/AmiiSwap/blob/master/Screenshots/UseAmiibo.jpg)
 
 ## Credits
