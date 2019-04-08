@@ -174,9 +174,10 @@ void MainLayout::category_Click(AmiiboGame *game)
 void MainLayout::item_Click(AmiiboFile *element)
 {
 	if (!waitInput) {
+		mainapp->SetWaitBack(true);
 		int sopt = mainapp->CreateShowDialog("Use " + element->GetName() + " ?", "This will set the current Amiibo to " + element->GetName(), { "Yes", "No" }, true);
-		if (sopt < 0 || sopt == 1) return;
 		if (sopt == 0) copyFile(element->GetPath().c_str(), "sdmc:/amiibo.bin");
+		mainapp->SetWaitBack(false);
 	} else this->waitInput = false;
 }
 
@@ -197,12 +198,17 @@ MainApplication::MainApplication()
 	this->SetOnInput([&](u64 Down, u64 Up, u64 Held, bool Touch)
     {
         if(Down & KEY_PLUS) this->Close();
-		else if (Down & KEY_Y) {
+		else if (Down & KEY_B && !this->waitBack) {
 			this->mainLayout->GetGamesMenu()->SetVisible(true);
 			this->mainLayout->SetElementOnFocus(this->mainLayout->GetGamesMenu());
 			this->mainLayout->GetAmiiboMenu()->SetVisible(false);
 		}
     });
+}
+
+void MainApplication::SetWaitBack(bool state)
+{
+	this->waitBack = state;
 }
 
 void SetMainApplication(MainApplication *MainApp)

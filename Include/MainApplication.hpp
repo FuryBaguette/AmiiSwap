@@ -64,8 +64,10 @@ class MainApplication : public pu::Application
 {
     public:
         MainApplication();
+		void SetWaitBack(bool state);
     private:
         MainLayout *mainLayout;
+		bool waitBack = false;
 };
 
 void SetMainApplication(MainApplication *MainApp);
