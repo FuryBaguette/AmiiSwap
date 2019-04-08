@@ -57,6 +57,7 @@ class MainLayout : public pu::Layout
 		std::vector<AmiiboGame*> amiiboGames;
 		std::vector<AmiiboFile*> files;
 		std::vector<pu::element::MenuItem*> gameItems;
+		bool waitInput;
 };
 
 class MainApplication : public pu::Application

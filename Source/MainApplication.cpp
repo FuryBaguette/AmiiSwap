@@ -156,6 +156,7 @@ bool copyFile(const char *SRC, const char* DEST)
 
 void MainLayout::category_Click(AmiiboGame *game)
 {
+	this->waitInput = true;
 	this->amiiboMenu->ClearItems();
 	std::vector<AmiiboFile*> files = game->GetBinFiles();
 	for (auto & element : files) {
@@ -172,9 +173,11 @@ void MainLayout::category_Click(AmiiboGame *game)
 
 void MainLayout::item_Click(AmiiboFile *element)
 {
-	int sopt = mainapp->CreateShowDialog("Use " + element->GetName() + " ?", "This will set the current Amiibo to " + element->GetName(), { "Yes", "No" }, true);
-	if (sopt < 0 || sopt == 1) return;
-	if (sopt == 0) copyFile(element->GetPath().c_str(), "sdmc:/amiibo.bin");
+	if (!waitInput) {
+		int sopt = mainapp->CreateShowDialog("Use " + element->GetName() + " ?", "This will set the current Amiibo to " + element->GetName(), { "Yes", "No" }, true);
+		if (sopt < 0 || sopt == 1) return;
+		if (sopt == 0) copyFile(element->GetPath().c_str(), "sdmc:/amiibo.bin");
+	} else this->waitInput = false;
 }
 
 pu::element::Menu *MainLayout::GetGamesMenu()
