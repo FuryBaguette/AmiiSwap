@@ -1,5 +1,5 @@
 # AmiiSwap
-Nintendo Switch Amiibo switcher homebrew for nfp_mitm
+Nintendo Switch Amiibo switcher homebrew for nfp_mitm.
 AmiiSwap works with [emuiibo](https://github.com/XorTroll/emuiibo) and [switch-nfp-mitm](https://github.com/spx01/switch-nfp-mitm)
 
 ## How to use
