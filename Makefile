@@ -67,7 +67,7 @@ LIBS	:= -lpu -lfreetype -lSDL2_ttf -lSDL2_gfx -lSDL2_image -lSDL2_mixer -lmodplu
 #---------------------------------------------------------------------------------
 
 # IMPORTANT! Change "$(CURDIR)/../../Plutonium/Output" to the path in which you have Plutonium libs.
-LIBDIRS	:= $(PORTLIBS) $(LIBNX) $(CURDIR)/../Plutonium/Plutonium/Output
+LIBDIRS	:= $(PORTLIBS) $(LIBNX) $(CURDIR)/Plutonium/Plutonium/Output
 
 
 #---------------------------------------------------------------------------------
@@ -153,6 +153,7 @@ all: $(BUILD)
 
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
+	@$(MAKE) --no-print-directory -C Plutonium/Plutonium -f Makefile
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
 #---------------------------------------------------------------------------------
