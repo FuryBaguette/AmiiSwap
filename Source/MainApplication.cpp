@@ -165,7 +165,6 @@ MainLayout::MainLayout()
     this->titleText = new pu::element::TextBlock(640, 10, "AmiiSwap");
 
 	this->titleText->SetX(640 - (this->titleText->GetTextWidth() / 2));
-	this->titleText->SetText("name: " + this->files.at(0)->GetName() + ", " + this->files.at(0)->GetPath());
 	if (!this->isEmuuibo) {
 		for (auto & element : this->amiiboGames) {
 			pu::element::MenuItem *item = new pu::element::MenuItem(element->GetName());
