@@ -3,18 +3,20 @@ Nintendo Switch Amiibo switcher homebrew for nfp_mitm
 AmiiSwap works with [emuiibo](https://github.com/XorTroll/emuiibo) and [switch-nfp-mitm](https://github.com/spx01/switch-nfp-mitm)
 
 ## How to use
-- Compile and use [switch-nfp-mitm](https://github.com/spx01/switch-nfp-mitm)/[emuiibo](https://github.com/XorTroll/emuiibo) or download it compiled and ready from the [release page](https://github.com/FuryBaguette/AmiiSwap/releases)
+- Compile and use [emuiibo](https://github.com/XorTroll/emuiibo)/[switch-nfp-mitm](https://github.com/spx01/switch-nfp-mitm) or download it compiled and ready from the [release page](https://github.com/FuryBaguette/AmiiSwap/releases)
 - Download [AmiiSwap](https://github.com/FuryBaguette/AmiiSwap/releases) and place the nro file in the "switch" folder of your sd card
+
+### Using emuiibo
+- Create a folder named "emuiibo" at the root of your sd card
+- Place your amiibo bin files in this folder
+- Launch AmiiSwap, then select the amiibo you want -> press A -> Confirm the dialog
+- Launch your game, to use the amiibo follow [this combo](https://github.com/XorTroll/emuiibo/tree/0.1#combos)
+- Enjoy
 
 ### Using switch-nfp-mitm
 - Create a folder named "amiibos" at the root of your sd card
 - Create folders for each games you have amiibos for (Example: Mario Kart 8, Zelda BOTW, Super Mario Odyssey)
 - Place your amiibo bin files in the corresponding folders
-
-### Using emuiibo
-- Create a folder named "emuiibo" at the root of your sd card
-- Place your amiibo bin files in this folder
-
 - Launch AmiiSwap, then select a game -> select the amiibo you want -> press A -> Confirm the dialog
 - Launch your game, to use the amiibo do A + Right Stick DOWN
 - Enjoy
