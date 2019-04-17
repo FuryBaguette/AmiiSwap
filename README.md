@@ -3,7 +3,7 @@ Nintendo Switch Amiibo switcher homebrew for nfp_mitm
 AmiiSwap works with [emuiibo](https://github.com/XorTroll/emuiibo) and [switch-nfp-mitm](https://github.com/spx01/switch-nfp-mitm)
 
 ## How to use
-- Compile and use [emuiibo](https://github.com/XorTroll/emuiibo)/[switch-nfp-mitm](https://github.com/spx01/switch-nfp-mitm) or download it compiled and ready from the [release page](https://github.com/FuryBaguette/AmiiSwap/releases)
+- Download and setup [emuiibo](https://github.com/XorTroll/emuiibo) or [switch-nfp-mitm](https://github.com/spx01/switch-nfp-mitm). switch-nfp-mitm has to be compiled so there's a compiled and ready build on the [release page](https://github.com/FuryBaguette/AmiiSwap/releases)
 - Download [AmiiSwap](https://github.com/FuryBaguette/AmiiSwap/releases) and place the nro file in the "switch" folder of your sd card
 
 ### Using emuiibo
