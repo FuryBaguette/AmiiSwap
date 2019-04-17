@@ -7,6 +7,7 @@
 #include <string>
 #include <stdlib.h>
 #include <filesystem>
+#include "nfpemu.h"
 
 class AmiiboFile {
 	public:
@@ -48,6 +49,7 @@ class MainLayout : public pu::Layout
 		void item_Click(AmiiboFile *menuItem);
 		void category_Click(AmiiboGame *game);
 		void GetFolders();
+		std::vector<AmiiboFile*> GetEmuiibo();
 		pu::element::Menu *MainLayout::GetGamesMenu();
 		pu::element::Menu *MainLayout::GetAmiiboMenu();
     private:
@@ -58,6 +60,7 @@ class MainLayout : public pu::Layout
 		std::vector<AmiiboFile*> files;
 		std::vector<pu::element::MenuItem*> gameItems;
 		bool waitInput;
+		bool isEmuuibo;
 };
 
 class MainApplication : public pu::Application

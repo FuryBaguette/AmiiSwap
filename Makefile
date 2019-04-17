@@ -38,9 +38,9 @@ APP_VERSION := 0.1
 # ICON := Icon.jpg
 TARGET		:=	AmiiSwap
 BUILD		:=	Build
-SOURCES		:=	Source
+SOURCES		:=	Source nfpemu-libnx
 DATA		:=	Bin
-INCLUDES	:=	Include
+INCLUDES	:=	Include nfpemu-libnx
 EXEFS_SRC	:=	exefs_src
 # ROMFS		:=	RomFs
 
