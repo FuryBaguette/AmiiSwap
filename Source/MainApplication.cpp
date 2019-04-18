@@ -162,6 +162,7 @@ MainLayout::MainLayout()
 		this->gamesMenu = new pu::element::Menu(0, 50, 1280, {255,255,255,255}, 70, 9);
 	    this->amiiboMenu = new pu::element::Menu(0, 50, 1280, {255,255,255,255}, 70, 9);
 	}
+	amiiboMenu->SetOnFocusColor({200,200,200,255});
     this->titleText = new pu::element::TextBlock(640, 10, "AmiiSwap");
 
 	this->titleText->SetTextAlign(pu::element::TextAlign::CenterHorizontal);
