@@ -20,9 +20,9 @@ namespace ui
     		utils::getFiles(game->GetPath(), [&game](const std::string &path) {
     			std::size_t found1 = path.find_last_of("/\\");
     			std::string namePath1 = path.substr(found1+1);
-    			namePath1.erase(namePath1.length() - 4);
-
-    			amiibo::AmiiboFile *file = new amiibo::AmiiboFile(namePath1, path);
+                std::string iconPath = path.substr(0, path.size() - 4) + ".png";
+    			namePath1.erase(namePath1.size() - 4);
+    			amiibo::AmiiboFile *file = new amiibo::AmiiboFile(namePath1, path, iconPath);
 
     			game->AddAmiiboFile(file);
     		});
@@ -37,7 +37,6 @@ namespace ui
             this->warningText = new pu::element::TextBlock(0, 0, "Emuiibo is not running on this console, please install it before using AmiiSwap");
         } else {
         	utils::EnsureDirectories();
-            //this->files = this->GetEmuiibo();
     		this->GetFolders();
 
     		this->gamesMenu = new pu::element::Menu(0, 50, 1280, {255,255,255,255}, 70, 9);
@@ -46,6 +45,7 @@ namespace ui
 
     		for (auto & element : this->amiiboGames) {
     			pu::element::MenuItem *item = new pu::element::MenuItem(element->GetName());
+                item->SetIcon("sdmc:/switch/AmiiSwap/game.png");
     			item->AddOnClick(std::bind(&MainLayout::category_Click, this, element), KEY_A);
     			this->gamesMenu->AddItem(item);
     		}
@@ -53,11 +53,11 @@ namespace ui
             gamesMenu->SetOnFocusColor({102,153,204,255});
             amiiboMenu->SetOnFocusColor({102,153,204,255});
             this->amiiboMenu->SetVisible(false);
-            this->titleText->SetTextAlign(pu::element::TextAlign::CenterHorizontal);
+            this->titleText->SetHorizontalAlign(pu::element::HorizontalAlign::Center);
 
-            this->AddChild(this->titleText);
-    	    this->AddChild(this->gamesMenu);
-    		this->AddChild(this->amiiboMenu);
+            this->Add(this->titleText);
+    	    this->Add(this->gamesMenu);
+    		this->Add(this->amiiboMenu);
     		this->SetElementOnFocus(this->gamesMenu);
         }
     }
@@ -69,6 +69,7 @@ namespace ui
     	std::vector<amiibo::AmiiboFile*> files = game->GetBinFiles();
     	for (auto & element : files) {
     		pu::element::MenuItem *item = new pu::element::MenuItem(element->GetName());
+            item->SetIcon(element->GetIconPath());
     		item->AddOnClick(std::bind(&MainLayout::item_Click, this, element), KEY_A);
     		this->amiiboMenu->AddItem(item);
     	}
@@ -83,8 +84,12 @@ namespace ui
     {
     	if (!waitInput) {
     		mainapp->SetWaitBack(true);
-    		int sopt = mainapp->CreateShowDialog("Use " + element->GetName() + " ?", "This will set the current Amiibo to " + element->GetName(), { "Yes", "No" }, true);
-    		if (sopt == 0) nfpemuRequestUseCustomAmiibo(element->GetPath().c_str());
+    		int sopt = mainapp->CreateShowDialog("Use " + element->GetName() + " ?", "This will set the current Amiibo to " + element->GetName(), { "Yes", "No" }, true, element->GetIconPath());
+    		if (sopt == 0) {
+                nfpemuRequestUseCustomAmiibo(element->GetPath().c_str());
+                pu::overlay::Toast *toast = new pu::overlay::Toast("Active amiibo updated to: " + element->GetName(), 20, {255,255,255,255}, {0,0,0,200});
+                mainapp->StartOverlayWithTimeout(toast, 1500);
+            }
     		mainapp->SetWaitBack(false);
     	} else this->waitInput = false;
     }

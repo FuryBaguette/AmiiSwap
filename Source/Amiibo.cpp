@@ -2,10 +2,11 @@
 
 namespace amiibo
 {
-	AmiiboFile::AmiiboFile(std::string Name, std::string BinPath)
+	AmiiboFile::AmiiboFile(std::string Name, std::string BinPath, std::string IconPath)
 	{
 		this->Name = Name;
 		this->BinPath = BinPath;
+		this->IconPath = IconPath;
 	}
 
 	std::string AmiiboFile::GetName()
@@ -16,6 +17,11 @@ namespace amiibo
 	std::string AmiiboFile::GetPath()
 	{
 		return (this->BinPath);
+	}
+
+	std::string AmiiboFile::GetIconPath()
+	{
+		return (this->IconPath);
 	}
 
 	AmiiboGame::AmiiboGame(std::string Name, std::string FolderPath)
