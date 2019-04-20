@@ -11,7 +11,7 @@ namespace ui
 		this->SetOnInput([&](u64 Down, u64 Up, u64 Held, bool Touch)
 	    {
 	        if(Down & KEY_PLUS) this->Close();
-			else if (Down & KEY_B && !this->waitBack && !utils::IsEmuiiboPresent()) {
+			else if (Down & KEY_B && !this->waitBack) {
 				this->mainLayout->GetGamesMenu()->SetVisible(true);
 				this->mainLayout->SetElementOnFocus(this->mainLayout->GetGamesMenu());
 				this->mainLayout->GetAmiiboMenu()->SetVisible(false);

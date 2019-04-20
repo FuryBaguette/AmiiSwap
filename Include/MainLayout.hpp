@@ -16,6 +16,7 @@ namespace ui
 			pu::element::Menu *MainLayout::GetAmiiboMenu();
 	    private:
 	        pu::element::TextBlock *titleText;
+			pu::element::TextBlock *warningText;
 	        pu::element::Menu *gamesMenu;
 	        pu::element::Menu *amiiboMenu;
 			std::vector<amiibo::AmiiboGame*> amiiboGames;
