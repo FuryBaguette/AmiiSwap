@@ -5,19 +5,12 @@ Nintendo Switch GUI Amiibo Manager homebrew for emulation with [emuiibo](https:/
 - Download and setup [emuiibo](https://github.com/XorTroll/emuiibo) on your Switch.
 - Download [AmiiSwap](https://github.com/FuryBaguette/AmiiSwap/releases) and place the nro file in the `switch` folder of your sd card.
 
-### Using emuiibo
+### Using AmiiSwap with emuiibo
 - Create a folder named `emuiibo` at the root of your sd card
-- Place your amiibo bin files in this folder
-- Launch AmiiSwap, then select the amiibo you want -> press A -> Confirm the dialog
-- Launch your game, to use the amiibo follow [this combo](https://github.com/XorTroll/emuiibo/tree/0.1#combos)
-- Enjoy
-
-### Using switch-nfp-mitm (this will be removed, use emuiibo)
-- Create a folder named "amiibos" at the root of your sd card
 - Create folders for each games you have amiibos for (Example: Mario Kart 8, Zelda BOTW, Super Mario Odyssey)
-- Place your amiibo bin files in the corresponding folders
+- Place your amiibo bin files in the corresponding folders. Now it should look something like [this](https://github.com/FuryBaguette/AmiiSwap/blob/master/Screenshots/FolderPlacement.png).
 - Launch AmiiSwap, then select a game -> select the amiibo you want -> press A -> Confirm the dialog
-- Launch your game, to use the amiibo do A + Right Stick DOWN
+- Launch your game, to use the amiibo follow [this combo](https://github.com/XorTroll/emuiibo/tree/0.1#combos)
 - Enjoy
 
 You can change amiibos whenever you want by just going back into AmiiSwap and selecting another amiibo.
