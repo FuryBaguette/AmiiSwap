@@ -14,14 +14,17 @@
 
 namespace ui
 {
-	static inline char* getExtension(const char* str)
+	inline char* getExtension(const char* str)
 	{
 		const char* p;
 		for (p = str+strlen(str); p >= str && *p != '.'; p--);
 		return (char*)p;
 	}
 
-	//std::vector<AmiiboGame> SearchAmiibos();
+	inline bool fileExists (const std::string& name) {
+	  struct stat buffer;
+	  return (stat (name.c_str(), &buffer) == 0);
+	}
 
 	class MainApplication : public pu::Application
 	{
@@ -34,4 +37,6 @@ namespace ui
 	};
 
 	void SetMainApplication(MainApplication *MainApp);
+	void Initialize();
+	void Finalize();
 }

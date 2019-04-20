@@ -4,6 +4,16 @@ namespace ui
 {
 	MainApplication *mainapp;
 
+	void Initialize()
+	{
+		if (R_FAILED(nfpemuInitialize())) exit(1);
+	}
+
+	void Finalize()
+	{
+		nfpemuExit();
+	}
+
 	MainApplication::MainApplication()
 	{
 	    this->mainLayout = new MainLayout();
