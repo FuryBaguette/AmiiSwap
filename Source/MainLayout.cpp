@@ -6,13 +6,13 @@ namespace ui
 
     void MainLayout::GetFolders()
     {
-    	std::vector<std::string> gameFolders = utils::get_directories("sdmc:/amiibos/");
+    	std::vector<std::string> gameFolders = utils::get_directories("sdmc:/emuiibo/");
 
     	for (auto & element : gameFolders) {
     		std::size_t found = element.find_last_of("/\\");
     		std::string namePath = element.substr(found+1);
 
-    		amiibo::AmiiboGame *game = new amiibo::AmiiboGame(namePath, "sdmc:/amiibos/" + element + "/");
+    		amiibo::AmiiboGame *game = new amiibo::AmiiboGame(namePath, "sdmc:/emuiibo/" + element + "/");
 
     		std::vector<amiibo::AmiiboFile*> amiiboFiles;
 
@@ -46,46 +46,33 @@ namespace ui
 
     MainLayout::MainLayout()
     {
-    	if (utils::IsEmuiiboPresent())
-    		this->isEmuuibo = true;
-    	utils::EnsureDirectories();
-    	if (this->isEmuuibo) {
-    		this->files = this->GetEmuiibo();
-    		this->amiiboMenu = new pu::element::Menu(0, 50, 1280, {255,255,255,255}, 70, 9);
-    	} else {
+    	if (!utils::IsEmuiiboPresent()) {
+            this->warningText = new pu::element::TextBlock(0, 0, "Emuiibo is not running on this console, please install it before using AmiiSwap");
+        } else {
+        	utils::EnsureDirectories();
+            //this->files = this->GetEmuiibo();
     		this->GetFolders();
-    		this->gamesMenu = new pu::element::Menu(0, 50, 1280, {255,255,255,255}, 70, 9);
-    		gamesMenu->SetOnFocusColor({102,153,204,255});
-    	    this->amiiboMenu = new pu::element::Menu(0, 50, 1280, {255,255,255,255}, 70, 9);
-    	}
-    	amiiboMenu->SetOnFocusColor({102,153,204,255});
-        this->titleText = new pu::element::TextBlock(640, 10, "AmiiSwap");
 
-    	this->titleText->SetTextAlign(pu::element::TextAlign::CenterHorizontal);
-    	if (!this->isEmuuibo) {
+    		this->gamesMenu = new pu::element::Menu(0, 50, 1280, {255,255,255,255}, 70, 9);
+    	    this->amiiboMenu = new pu::element::Menu(0, 50, 1280, {255,255,255,255}, 70, 9);
+            this->titleText = new pu::element::TextBlock(640, 10, "AmiiSwap");
+
     		for (auto & element : this->amiiboGames) {
     			pu::element::MenuItem *item = new pu::element::MenuItem(element->GetName());
     			item->AddOnClick(std::bind(&MainLayout::category_Click, this, element), KEY_A);
     			this->gamesMenu->AddItem(item);
     		}
-    	} else {
-    		for (auto & element : this->files) {
-    			pu::element::MenuItem *item = new pu::element::MenuItem(element->GetName());
-    			item->AddOnClick(std::bind(&MainLayout::item_Click, this, element), KEY_A);
-    			this->amiiboMenu->AddItem(item);
-    		}
-    	}
 
-        this->AddChild(this->titleText);
-    	if (this->isEmuuibo) {
-    		this->AddChild(this->amiiboMenu);
-    		this->SetElementOnFocus(this->amiiboMenu);
-    	} else {
-    		this->amiiboMenu->SetVisible(false);
+            gamesMenu->SetOnFocusColor({102,153,204,255});
+            amiiboMenu->SetOnFocusColor({102,153,204,255});
+            this->amiiboMenu->SetVisible(false);
+            this->titleText->SetTextAlign(pu::element::TextAlign::CenterHorizontal);
+
+            this->AddChild(this->titleText);
     	    this->AddChild(this->gamesMenu);
     		this->AddChild(this->amiiboMenu);
     		this->SetElementOnFocus(this->gamesMenu);
-    	}
+        }
     }
 
     void MainLayout::category_Click(amiibo::AmiiboGame *game)
@@ -110,12 +97,7 @@ namespace ui
     	if (!waitInput) {
     		mainapp->SetWaitBack(true);
     		int sopt = mainapp->CreateShowDialog("Use " + element->GetName() + " ?", "This will set the current Amiibo to " + element->GetName(), { "Yes", "No" }, true);
-    		if (sopt == 0) {
-    			if (this->isEmuuibo)
-    				nfpemuRequestUseCustomAmiibo(element->GetPath().c_str());
-    			else
-    				utils::copyFile(element->GetPath().c_str(), "sdmc:/amiibo.bin");
-    		}
+    		if (sopt == 0) nfpemuRequestUseCustomAmiibo(element->GetPath().c_str());
     		mainapp->SetWaitBack(false);
     	} else this->waitInput = false;
     }
