@@ -39,6 +39,6 @@ Confirmation dialog:
 
 ## Credits
 - [FuryBaguette](https://github.com/FuryBaguette) - Well yeah I'm crediting myself for this project
+- [XorTroll](https://github.com/XorTroll/) - For [emuiibo](https://github.com/XorTroll/emuiibo)
 - [spx01](https://github.com/spx01) - His fork of switch-nfp-mitm you can find [here](https://github.com/spx01/switch-nfp-mitm). I should also thank [averne](https://github.com/averne/) and [ogniK5377](https://github.com/ogniK5377). (Fork of fork of fork)
 - [Subv](https://github.com/Subv) - For making [switch-nfp-mitm](https://github.com/Subv/switch-nfp-mitm)
-- [XorTroll](https://github.com/XorTroll/) - For [emuiibo](https://github.com/XorTroll/emuiibo)
