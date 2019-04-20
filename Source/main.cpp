@@ -2,8 +2,8 @@
 
 int main()
 {
-    MainApplication *amain = new MainApplication();
-	SetMainApplication(amain);
+    ui::MainApplication *amain = new ui::MainApplication();
+	ui::SetMainApplication(amain);
     amain->Show();
     delete amain;
     return 0;
