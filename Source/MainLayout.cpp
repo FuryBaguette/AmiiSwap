@@ -7,7 +7,8 @@ namespace ui
     void MainLayout::GetFolders()
     {
     	std::vector<std::string> gameFolders = utils::get_directories("sdmc:/emuiibo/");
-
+        if (gameFolders.empty())
+            mainapp->Close();
     	for (auto & element : gameFolders) {
     		std::size_t found = element.find_last_of("/\\");
     		std::string namePath = element.substr(found+1);
@@ -28,20 +29,6 @@ namespace ui
 
     		this->amiiboGames.push_back(game);
     	}
-    }
-
-    std::vector<amiibo::AmiiboFile *> MainLayout::GetEmuiibo()
-    {
-    	std::vector<amiibo::AmiiboFile *> amiiboFiles;
-    	utils::getFiles("sdmc:/emuiibo/", [&amiiboFiles](const std::string &path) {
-    		std::size_t found1 = path.find_last_of("/\\");
-    		std::string namePath1 = path.substr(found1+1);
-    		namePath1.erase(namePath1.length() - 4);
-    		amiibo::AmiiboFile *file = new amiibo::AmiiboFile(namePath1, path);
-
-    		amiiboFiles.push_back(file);
-    	});
-    	return (amiiboFiles);
     }
 
     MainLayout::MainLayout()

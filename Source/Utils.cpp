@@ -21,10 +21,7 @@ namespace utils
 
     void EnsureDirectories()
     {
-        if (!IsEmuiiboPresent())
-            CreateDirectory("sdmc:/amiibos");
-        else
-            CreateDirectory("sdmc:/emuiibo");
+        CreateDirectory("sdmc:/emuiibo");
     }
 
     void getFiles(const std::string &path, std::function<void(const std::string &)> cb)
@@ -59,7 +56,6 @@ namespace utils
 
             entry = readdir(dir);
         }
-
         closedir(dir);
         return r;
     }
