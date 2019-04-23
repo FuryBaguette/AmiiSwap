@@ -35,7 +35,9 @@ namespace ui
     {
     	if (!utils::IsEmuiiboPresent()) {
             this->warningText = new pu::element::TextBlock(0, 0, "Emuiibo is not running on this console, please install it before using AmiiSwap");
+			this->Add(this->warningText);
         } else {
+			nfpemuInitialize();
         	utils::EnsureDirectories();
     		this->GetFolders();
 

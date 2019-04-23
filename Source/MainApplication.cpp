@@ -6,7 +6,7 @@ namespace ui
 
 	void Initialize()
 	{
-		if (R_FAILED(nfpemuInitialize())) exit(1);
+		//if (R_FAILED(nfpemuInitialize())) exit(1);
 	}
 
 	void Finalize()
