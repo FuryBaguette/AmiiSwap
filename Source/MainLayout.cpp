@@ -52,6 +52,8 @@ namespace ui
 
             gamesMenu->SetOnFocusColor({102,153,204,255});
             amiiboMenu->SetOnFocusColor({102,153,204,255});
+			gamesMenu->SetScrollbarColor({102,153,204,255});
+            amiiboMenu->SetScrollbarColor({102,153,204,255});
             this->amiiboMenu->SetVisible(false);
             this->titleText->SetHorizontalAlign(pu::element::HorizontalAlign::Center);
 
