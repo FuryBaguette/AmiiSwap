@@ -4,31 +4,10 @@ namespace ui
 {
     extern MainApplication *mainapp;
 
-    void MainLayout::GetFolders()
+    void MainLayout::GetAmiibos()
     {
-    	std::vector<std::string> gameFolders = utils::get_directories("sdmc:/emuiibo/");
-        if (gameFolders.empty())
-            mainapp->Close();
-    	for (auto & element : gameFolders) {
-    		std::size_t found = element.find_last_of("/\\");
-    		std::string namePath = element.substr(found+1);
-
-    		amiibo::AmiiboGame *game = new amiibo::AmiiboGame(namePath, "sdmc:/emuiibo/" + element + "/");
-
-    		std::vector<amiibo::AmiiboFile*> amiiboFiles;
-
-    		utils::getFiles(game->GetPath(), [&game](const std::string &path) {
-    			std::size_t found1 = path.find_last_of("/\\");
-    			std::string namePath1 = path.substr(found1+1);
-                std::string iconPath = path.substr(0, path.size() - 4) + ".png";
-    			namePath1.erase(namePath1.size() - 4);
-    			amiibo::AmiiboFile *file = new amiibo::AmiiboFile(namePath1, path, iconPath);
-
-    			game->AddAmiiboFile(file);
-    		});
-
-    		this->amiiboGames.push_back(game);
-    	}
+        set::Settings *settings = new set::Settings("sdmc:/switch/AmiiSwap/settings.txt");
+        this->amiiboGames = settings->GetGames();
     }
 
     MainLayout::MainLayout()
@@ -39,7 +18,7 @@ namespace ui
         } else {
 			nfpemuInitialize();
         	utils::EnsureDirectories();
-    		this->GetFolders();
+    		this->GetAmiibos();
 
     		this->gamesMenu = new pu::element::Menu(0, 50, 1280, {255,255,255,255}, 70, 9);
     	    this->amiiboMenu = new pu::element::Menu(0, 50, 1280, {255,255,255,255}, 70, 9);

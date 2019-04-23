@@ -10,6 +10,7 @@
 #include "nfpemu.h"
 #include "Amiibo.hpp"
 #include "Utils.hpp"
+#include "Settings.hpp"
 #include "MainLayout.hpp"
 
 namespace ui
@@ -19,11 +20,6 @@ namespace ui
 		const char* p;
 		for (p = str+strlen(str); p >= str && *p != '.'; p--);
 		return (char*)p;
-	}
-
-	inline bool fileExists (const std::string& name) {
-	  struct stat buffer;
-	  return (stat (name.c_str(), &buffer) == 0);
 	}
 
 	class MainApplication : public pu::Application

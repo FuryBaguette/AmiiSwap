@@ -14,7 +14,7 @@ namespace amiibo
 
     class AmiiboGame {
     	public:
-    		AmiiboGame(std::string Name, std::string FolderPath);
+    		AmiiboGame(std::string Name);
     		std::string GetName();
     		std::string GetPath();
     		std::vector<AmiiboFile*> GetBinFiles();

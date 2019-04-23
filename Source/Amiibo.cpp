@@ -24,10 +24,9 @@ namespace amiibo
 		return (this->IconPath);
 	}
 
-	AmiiboGame::AmiiboGame(std::string Name, std::string FolderPath)
+	AmiiboGame::AmiiboGame(std::string Name)
 	{
 		this->Name = Name;
-		this->FolderPath = FolderPath;
 	}
 
 	std::string AmiiboGame::GetName()
