@@ -13,7 +13,17 @@ namespace utils
     std::vector<std::string> get_directories(char *path);
     bool IsEmuiiboPresent();
     bool copyFile(const char *SRC, const char* DEST);
-    inline bool fileExists (const std::string& name) {
+
+    inline bool folderExists(const std::string& dirName) {
+        DIR *dir = opendir(dirName.c_str());
+        if (dir) {
+            closedir(dir);
+            return (true);
+        }
+        return (false);
+    }
+
+    inline bool fileExists(const std::string& name) {
 	  struct stat buffer;
 	  return (stat (name.c_str(), &buffer) == 0);
 	}

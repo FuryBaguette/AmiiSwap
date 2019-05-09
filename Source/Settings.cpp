@@ -19,9 +19,9 @@ namespace set
 				currentGame = new amiibo::AmiiboGame(gameName);
 			} else if (isalnum(line.at(0))) {
 				std::string amiiboName = line.substr(0, line.size()-1);
-				std::string binFile = "sdmc:/emuiibo/" + amiiboName + "/amiibo.bin";
-				if (utils::fileExists(binFile)) {
-					amiibo::AmiiboFile *file = new amiibo::AmiiboFile(amiiboName, binFile, "sdmc:/emuiibo/" + amiiboName + "/amiibo.png");
+				std::string amiiboDir = "sdmc:/emuiibo/" + amiiboName;
+				if (utils::folderExists(amiiboDir)) {
+					amiibo::AmiiboFile *file = new amiibo::AmiiboFile(amiiboName, amiiboDir, "sdmc:/emuiibo/" + amiiboName + "/amiibo.png");
 					currentGame->AddAmiiboFile(file);
 				}
 			}

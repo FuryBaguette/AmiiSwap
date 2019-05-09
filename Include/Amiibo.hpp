@@ -2,13 +2,13 @@ namespace amiibo
 {
     class AmiiboFile {
     	public:
-    		AmiiboFile(std::string Name, std::string BinPath, std::string IconPath);
+    		AmiiboFile(std::string Name, std::string DirPath, std::string IconPath);
     		std::string GetName();
     		std::string GetPath();
             std::string GetIconPath();
     	private:
     		std::string Name;
-    		std::string BinPath;
+    		std::string DirPath;
             std::string IconPath;
     };
 

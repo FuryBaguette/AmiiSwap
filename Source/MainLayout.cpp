@@ -69,7 +69,7 @@ namespace ui
     		mainapp->SetWaitBack(true);
     		int sopt = mainapp->CreateShowDialog("Use " + element->GetName() + " ?", "This will set the current Amiibo to " + element->GetName(), { "Yes", "No" }, true, element->GetIconPath());
     		if (sopt == 0) {
-                nfpemuRequestUseCustomAmiibo(element->GetPath().c_str());
+                nfpemuSetAmiibo(element->GetPath().c_str());
                 pu::overlay::Toast *toast = new pu::overlay::Toast("Active amiibo updated to: " + element->GetName(), 20, {255,255,255,255}, {0,0,0,200});
                 mainapp->StartOverlayWithTimeout(toast, 1500);
             }
