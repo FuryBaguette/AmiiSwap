@@ -48,6 +48,6 @@ Confirmation dialog:
 
 ## Credits
 - [XorTroll](https://github.com/XorTroll/) - For [emuiibo](https://github.com/XorTroll/emuiibo)
-- [June15th] - For some dev and ideas on AmiiSwap
+- [June15th](https://github.com/AD2076) - For some dev and ideas on AmiiSwap
 - [spx01](https://github.com/spx01) - His fork of switch-nfp-mitm you can find [here](https://github.com/spx01/switch-nfp-mitm). I should also thank [averne](https://github.com/averne/) and [ogniK5377](https://github.com/ogniK5377). (Fork of fork of fork)
 - [Subv](https://github.com/Subv) - For making [switch-nfp-mitm](https://github.com/Subv/switch-nfp-mitm)
