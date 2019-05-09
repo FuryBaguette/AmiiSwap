@@ -10,13 +10,20 @@ bool emuiiboIsPresent();
 Result nfpemuInitialize();
 void nfpemuExit();
 
-Result nfpemuGetAmiiboCount(u32 *out);
-Result nfpemuGetCurrentAmiibo(u32 *idx_out);
-Result nfpemuRequestUseCustomAmiibo(const char *path);
-Result nfpemuRequestResetCustomAmiibo();
+typedef enum {
+    NfpEmuToggleStatus_Off = 0,
+    NfpEmuToggleStatus_On = 1,
+    NfpEmuToggleStatus_Once = 2,
+} NfpEmuToggleStatus;
+
+Result nfpemuGetAmiibo(char *out);
+Result nfpemuSetAmiibo(const char *path);
+Result nfpemuResetAmiibo();
 Result nfpemuToggle();
 Result nfpemuToggleOnce();
+Result nfpemuUntoggle();
 Result nfpemuSwapNext();
+Result nfpemuGetToggleStatus(NfpEmuToggleStatus *out);
 
 #ifdef __cplusplus
 }
