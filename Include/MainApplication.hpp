@@ -12,6 +12,7 @@
 #include "Utils.hpp"
 #include "Settings.hpp"
 #include "MainLayout.hpp"
+#include "SettingsLayout.hpp"
 
 namespace ui
 {
@@ -29,6 +30,7 @@ namespace ui
 			void SetWaitBack(bool state);
 	    private:
 	        ui::MainLayout *mainLayout;
+			ui::SettingsLayout *setLayout;
 			bool waitBack = false;
 	};
 

@@ -65,7 +65,7 @@ namespace ui
 
     void MainLayout::item_Click(amiibo::AmiiboFile *element)
     {
-    	if (!waitInput) {
+    	if (!this->waitInput) {
     		mainapp->SetWaitBack(true);
     		int sopt = mainapp->CreateShowDialog("Use " + element->GetName() + " ?", "This will set the current Amiibo to " + element->GetName(), { "Yes", "No" }, true, element->GetIconPath());
     		if (sopt == 0) {
