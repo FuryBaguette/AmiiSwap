@@ -1,4 +1,7 @@
 #include "MainApplication.hpp"
+#include "json.hpp"
+
+using json = nlohmann::json;
 
 namespace ui
 {
@@ -52,9 +55,11 @@ namespace ui
     	std::vector<amiibo::AmiiboFile*> files = game->GetBinFiles();
     	for (auto & element : files) {
     		pu::element::MenuItem *item = new pu::element::MenuItem(element->GetName());
+
             item->SetIcon(element->GetIconPath());
-    		item->AddOnClick(std::bind(&MainLayout::item_Click, this, element), KEY_A);
-    		this->amiiboMenu->AddItem(item);
+    		item->AddOnClick(std::bind(&MainLayout::selectItem_Click, this, element), KEY_A);
+    		item->AddOnClick(std::bind(&MainLayout::randomizeUuid_Click, this, element), KEY_X);
+            this->amiiboMenu->AddItem(item);
     	}
 
     	this->amiiboMenu->SetSelectedIndex(0);
@@ -63,11 +68,11 @@ namespace ui
     	this->gamesMenu->SetVisible(false);
     }
 
-    void MainLayout::item_Click(amiibo::AmiiboFile *element)
+    void MainLayout::selectItem_Click(amiibo::AmiiboFile *element)
     {
     	if (!this->waitInput) {
     		mainapp->SetWaitBack(true);
-    		int sopt = mainapp->CreateShowDialog("Use " + element->GetName() + " ?", "This will set the current Amiibo to " + element->GetName(), { "Yes", "No" }, true, element->GetIconPath());
+            int sopt = mainapp->CreateShowDialog("Use " + element->GetName() + " ?", "This will set the current Amiibo to " + element->GetName(), { "Yes", "No" }, true, element->GetIconPath());
     		if (sopt == 0) {
                 nfpemuSetAmiibo(element->GetPath().c_str());
                 pu::overlay::Toast *toast = new pu::overlay::Toast("Active amiibo updated to: " + element->GetName(), 20, {255,255,255,255}, {0,0,0,200});
@@ -77,6 +82,28 @@ namespace ui
     	} else this->waitInput = false;
     }
 
+    void MainLayout::randomizeUuid_Click(amiibo::AmiiboFile *element)
+    {
+    	if (!this->waitInput) {
+    		mainapp->SetWaitBack(true);
+            int sopt = mainapp->CreateShowDialog("Randomize UUID?", "This will enable/disable the random UUID for the " + element->GetName() + " Amiibo", { "Enable", "Disable" }, true, element->GetIconPath());
+            // TODO, read amiibo.json and add/modify randomizeUuid
+            bool toggleRandomize = (sopt == 0);
+            std::string jsonPath = "sdmc:/emuiibo/" + element->GetName() + "/amiibo.json";
+            std::ifstream ifs(jsonPath);
+            auto amiiboJson = json::parse(ifs);
+            if(ifs.is_open())
+                ifs.close();
+            amiiboJson["randomizeUuid"] = toggleRandomize;
+            std::ofstream ofs(jsonPath);
+            ofs << amiiboJson.dump(5);
+            if(ofs.is_open())
+                ofs.close();
+            pu::overlay::Toast *toast = new pu::overlay::Toast("Random UUID for " + element->GetName() + ((toggleRandomize) ? " enabled." : " disabled"), 20, {255,255,255,255}, {0,0,0,200});
+            mainapp->StartOverlayWithTimeout(toast, 1500);
+    		mainapp->SetWaitBack(false);
+    	} else this->waitInput = false;
+    }
     pu::element::Menu *MainLayout::GetGamesMenu()
     {
     	return (this->gamesMenu);

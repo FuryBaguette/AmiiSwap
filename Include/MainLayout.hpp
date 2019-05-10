@@ -8,7 +8,8 @@ namespace ui
 	{
 	    public:
 	        MainLayout();
-			void item_Click(amiibo::AmiiboFile *menuItem);
+			void selectItem_Click(amiibo::AmiiboFile *menuItem);
+			void randomizeUuid_Click(amiibo::AmiiboFile *menuItem);
 			void category_Click(amiibo::AmiiboGame *game);
 			void GetAmiibos();
 			pu::element::Menu *MainLayout::GetGamesMenu();
