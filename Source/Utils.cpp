@@ -50,7 +50,7 @@ namespace utils
         while (entry != NULL)
         {
             if (entry->d_type == DT_DIR)
-                r.push_back(entry->d_name);
+                r.push_back(std::string(path) + std::string("/") + std::string(entry->d_name));
 
             entry = readdir(dir);
         }

@@ -10,8 +10,7 @@ namespace ui
 	        MainLayout();
 			void item_Click(amiibo::AmiiboFile *menuItem);
 			void category_Click(amiibo::AmiiboGame *game);
-			void GetFolders();
-			std::vector<amiibo::AmiiboFile*> GetEmuiibo();
+			void GetAmiibos();
 			pu::element::Menu *MainLayout::GetGamesMenu();
 			pu::element::Menu *MainLayout::GetAmiiboMenu();
 	    private:
@@ -20,8 +19,6 @@ namespace ui
 	        pu::element::Menu *gamesMenu;
 	        pu::element::Menu *amiiboMenu;
 			std::vector<amiibo::AmiiboGame*> amiiboGames;
-			std::vector<amiibo::AmiiboFile*> files;
-			std::vector<pu::element::MenuItem*> gameItems;
 			bool waitInput;
 			bool isEmuuibo;
 	};

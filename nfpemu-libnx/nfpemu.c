@@ -14,7 +14,7 @@ static u64 g_refCnt;
 
 Result nfpemuInitialize()
 {
-    if(!emuiiboIsPresent()) return LibnxError_NotFound;
+    if(!emuiiboIsPresent()) return MAKERESULT(Module_Libnx, LibnxError_NotFound);
 
     atomicIncrement64(&g_refCnt);
     if(serviceIsActive(&g_nfpEmuSrv)) return 0;
@@ -26,10 +26,12 @@ void nfpemuExit()
     if(atomicDecrement64(&g_refCnt) == 0) serviceClose(&g_nfpEmuSrv);
 }
 
-Result nfpemuGetAmiiboCount(u32 *out)
+Result nfpemuGetAmiibo(char *out)
 {
     IpcCommand c;
     ipcInitialize(&c);
+    ipcAddRecvBuffer(&c, out, FS_MAX_PATH, BufferType_Normal);
+
     struct {
         u64 magic;
         u64 cmd_id;
@@ -48,20 +50,22 @@ Result nfpemuGetAmiiboCount(u32 *out)
         struct {
             u64 magic;
             u64 result;
-            u32 count;
         } *resp = r.Raw;
 
         rc = resp->result;
-        if(R_SUCCEEDED(rc)) *out = resp->count;
     }
 
     return rc;
 }
 
-Result nfpemuGetCurrentAmiibo(u32 *idx_out)
+Result nfpemuSetAmiibo(const char *path)
 {
     IpcCommand c;
     ipcInitialize(&c);
+    char cpath[FS_MAX_PATH] = {0};
+    strcpy(cpath, path);
+    ipcAddSendBuffer(&c, cpath, FS_MAX_PATH, BufferType_Normal);
+
     struct {
         u64 magic;
         u64 cmd_id;
@@ -80,23 +84,18 @@ Result nfpemuGetCurrentAmiibo(u32 *idx_out)
         struct {
             u64 magic;
             u64 result;
-            u32 idx;
         } *resp = r.Raw;
 
         rc = resp->result;
-        if(R_SUCCEEDED(rc)) *idx_out = resp->idx;
     }
 
     return rc;
 }
 
-Result nfpemuRequestUseCustomAmiibo(const char *path)
+Result nfpemuRequestResetAmiibo()
 {
     IpcCommand c;
     ipcInitialize(&c);
-    char cpath[FS_MAX_PATH] = {0};
-    strcpy(cpath, path);
-    ipcAddSendBuffer(&c, cpath, FS_MAX_PATH, BufferType_Normal);
     struct {
         u64 magic;
         u64 cmd_id;
@@ -105,36 +104,6 @@ Result nfpemuRequestUseCustomAmiibo(const char *path)
     raw = ipcPrepareHeader(&c, sizeof(*raw));
     raw->magic = SFCI_MAGIC;
     raw->cmd_id = 2;
-    Result rc = serviceIpcDispatch(&g_nfpEmuSrv);
-
-    if(R_SUCCEEDED(rc))
-    {
-        IpcParsedCommand r;
-        ipcParse(&r);
-
-        struct {
-            u64 magic;
-            u64 result;
-        } *resp = r.Raw;
-
-        rc = resp->result;
-    }
-
-    return rc;
-}
-
-Result nfpemuRequestResetCustomAmiibo()
-{
-    IpcCommand c;
-    ipcInitialize(&c);
-    struct {
-        u64 magic;
-        u64 cmd_id;
-    } *raw;
-
-    raw = ipcPrepareHeader(&c, sizeof(*raw));
-    raw->magic = SFCI_MAGIC;
-    raw->cmd_id = 3;
     Result rc = serviceIpcDispatch(&g_nfpEmuSrv);
 
     if(R_SUCCEEDED(rc))
@@ -164,7 +133,7 @@ Result nfpemuToggle()
 
     raw = ipcPrepareHeader(&c, sizeof(*raw));
     raw->magic = SFCI_MAGIC;
-    raw->cmd_id = 4;
+    raw->cmd_id = 3;
     Result rc = serviceIpcDispatch(&g_nfpEmuSrv);
 
     if(R_SUCCEEDED(rc))
@@ -184,6 +153,36 @@ Result nfpemuToggle()
 }
 
 Result nfpemuToggleOnce()
+{
+    IpcCommand c;
+    ipcInitialize(&c);
+    struct {
+        u64 magic;
+        u64 cmd_id;
+    } *raw;
+
+    raw = ipcPrepareHeader(&c, sizeof(*raw));
+    raw->magic = SFCI_MAGIC;
+    raw->cmd_id = 4;
+    Result rc = serviceIpcDispatch(&g_nfpEmuSrv);
+
+    if(R_SUCCEEDED(rc))
+    {
+        IpcParsedCommand r;
+        ipcParse(&r);
+
+        struct {
+            u64 magic;
+            u64 result;
+        } *resp = r.Raw;
+
+        rc = resp->result;
+    }
+
+    return rc;
+}
+
+Result nfpemuUntoggle()
 {
     IpcCommand c;
     ipcInitialize(&c);
@@ -238,6 +237,38 @@ Result nfpemuSwapNext()
         } *resp = r.Raw;
 
         rc = resp->result;
+    }
+
+    return rc;
+}
+
+Result nfpemuGetToggleStatus(NfpEmuToggleStatus *out)
+{
+    IpcCommand c;
+    ipcInitialize(&c);
+    struct {
+        u64 magic;
+        u64 cmd_id;
+    } *raw;
+
+    raw = ipcPrepareHeader(&c, sizeof(*raw));
+    raw->magic = SFCI_MAGIC;
+    raw->cmd_id = 7;
+    Result rc = serviceIpcDispatch(&g_nfpEmuSrv);
+
+    if(R_SUCCEEDED(rc))
+    {
+        IpcParsedCommand r;
+        ipcParse(&r);
+
+        struct {
+            u64 magic;
+            u64 result;
+            u32 status;
+        } *resp = r.Raw;
+
+        rc = resp->result;
+        if(R_SUCCEEDED(rc)) *out = (NfpEmuToggleStatus)resp->status;
     }
 
     return rc;

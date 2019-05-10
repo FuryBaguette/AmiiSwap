@@ -10,7 +10,9 @@
 #include "nfpemu.h"
 #include "Amiibo.hpp"
 #include "Utils.hpp"
+#include "Settings.hpp"
 #include "MainLayout.hpp"
+#include "SettingsLayout.hpp"
 
 namespace ui
 {
@@ -21,11 +23,6 @@ namespace ui
 		return (char*)p;
 	}
 
-	inline bool fileExists (const std::string& name) {
-	  struct stat buffer;
-	  return (stat (name.c_str(), &buffer) == 0);
-	}
-
 	class MainApplication : public pu::Application
 	{
 	    public:
@@ -33,6 +30,7 @@ namespace ui
 			void SetWaitBack(bool state);
 	    private:
 	        ui::MainLayout *mainLayout;
+			ui::SettingsLayout *setLayout;
 			bool waitBack = false;
 	};
 
