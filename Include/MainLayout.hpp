@@ -22,5 +22,7 @@ namespace ui
 			std::vector<amiibo::AmiiboGame*> amiiboGames;
 			bool waitInput;
 			bool isEmuuibo;
+			bool isRandomUuid(std::string jsonPath);
+			void toggleRandomUuid(std::string jsonPath, bool toggle);
 	};
 }

@@ -86,24 +86,42 @@ namespace ui
     {
     	if (!this->waitInput) {
     		mainapp->SetWaitBack(true);
-            int sopt = mainapp->CreateShowDialog("Randomize UUID?", "This will enable/disable the random UUID for the " + element->GetName() + " Amiibo", { "Enable", "Disable" }, true, element->GetIconPath());
+            std::string amiiboName = element->GetName();
+            std::string jsonPath = "sdmc:/emuiibo/" + amiiboName + "/amiibo.json";
+            bool randomStatus = isRandomUuid(jsonPath);
+            int sopt = mainapp->CreateShowDialog("Randomize UUID?", "This will toggle randomize UUID for the " + amiiboName + " Amiibo\nStatus: " + (randomStatus ? "enabled":"disabled"), { "Toggle", "Cancel" }, true, element->GetIconPath());
             // TODO, read amiibo.json and add/modify randomizeUuid
-            bool toggleRandomize = (sopt == 0);
-            std::string jsonPath = "sdmc:/emuiibo/" + element->GetName() + "/amiibo.json";
-            std::ifstream ifs(jsonPath);
-            auto amiiboJson = json::parse(ifs);
-            if(ifs.is_open())
-                ifs.close();
-            amiiboJson["randomizeUuid"] = toggleRandomize;
-            std::ofstream ofs(jsonPath);
-            ofs << amiiboJson.dump(5);
-            if(ofs.is_open())
-                ofs.close();
-            pu::overlay::Toast *toast = new pu::overlay::Toast("Random UUID for " + element->GetName() + ((toggleRandomize) ? " enabled." : " disabled"), 20, {255,255,255,255}, {0,0,0,200});
-            mainapp->StartOverlayWithTimeout(toast, 1500);
-    		mainapp->SetWaitBack(false);
+            if(sopt == 0){
+                toggleRandomUuid(jsonPath, !randomStatus);
+                pu::overlay::Toast *toast = new pu::overlay::Toast("Random UUID for " + amiiboName + ((!randomStatus) ? " enabled." : " disabled"), 20, {255,255,255,255}, {0,0,0,200});
+                mainapp->StartOverlayWithTimeout(toast, 1500);
+            }
+            mainapp->SetWaitBack(false);
     	} else this->waitInput = false;
     }
+
+    bool MainLayout::isRandomUuid(std::string jsonPath)
+    {
+        std::ifstream ifs(jsonPath);
+        auto amiiboJson = json::parse(ifs);
+        if(ifs.is_open())
+            ifs.close();
+        return amiiboJson.value<bool>("randomizeUuid", false);
+    }
+
+    void MainLayout::toggleRandomUuid(std::string jsonPath, bool toggle)
+    {
+        std::ifstream ifs(jsonPath);
+        auto amiiboJson = json::parse(ifs);
+        if(ifs.is_open())
+            ifs.close();
+        amiiboJson["randomizeUuid"] = toggle;
+        std::ofstream ofs(jsonPath);
+        ofs << amiiboJson.dump(4);
+        if(ofs.is_open())
+            ofs.close();
+    }
+
     pu::element::Menu *MainLayout::GetGamesMenu()
     {
     	return (this->gamesMenu);
