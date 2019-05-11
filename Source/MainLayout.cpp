@@ -28,10 +28,10 @@ namespace ui
             this->titleText = new pu::element::TextBlock(640, 10, "AmiiSwap");
 
     		for (auto & element : this->amiiboGames) {
-    			pu::element::MenuItem *item = new pu::element::MenuItem(element->GetName());
+                pu::element::MenuItem *item = new pu::element::MenuItem(element->GetName());
                 item->SetIcon("sdmc:/switch/AmiiSwap/game.png");
-    			item->AddOnClick(std::bind(&MainLayout::category_Click, this, element), KEY_A);
-    			this->gamesMenu->AddItem(item);
+                item->AddOnClick(std::bind(&MainLayout::category_Click, this, element), KEY_A);
+                this->gamesMenu->AddItem(item);
     		}
 
             this->gamesMenu->SetOnFocusColor({102,153,204,255});
