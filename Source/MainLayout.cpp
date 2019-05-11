@@ -53,19 +53,22 @@ namespace ui
     	this->waitInput = true;
     	this->amiiboMenu->ClearItems();
     	std::vector<amiibo::AmiiboFile*> files = game->GetBinFiles();
-    	for (auto & element : files) {
-    		pu::element::MenuItem *item = new pu::element::MenuItem(element->GetName());
-
-            item->SetIcon(element->GetIconPath());
-    		item->AddOnClick(std::bind(&MainLayout::selectItem_Click, this, element), KEY_A);
-    		item->AddOnClick(std::bind(&MainLayout::randomizeUuid_Click, this, element), KEY_X);
-            this->amiiboMenu->AddItem(item);
-    	}
-
-    	this->amiiboMenu->SetSelectedIndex(0);
-    	this->SetElementOnFocus(this->amiiboMenu);
-    	this->amiiboMenu->SetVisible(true);
-    	this->gamesMenu->SetVisible(false);
+        if (files.empty()) {
+            pu::overlay::Toast *toast = new pu::overlay::Toast("List is empty", 20, {255,255,255,255}, {0,0,0,200});
+            mainapp->StartOverlayWithTimeout(toast, 1500);
+        } else {
+        	for (auto & element : files) {
+                pu::element::MenuItem *item = new pu::element::MenuItem(element->GetName());
+                item->SetIcon(element->GetIconPath());
+                item->AddOnClick(std::bind(&MainLayout::selectItem_Click, this, element), KEY_A);
+                item->AddOnClick(std::bind(&MainLayout::randomizeUuid_Click, this, element), KEY_X);
+                this->amiiboMenu->AddItem(item);
+        	}
+        	this->amiiboMenu->SetSelectedIndex(0);
+        	this->SetElementOnFocus(this->amiiboMenu);
+        	this->amiiboMenu->SetVisible(true);
+        	this->gamesMenu->SetVisible(false);
+        }
     }
 
     void MainLayout::selectItem_Click(amiibo::AmiiboFile *element)
