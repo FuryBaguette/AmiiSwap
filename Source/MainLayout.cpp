@@ -58,7 +58,11 @@ namespace ui
             mainapp->StartOverlayWithTimeout(toast, 1500);
         } else {
         	for (auto & element : files) {
-                pu::element::MenuItem *item = new pu::element::MenuItem(element->GetName());
+                std::string amiiboName = element->GetName();
+                size_t size = amiiboName.find("/");
+                if (size != std::string::npos)
+                    amiiboName = amiiboName.substr(size + 1);
+                pu::element::MenuItem *item = new pu::element::MenuItem(amiiboName);
                 item->SetIcon(element->GetIconPath());
                 item->AddOnClick(std::bind(&MainLayout::selectItem_Click, this, element), KEY_A);
                 item->AddOnClick(std::bind(&MainLayout::randomizeUuid_Click, this, element), KEY_X);
@@ -75,10 +79,14 @@ namespace ui
     {
     	if (!this->waitInput) {
     		mainapp->SetWaitBack(true);
-            int sopt = mainapp->CreateShowDialog("Use " + element->GetName() + " ?", "This will set the current Amiibo to " + element->GetName(), { "Yes", "No" }, true, element->GetIconPath());
+            std::string amiiboName = element->GetName();
+            size_t size = amiiboName.find("/");
+            if (size != std::string::npos)
+                amiiboName = amiiboName.substr(size + 1);
+            int sopt = mainapp->CreateShowDialog("Use " + amiiboName + " ?", "This will set the current Amiibo to " + amiiboName, { "Yes", "No" }, true, element->GetIconPath());
     		if (sopt == 0) {
                 nfpemuSetAmiibo(element->GetPath().c_str());
-                pu::overlay::Toast *toast = new pu::overlay::Toast("Active amiibo updated to: " + element->GetName(), 20, {255,255,255,255}, {0,0,0,200});
+                pu::overlay::Toast *toast = new pu::overlay::Toast("Active amiibo updated to: " + amiiboName, 20, {255,255,255,255}, {0,0,0,200});
                 mainapp->StartOverlayWithTimeout(toast, 1500);
             }
     		mainapp->SetWaitBack(false);
