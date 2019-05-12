@@ -21,6 +21,7 @@ namespace ui
         } else {
 			nfpemuInitialize();
         	utils::EnsureDirectories();
+            utils::InitSettings();
     		this->GetAmiibos();
 
     		this->gamesMenu = new pu::element::Menu(0, 50, 1280, {255,255,255,255}, 70, 9);

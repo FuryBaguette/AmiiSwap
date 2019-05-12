@@ -13,6 +13,8 @@ namespace utils
     std::vector<std::string> get_directories(char *path);
     bool IsEmuiiboPresent();
     bool copyFile(const char *SRC, const char* DEST);
+    void InitSettings();
+    void get_amiibos_directories(char *path, std::vector<std::string> *r);
 
     inline bool folderExists(const std::string& dirName) {
         DIR *dir = opendir(dirName.c_str());
