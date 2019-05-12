@@ -110,13 +110,13 @@ namespace utils
                 bool writegame = true;
                 std::vector<amiibo::AmiiboFile*> files = game->GetBinFiles();
                 for (auto & element : files) {
-                    //if(find(removedAmiibos.begin(), removedAmiibos.end(), element->GetName()) == removedAmiibos.end()){ // missing amiibos are already ignored when creating menu but let's keep settings clean
+                    if(find(removedAmiibos.begin(), removedAmiibos.end(), element->GetName()) == removedAmiibos.end()){ // missing amiibos are already ignored when creating menu but let's keep settings clean
                         if(writegame){
                             settingsOfs << "[" << game->GetName() <<"]" << "\r" << "\n";
                             writegame = false;
                         }
                         settingsOfs << element->GetName() << "\r" << "\n";
-                    //}
+                    }
                 }
                 if (game->GetName() == "ALL" && !writegame){
                     allwritten = true;
