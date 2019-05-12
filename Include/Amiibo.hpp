@@ -1,15 +1,19 @@
 namespace amiibo
 {
+    class AmiiboGame;
     class AmiiboFile {
     	public:
     		AmiiboFile(std::string Name, std::string DirPath, std::string IconPath);
     		std::string GetName();
     		std::string GetPath();
             std::string GetIconPath();
+            std::vector<AmiiboGame *> GetParents(std::vector<AmiiboGame *> games);
+            std::string DisplayParents(std::vector<AmiiboGame *> games);
     	private:
     		std::string Name;
     		std::string DirPath;
             std::string IconPath;
+            std::vector<AmiiboGame *> Parents;
     };
 
     class AmiiboGame {

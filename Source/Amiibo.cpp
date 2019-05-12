@@ -24,6 +24,30 @@ namespace amiibo
 		return (this->IconPath);
 	}
 
+	std::vector<AmiiboGame*> AmiiboFile::GetParents(std::vector<AmiiboGame *> games)
+	{
+		std::vector<AmiiboGame *> parents;
+
+		for (auto & game : games) {
+			for (auto & amiibo : game->GetBinFiles()) {
+				if (amiibo->GetName() == this->Name && amiibo->GetPath() == this->DirPath)
+					parents.push_back(game);
+			}
+		}
+		return (parents);
+	}
+
+	std::string AmiiboFile::DisplayParents(std::vector<AmiiboGame *> games)
+	{
+		std::vector<AmiiboGame *> amiiboParents = this->GetParents(games);
+		std::string parents;
+
+		for (auto & elem : amiiboParents) {
+			parents += elem->GetName() + ", ";
+		}
+		return (parents);
+	}
+
 	AmiiboGame::AmiiboGame(std::string Name)
 	{
 		this->Name = Name;

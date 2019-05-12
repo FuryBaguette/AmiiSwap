@@ -10,14 +10,23 @@ namespace ui
         for (auto & elem : amiibos) {
             std::size_t found = elem.find_last_of("/\\");
 			std::string name = elem.substr(found+1);
-            amiibo::AmiiboFile *file = new amiibo::AmiiboFile(name, elem, elem + "amiibo.png");
-            this->amiiboFiles.push_back(file);
+            if (name != "miis") {
+                amiibo::AmiiboFile *file = new amiibo::AmiiboFile(name, elem, elem + "amiibo.png");
+                this->amiiboFiles.push_back(file);
+            }
         }
+    }
+
+    void SettingsLayout::GetAmiiboGames()
+    {
+        set::Settings *settings = new set::Settings("sdmc:/switch/AmiiSwap/settings.txt");
+        this->amiiboGames = settings->GetGames();
     }
 
     SettingsLayout::SettingsLayout()
     {
         this->GetAmiibos();
+        this->GetAmiiboGames();
 
 	    this->amiiboMenu = new pu::element::Menu(0, 50, 1280, {255,255,255,255}, 70, 9);
         this->titleText = new pu::element::TextBlock(640, 10, "AmiiSwap Settings");
@@ -41,7 +50,7 @@ namespace ui
     {
     	if (!this->waitInput) {
     		mainapp->SetWaitBack(true);
-    		int sopt = mainapp->CreateShowDialog(element->GetName(), "What do you want to do with " + element->GetName() + "?", { "Add to game", "Remove from game", "Cancel" }, true, element->GetIconPath());
+    		int sopt = mainapp->CreateShowDialog(element->GetName(), "What do you want to do with " + element->GetName() + "?\nIt's in the following game(s):\n" + element->DisplayParents(this->amiiboGames), { "Add to game", "Remove from game", "Cancel" }, true, element->GetIconPath());
     		if (sopt == 0) {
                 pu::overlay::Toast *toast = new pu::overlay::Toast("Add to game", 20, {255,255,255,255}, {0,0,0,200});
                 mainapp->StartOverlayWithTimeout(toast, 1500);
