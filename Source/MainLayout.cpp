@@ -26,7 +26,7 @@ namespace ui
 
     		this->gamesMenu = new pu::element::Menu(0, 50, 1280, {255,255,255,255}, 70, 9);
     	    this->amiiboMenu = new pu::element::Menu(0, 50, 1280, {255,255,255,255}, 70, 9);
-            //this->titleText = new pu::element::TextBlock(640, 10, "AmiiSwap");
+            this->titleText = new pu::element::TextBlock(640, 10, "AmiiSwap");
 
     		for (auto & element : this->amiiboGames) {
                 pu::element::MenuItem *item = new pu::element::MenuItem(element->GetName());
