@@ -26,11 +26,17 @@ namespace ui
 
     		this->gamesMenu = new pu::element::Menu(0, 50, 1280, {255,255,255,255}, 70, 9);
     	    this->amiiboMenu = new pu::element::Menu(0, 50, 1280, {255,255,255,255}, 70, 9);
-            this->titleText = new pu::element::TextBlock(640, 10, "AmiiSwap");
+            //this->titleText = new pu::element::TextBlock(640, 10, "AmiiSwap");
 
     		for (auto & element : this->amiiboGames) {
                 pu::element::MenuItem *item = new pu::element::MenuItem(element->GetName());
-                item->SetIcon("sdmc:/switch/AmiiSwap/game.png");
+                std::string iconFile = element->GetName() + ".png";
+                std::string amiiswapFolder ="sdmc:/switch/AmiiSwap/";
+                if(std::fstream{amiiswapFolder+iconFile}){
+                    item->SetIcon(amiiswapFolder+iconFile);
+                }else{
+                    item->SetIcon("sdmc:/switch/AmiiSwap/game.png");
+                }
                 item->AddOnClick(std::bind(&MainLayout::category_Click, this, element), KEY_A);
                 this->gamesMenu->AddItem(item);
     		}
