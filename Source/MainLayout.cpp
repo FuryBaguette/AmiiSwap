@@ -24,11 +24,18 @@ namespace ui
             utils::InitSettings();
     		this->GetAmiibos();
 
-    		this->gamesMenu = new pu::element::Menu(0, 50, 1280, {255,255,255,255}, 70, 9);
-    	    this->amiiboMenu = new pu::element::Menu(0, 50, 1280, {255,255,255,255}, 70, 9);
-            this->titleText = new pu::element::TextBlock(640, 10, "AmiiSwap");
+            this->gamesMenu = new pu::element::Menu(0, 80, 1280, {255,255,255,255}, 75, 8);
+    	    this->amiiboMenu = new pu::element::Menu(0, 80, 1280, {255,255,255,255}, 75, 8);
+            this->titleText = new pu::element::TextBlock(640, 15, "AmiiSwap", 40);
+            this->header = new pu::element::Rectangle(0, 0, 1280, 80, {0,102,153,255});
+            this->footer = new pu::element::Rectangle(0, 680, 1280, 40, {0,102,153,255});
+            this->logo = new pu::element::Image(10, 10, "sdmc:/switch/AmiiSwap/logo.png");
+            this->logo->SetHeight(60);
+            this->logo->SetWidth(60);
+            this->footerText = new pu::element::TextBlock(10, 690, "", 20);
 
     		for (auto & element : this->amiiboGames) {
+                auto gamesCount = this->amiiboGames.size();
                 pu::element::MenuItem *item = new pu::element::MenuItem(element->GetName());
                 std::string iconFile = element->GetName() + ".png";
                 std::string amiiswapFolder ="sdmc:/switch/AmiiSwap/";
@@ -39,6 +46,7 @@ namespace ui
                 }
                 item->AddOnClick(std::bind(&MainLayout::category_Click, this, element), KEY_A);
                 this->gamesMenu->AddItem(item);
+                this->footerText->SetText("Games: " + std::to_string(gamesCount));
     		}
 
             this->gamesMenu->SetOnFocusColor({102,153,204,255});
@@ -47,8 +55,14 @@ namespace ui
             this->amiiboMenu->SetScrollbarColor({102,153,204,255});
             this->amiiboMenu->SetVisible(false);
             this->titleText->SetHorizontalAlign(pu::element::HorizontalAlign::Center);
+            this->titleText->SetColor({255,255,255,255});
+            this->footerText->SetColor({255,255,255,255});
 
+            this->Add(this->header);
+            this->Add(this->footer);
+            this->Add(this->logo);
             this->Add(this->titleText);
+            this->Add(this->footerText);
     	    this->Add(this->gamesMenu);
     		this->Add(this->amiiboMenu);
     		this->SetElementOnFocus(this->gamesMenu);
@@ -65,6 +79,8 @@ namespace ui
             mainapp->StartOverlayWithTimeout(toast, 1500);
         } else {
         	for (auto & element : files) {
+                auto amiibosCount = files.size();
+                this->footerText->SetText("Amiibos: " + std::to_string(amiibosCount));
                 std::string amiiboName = element->GetName();
                 size_t size = amiiboName.find("/");
                 if (size != std::string::npos)
@@ -142,6 +158,8 @@ namespace ui
 
     pu::element::Menu *MainLayout::GetGamesMenu()
     {
+        auto gamesCount = this->amiiboGames.size();
+        this->footerText->SetText("Games: " + std::to_string(gamesCount));
     	return (this->gamesMenu);
     }
 

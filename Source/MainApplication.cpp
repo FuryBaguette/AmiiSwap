@@ -16,7 +16,7 @@ namespace ui
 
 	MainApplication::MainApplication()
 	{
-	    this->mainLayout = new MainLayout();
+		this->mainLayout = new MainLayout();
 		this->setLayout = new SettingsLayout();
 	    this->LoadLayout(this->mainLayout);
 		this->SetOnInput([&](u64 Down, u64 Up, u64 Held, bool Touch)

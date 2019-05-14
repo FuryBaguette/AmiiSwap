@@ -24,5 +24,9 @@ namespace ui
 			bool isEmuuibo;
 			bool isRandomUuid(std::string jsonPath);
 			void toggleRandomUuid(std::string jsonPath, bool toggle);
+			pu::element::Image *logo;
+			pu::element::Rectangle *header;
+			pu::element::Rectangle *footer;
+			pu::element::TextBlock *footerText;
 	};
 }
