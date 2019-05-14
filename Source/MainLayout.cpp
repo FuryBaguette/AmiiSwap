@@ -29,7 +29,7 @@ namespace ui
             this->titleText = new pu::element::TextBlock(640, 15, "AmiiSwap", 40);
             this->header = new pu::element::Rectangle(0, 0, 1280, 80, {0,102,153,255});
             this->footer = new pu::element::Rectangle(0, 680, 1280, 40, {0,102,153,255});
-            this->logo = new pu::element::Image(10, 10, "sdmc:/switch/AmiiSwap/logo.png");
+            this->logo = new pu::element::Image(10, 10, utils::GetRomFsResource("Common/logo.png"));
             this->logo->SetHeight(60);
             this->logo->SetWidth(60);
             this->footerText = new pu::element::TextBlock(10, 690, "", 20);
@@ -42,7 +42,7 @@ namespace ui
                 if(std::fstream{amiiswapFolder+iconFile}){
                     item->SetIcon(amiiswapFolder+iconFile);
                 }else{
-                    item->SetIcon("sdmc:/switch/AmiiSwap/game.png");
+                    item->SetIcon(utils::GetRomFsResource("Common/game.png"));
                 }
                 item->AddOnClick(std::bind(&MainLayout::category_Click, this, element), KEY_A);
                 this->gamesMenu->AddItem(item);

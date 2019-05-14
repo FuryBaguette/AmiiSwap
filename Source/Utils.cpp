@@ -156,4 +156,12 @@ namespace utils
         closedir(dir);
         return r;
     }
+
+    std::string GetRomFsResource(std::string path)
+    {
+        if(path.at(0)=='/')
+            return "romfs:" + path;
+        else
+            return "romfs:/" + path;            
+    }
 }

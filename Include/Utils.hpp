@@ -15,7 +15,8 @@ namespace utils
     bool copyFile(const char *SRC, const char* DEST);
     void InitSettings();
     void get_amiibos_directories(char *path, std::vector<std::string> *r);
-
+    std::string GetRomFsResource(std::string path);
+    
     inline bool folderExists(const std::string& dirName) {
         DIR *dir = opendir(dirName.c_str());
         if (dir) {

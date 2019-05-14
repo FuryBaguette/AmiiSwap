@@ -42,7 +42,7 @@ SOURCES		:=	Source nfpemu-libnx
 DATA		:=	Bin
 INCLUDES	:=	Include nfpemu-libnx
 EXEFS_SRC	:=	exefs_src
-# ROMFS		:=	RomFs
+ROMFS		:=	RomFs
 
 #---------------------------------------------------------------------------------
 # options for code generation
