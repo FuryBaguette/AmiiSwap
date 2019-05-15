@@ -12,11 +12,11 @@ namespace ui
 			void randomizeUuid_Click(amiibo::AmiiboFile *menuItem);
 			void category_Click(amiibo::AmiiboGame *game);
 			void GetAmiibos();
+			void populateGamesMenu();
 			pu::element::Menu *MainLayout::GetGamesMenu();
 			pu::element::Menu *MainLayout::GetAmiiboMenu();
 	    private:
-	        pu::element::TextBlock *titleText;
-			pu::element::TextBlock *warningText;
+	        pu::element::TextBlock *warningText;
 	        pu::element::Menu *gamesMenu;
 	        pu::element::Menu *amiiboMenu;
 			std::vector<amiibo::AmiiboGame*> amiiboGames;
@@ -24,9 +24,5 @@ namespace ui
 			bool isEmuuibo;
 			bool isRandomUuid(std::string jsonPath);
 			void toggleRandomUuid(std::string jsonPath, bool toggle);
-			pu::element::Image *logo;
-			pu::element::Rectangle *header;
-			pu::element::Rectangle *footer;
-			pu::element::TextBlock *footerText;
 	};
 }

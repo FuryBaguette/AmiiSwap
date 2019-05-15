@@ -164,4 +164,13 @@ namespace utils
         else
             return "romfs:/" + path;            
     }
+
+    void Log(std::string Text)
+    {
+        std::string logPath = "sdmc:/switch/AmiiSwap/log.txt";
+        std::ofstream logOfs(logPath, std::ofstream::app);
+        logOfs << Text << "\r" << "\n";
+        if(logOfs.is_open())
+            logOfs.close();
+    }
 }

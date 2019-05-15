@@ -15,58 +15,36 @@ namespace ui
 
     MainLayout::MainLayout()
     {
-    	if (!utils::IsEmuiiboPresent()) {
-            this->warningText = new pu::element::TextBlock(0, 0, "Emuiibo is not running on this console, please install it before using AmiiSwap");
-			this->Add(this->warningText);
-        } else {
-			nfpemuInitialize();
-        	utils::EnsureDirectories();
-            utils::InitSettings();
-    		this->GetAmiibos();
+        utils::Log("MainLayout constructor start");
+        this->gamesMenu = new pu::element::Menu(0, 80, 1280, {255,255,255,255}, 75, 8);
+        this->amiiboMenu = new pu::element::Menu(0, 80, 1280, {255,255,255,255}, 75, 8);
+        this->gamesMenu->SetOnFocusColor({102,153,204,255});
+        this->amiiboMenu->SetOnFocusColor({102,153,204,255});
+        this->gamesMenu->SetScrollbarColor({102,153,204,255});
+        this->amiiboMenu->SetScrollbarColor({102,153,204,255});
+        this->amiiboMenu->SetVisible(false);
+        this->Add(this->gamesMenu);
+        this->Add(this->amiiboMenu);
+        this->SetElementOnFocus(this->gamesMenu);
+    }
 
-            this->gamesMenu = new pu::element::Menu(0, 80, 1280, {255,255,255,255}, 75, 8);
-    	    this->amiiboMenu = new pu::element::Menu(0, 80, 1280, {255,255,255,255}, 75, 8);
-            this->titleText = new pu::element::TextBlock(640, 15, "AmiiSwap", 40);
-            this->header = new pu::element::Rectangle(0, 0, 1280, 80, {0,102,153,255});
-            this->footer = new pu::element::Rectangle(0, 680, 1280, 40, {0,102,153,255});
-            this->logo = new pu::element::Image(10, 10, utils::GetRomFsResource("Common/logo.png"));
-            this->logo->SetHeight(60);
-            this->logo->SetWidth(60);
-            this->footerText = new pu::element::TextBlock(10, 690, "", 20);
-
-    		for (auto & element : this->amiiboGames) {
-                auto gamesCount = this->amiiboGames.size();
-                pu::element::MenuItem *item = new pu::element::MenuItem(element->GetName());
-                std::string iconFile = element->GetName() + ".png";
-                std::string amiiswapFolder ="sdmc:/switch/AmiiSwap/";
-                if(std::fstream{amiiswapFolder+iconFile}){
-                    item->SetIcon(amiiswapFolder+iconFile);
-                }else{
-                    item->SetIcon(utils::GetRomFsResource("Common/game.png"));
-                }
-                item->AddOnClick(std::bind(&MainLayout::category_Click, this, element), KEY_A);
-                this->gamesMenu->AddItem(item);
-                this->footerText->SetText("Games: " + std::to_string(gamesCount));
-    		}
-
-            this->gamesMenu->SetOnFocusColor({102,153,204,255});
-            this->amiiboMenu->SetOnFocusColor({102,153,204,255});
-			this->gamesMenu->SetScrollbarColor({102,153,204,255});
-            this->amiiboMenu->SetScrollbarColor({102,153,204,255});
-            this->amiiboMenu->SetVisible(false);
-            this->titleText->SetHorizontalAlign(pu::element::HorizontalAlign::Center);
-            this->titleText->SetColor({255,255,255,255});
-            this->footerText->SetColor({255,255,255,255});
-
-            this->Add(this->header);
-            this->Add(this->footer);
-            this->Add(this->logo);
-            this->Add(this->titleText);
-            this->Add(this->footerText);
-    	    this->Add(this->gamesMenu);
-    		this->Add(this->amiiboMenu);
-    		this->SetElementOnFocus(this->gamesMenu);
+    void MainLayout::populateGamesMenu()
+    {
+        this->GetAmiibos();
+        auto gamesCount = this->amiiboGames.size();
+        for (auto & element : this->amiiboGames) {
+            pu::element::MenuItem *item = new pu::element::MenuItem(element->GetName());
+            std::string iconFile = element->GetName() + ".png";
+            std::string amiiswapFolder ="sdmc:/switch/AmiiSwap/";
+            if(std::fstream{amiiswapFolder+iconFile}){
+                item->SetIcon(amiiswapFolder+iconFile);
+            }else{
+                item->SetIcon(utils::GetRomFsResource("Common/game.png"));
+            }
+            item->AddOnClick(std::bind(&MainLayout::category_Click, this, element), KEY_A);
+            this->gamesMenu->AddItem(item);
         }
+        mainapp->SetFooterText("Games: " + std::to_string(gamesCount));
     }
 
     void MainLayout::category_Click(amiibo::AmiiboGame *game)
@@ -80,7 +58,7 @@ namespace ui
         } else {
         	for (auto & element : files) {
                 auto amiibosCount = files.size();
-                this->footerText->SetText("Amiibos: " + std::to_string(amiibosCount));
+                mainapp->SetFooterText("Amiibos: " + std::to_string(amiibosCount));
                 std::string amiiboName = element->GetName();
                 size_t size = amiiboName.find("/");
                 if (size != std::string::npos)
@@ -124,7 +102,6 @@ namespace ui
             std::string jsonPath = "sdmc:/emuiibo/" + amiiboName + "/amiibo.json";
             bool randomStatus = isRandomUuid(jsonPath);
             int sopt = mainapp->CreateShowDialog("Randomize UUID?", "This will toggle randomize UUID for the " + amiiboName + " Amiibo\nStatus: " + (randomStatus ? "enabled":"disabled"), { "Toggle", "Cancel" }, true, element->GetIconPath());
-            // TODO, read amiibo.json and add/modify randomizeUuid
             if(sopt == 0){
                 toggleRandomUuid(jsonPath, !randomStatus);
                 pu::overlay::Toast *toast = new pu::overlay::Toast("Random UUID for " + amiiboName + ((!randomStatus) ? " enabled." : " disabled"), 20, {255,255,255,255}, {0,0,0,200});
@@ -159,7 +136,7 @@ namespace ui
     pu::element::Menu *MainLayout::GetGamesMenu()
     {
         auto gamesCount = this->amiiboGames.size();
-        this->footerText->SetText("Games: " + std::to_string(gamesCount));
+        mainapp->SetFooterText("Games: " + std::to_string(gamesCount));
     	return (this->gamesMenu);
     }
 
