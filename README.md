@@ -36,6 +36,10 @@ You can add another game by simply doing these 2 steps again
 - Use `A` to select
 - Use `B` to go back to the main menu
 
+## Support
+- Use the github issues to report problems/bugs **OR**
+- Join the [discord server](https://discord.gg/RnhJRs) for support, news/announcements before anyone, be a tester or just talk.
+
 ## Screenshot
 Main menu showing the games:
 ![](https://github.com/FuryBaguette/AmiiSwap/blob/master/Screenshots/MainScreen.jpg)
