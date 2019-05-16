@@ -23,7 +23,7 @@ namespace ui
         this->amiiboGames = settings->GetGames();
     }
 
-    SettingsLayout::SettingsLayout()
+    SettingsLayout::SettingsLayout()  : pu::Layout()
     {
         this->GetAmiibos();
         this->GetAmiiboGames();

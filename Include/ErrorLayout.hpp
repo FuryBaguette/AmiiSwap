@@ -8,6 +8,7 @@ namespace ui
 	{
 	    public:
 	        ErrorLayout();
+			~ErrorLayout();
 			void SetText(std::string Text);
 	    private:
 	        pu::element::TextBlock *warningText;

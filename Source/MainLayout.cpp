@@ -7,15 +7,8 @@ namespace ui
 {
     extern MainApplication *mainapp;
 
-    void MainLayout::GetAmiibos()
+    MainLayout::MainLayout() : pu::Layout()
     {
-        set::Settings *settings = new set::Settings("sdmc:/switch/AmiiSwap/settings.txt");
-        this->amiiboGames = settings->GetGames();
-    }
-
-    MainLayout::MainLayout()
-    {
-        utils::Log("MainLayout constructor start");
         this->gamesMenu = new pu::element::Menu(0, 80, 1280, {255,255,255,255}, 75, 8);
         this->amiiboMenu = new pu::element::Menu(0, 80, 1280, {255,255,255,255}, 75, 8);
         this->gamesMenu->SetOnFocusColor({102,153,204,255});
@@ -28,10 +21,21 @@ namespace ui
         this->SetElementOnFocus(this->gamesMenu);
     }
 
+    MainLayout::~MainLayout()
+    {
+        delete this->gamesMenu;
+        delete this->amiiboMenu;
+    }
+
+    void MainLayout::GetAmiibos()
+    {
+        set::Settings *settings = new set::Settings("sdmc:/switch/AmiiSwap/settings.txt");
+        this->amiiboGames = settings->GetGames();
+    }
+    
     void MainLayout::populateGamesMenu()
     {
         this->GetAmiibos();
-        auto gamesCount = this->amiiboGames.size();
         for (auto & element : this->amiiboGames) {
             pu::element::MenuItem *item = new pu::element::MenuItem(element->GetName());
             std::string iconFile = element->GetName() + ".png";
@@ -44,21 +48,21 @@ namespace ui
             item->AddOnClick(std::bind(&MainLayout::category_Click, this, element), KEY_A);
             this->gamesMenu->AddItem(item);
         }
-        mainapp->SetFooterText("Games: " + std::to_string(gamesCount));
+        // TODO understand why this here crashes AMS, but works in other places
+        // mainapp->SetFooterText("Games: " + std::to_string(amiiboGames.size()));
     }
 
     void MainLayout::category_Click(amiibo::AmiiboGame *game)
     {
     	this->waitInput = true;
     	this->amiiboMenu->ClearItems();
-    	std::vector<amiibo::AmiiboFile*> files = game->GetBinFiles();
-        if (files.empty()) {
+    	this->amiiboFiles = game->GetBinFiles();
+        if (amiiboFiles.empty()) {
             pu::overlay::Toast *toast = new pu::overlay::Toast("List is empty", 20, {255,255,255,255}, {0,0,0,200});
             mainapp->StartOverlayWithTimeout(toast, 1500);
         } else {
-        	for (auto & element : files) {
-                auto amiibosCount = files.size();
-                mainapp->SetFooterText("Amiibos: " + std::to_string(amiibosCount));
+        	for (auto & element : amiiboFiles) {
+                mainapp->SetFooterText("Amiibos: " + std::to_string(amiiboFiles.size()));
                 std::string amiiboName = element->GetName();
                 size_t size = amiiboName.find("/");
                 if (size != std::string::npos)
@@ -135,8 +139,7 @@ namespace ui
 
     pu::element::Menu *MainLayout::GetGamesMenu()
     {
-        auto gamesCount = this->amiiboGames.size();
-        mainapp->SetFooterText("Games: " + std::to_string(gamesCount));
+        mainapp->SetFooterText("Games: " + std::to_string(amiiboGames.size()));
     	return (this->gamesMenu);
     }
 

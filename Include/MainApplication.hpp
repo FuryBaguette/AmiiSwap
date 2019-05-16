@@ -28,6 +28,7 @@ namespace ui
 	{
 	    public:
 	        MainApplication();
+			~MainApplication();
 			MainLayout *GetMainLayout();
 			SettingsLayout *GetSettingsLayout();
 			ErrorLayout *GetErrorLayout();

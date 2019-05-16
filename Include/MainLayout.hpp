@@ -8,6 +8,7 @@ namespace ui
 	{
 	    public:
 	        MainLayout();
+			~MainLayout();
 			void selectItem_Click(amiibo::AmiiboFile *menuItem);
 			void randomizeUuid_Click(amiibo::AmiiboFile *menuItem);
 			void category_Click(amiibo::AmiiboGame *game);
@@ -16,10 +17,10 @@ namespace ui
 			pu::element::Menu *MainLayout::GetGamesMenu();
 			pu::element::Menu *MainLayout::GetAmiiboMenu();
 	    private:
-	        pu::element::TextBlock *warningText;
 	        pu::element::Menu *gamesMenu;
 	        pu::element::Menu *amiiboMenu;
 			std::vector<amiibo::AmiiboGame*> amiiboGames;
+			std::vector<amiibo::AmiiboFile*> amiiboFiles;
 			bool waitInput;
 			bool isEmuuibo;
 			bool isRandomUuid(std::string jsonPath);

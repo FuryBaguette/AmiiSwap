@@ -14,7 +14,7 @@ namespace ui
 		nfpemuExit();
 	}
 
-	MainApplication::MainApplication()
+	MainApplication::MainApplication() : pu::Application()
 	{
 		if (!utils::IsEmuiiboPresent()) {
             this->ShowError("Emuiibo is not running on this console, please install it before using AmiiSwap");
@@ -35,7 +35,7 @@ namespace ui
 			this->headerText->SetHorizontalAlign(pu::element::HorizontalAlign::Center);
 			this->headerText->SetColor({255,255,255,255});
 			
-			this->footerText = new pu::element::TextBlock(10, 690, "", 20);
+			this->footerText = new pu::element::TextBlock(10, 690, "-", 20);
 			this->footerText->SetColor({255,255,255,255});
 			
 			this->mainLayout = new MainLayout();
@@ -70,9 +70,21 @@ namespace ui
 					this->LoadLayout(this->setLayout);
 				}
 			});
-			this->mainLayout->populateGamesMenu();
 			this->LoadLayout(this->mainLayout);
+			GetMainLayout()->populateGamesMenu();
 		}
+	}
+
+    MainApplication::~MainApplication()
+    {
+		delete this->mainLayout;
+		delete this->setLayout;
+		delete this->errorLayout;
+		delete this->logo;
+		delete this->header;
+		delete this->headerText;
+		delete this->footer;
+		delete this->footerText;
 	}
 
 	void MainApplication::SetWaitBack(bool state)
@@ -87,8 +99,8 @@ namespace ui
 
 	void MainApplication::SetFooterText(std::string Text)
 	{
-		//TODO doesn't work. 
-		//this->footerText->SetText(Text);
+		//TODO doesn't work. make it work and add SetHeaderText
+		if(this->footerText != NULL) this->footerText->SetText(Text);
 	}
 
 	void MainApplication::ShowError(std::string text)
