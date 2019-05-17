@@ -38,7 +38,7 @@ You can add another game by simply doing these 2 steps again
 
 ## Support
 - Use the github issues to report problems/bugs **OR**
-- Join the [discord server](https://discord.gg/RnhJRs) for support, news/announcements before anyone, be a tester or just talk.
+- Join the [discord server](https://discord.gg/ap6yfR2) for support, news/announcements before anyone, be a tester or just talk.
 
 ## Screenshot
 Main menu showing the games:
