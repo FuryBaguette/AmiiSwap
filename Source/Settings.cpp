@@ -33,4 +33,9 @@ namespace set
 	{
 		return (this->games);
 	}
+
+	void Settings::AddGame(amiibo::AmiiboGame *game)
+	{
+		this->games.push_back(game);
+	}
 }

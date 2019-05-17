@@ -19,6 +19,7 @@ namespace ui
         this->Add(this->gamesMenu);
         this->Add(this->amiiboMenu);
         this->SetElementOnFocus(this->gamesMenu);
+        populateGamesMenu();
     }
 
     MainLayout::~MainLayout()
@@ -37,19 +38,26 @@ namespace ui
     {
         this->GetAmiibos();
         for (auto & element : this->amiiboGames) {
-            pu::element::MenuItem *item = new pu::element::MenuItem(element->GetName());
-            std::string iconFile = element->GetName() + ".png";
-            std::string amiiswapFolder ="sdmc:/switch/AmiiSwap/";
-            if(std::fstream{amiiswapFolder+iconFile}){
-                item->SetIcon(amiiswapFolder+iconFile);
-            }else{
-                item->SetIcon(utils::GetRomFsResource("Common/game.png"));
-            }
-            item->AddOnClick(std::bind(&MainLayout::category_Click, this, element), KEY_A);
-            this->gamesMenu->AddItem(item);
+            this->gamesMenu->AddItem(CreateItem(element));
         }
         // TODO understand why this here crashes AMS, but works in other places
         // mainapp->SetFooterText("Games: " + std::to_string(amiiboGames.size()));
+    }
+
+    pu::element::MenuItem *MainLayout::CreateItem(amiibo::AmiiboGame *element)
+    {
+        pu::element::MenuItem *item = new pu::element::MenuItem(element->GetName());
+        std::string iconFile = element->GetName() + ".png";
+        std::string amiiswapFolder ="sdmc:/switch/AmiiSwap/";
+        if(std::fstream{amiiswapFolder+iconFile}){
+            item->SetIcon(amiiswapFolder+iconFile);
+        }else{
+            item->SetIcon(utils::GetRomFsResource("Common/game.png"));
+        }
+        item->AddOnClick(std::bind(&MainLayout::category_Click, this, element), KEY_A);
+        item->AddOnClick(std::bind(&MainLayout::addGame_Click, this), KEY_X);
+        item->AddOnClick(std::bind(&MainLayout::addAmiibos_Click, this, element), KEY_Y);
+        return item;
     }
 
     void MainLayout::category_Click(amiibo::AmiiboGame *game)
@@ -63,6 +71,7 @@ namespace ui
         } else {
         	for (auto & element : amiiboFiles) {
                 mainapp->SetFooterText("Amiibos: " + std::to_string(amiiboFiles.size()));
+                mainapp->SetHelpText("A: select  X: Toggle RandomUUID");
                 std::string amiiboName = element->GetName();
                 size_t size = amiiboName.find("/");
                 if (size != std::string::npos)
@@ -140,11 +149,32 @@ namespace ui
     pu::element::Menu *MainLayout::GetGamesMenu()
     {
         mainapp->SetFooterText("Games: " + std::to_string(amiiboGames.size()));
+        mainapp->SetHelpText("A: select  X: Add new game  Y: add Amiibo to game");
     	return (this->gamesMenu);
     }
 
     pu::element::Menu *MainLayout::GetAmiiboMenu()
     {
     	return (this->amiiboMenu);
+    }
+
+    void MainLayout::addGame_Click()
+    {
+        std::string name = utils::UserInput("Game Name", "");
+        if(name != ""){
+            amiibo::AmiiboGame *game = new amiibo::AmiiboGame(name);
+            this->gamesMenu->AddItem(CreateItem(game));
+            set::Settings *s = mainapp->GetSettings();
+            s->AddGame(game);
+            mainapp->UpdateSettings();
+            pu::overlay::Toast *toast = new pu::overlay::Toast("Add new Game", 20, {255,255,255,255}, {0,0,0,200});
+            mainapp->StartOverlayWithTimeout(toast, 1500);
+        }
+    }
+    
+    void MainLayout::addAmiibos_Click(amiibo::AmiiboGame *game)
+    {
+        pu::overlay::Toast *toast = new pu::overlay::Toast("Add amiibos to " + game->GetName(), 20, {255,255,255,255}, {0,0,0,200});
+        mainapp->StartOverlayWithTimeout(toast, 1500);
     }
 }

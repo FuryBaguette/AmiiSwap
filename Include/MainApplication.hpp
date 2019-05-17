@@ -32,10 +32,16 @@ namespace ui
 			MainLayout *GetMainLayout();
 			SettingsLayout *GetSettingsLayout();
 			ErrorLayout *GetErrorLayout();
+			set::Settings *GetSettings();
+			void SetSettings(set::Settings *s);
 			void SetWaitBack(bool state);
 			void SetFooterText(std::string Text);
+			void SetHelpText(std::string Text);
 			void ShowError(std::string text);
+			void InitSettings();
+			void UpdateSettings();
 	    private:
+			set::Settings *settings;
 	        ui::MainLayout *mainLayout;
 			ui::SettingsLayout *setLayout;
 			ui::ErrorLayout *errorLayout;
@@ -45,6 +51,7 @@ namespace ui
 			pu::element::TextBlock *headerText;
 			pu::element::Rectangle *footer;
 			pu::element::TextBlock *footerText;
+			pu::element::TextBlock *helpText;
 	};
 
 	void SetMainApplication(MainApplication *MainApp);

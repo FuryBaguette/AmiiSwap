@@ -1,17 +1,23 @@
 #include <MainApplication.hpp>
+extern char *fake_heap_end;
 
 namespace ui
 {
 	MainApplication *mainapp;
+	static void *ghaddr;
 
 	void Initialize()
 	{
-		//if (R_FAILED(nfpemuInitialize())) exit(1);
+        srand(time(NULL));
+		if(R_FAILED(svcSetHeapSize(&ghaddr, 0x10000000))) exit(1);
+		fake_heap_end = (char*)ghaddr + 0x10000000;
+        if(R_FAILED(appletInitialize())) exit(1);
 	}
 
 	void Finalize()
 	{
 		nfpemuExit();
+		svcSetHeapSize(&ghaddr, ((u8*)envGetHeapOverrideAddr() + envGetHeapOverrideSize()) - (u8*)ghaddr);
 	}
 
 	MainApplication::MainApplication() : pu::Application()
@@ -20,8 +26,8 @@ namespace ui
             this->ShowError("Emuiibo is not running on this console, please install it before using AmiiSwap");
 		} else {
 			nfpemuInitialize();
-        	utils::EnsureDirectories(); 	
-			utils::InitSettings();
+        	utils::EnsureDirectories();
+			InitSettings();
 			
 			this->header = new pu::element::Rectangle(0, 0, 1280, 80, {0,102,153,255});
 			
@@ -37,6 +43,10 @@ namespace ui
 			
 			this->footerText = new pu::element::TextBlock(10, 690, "-", 20);
 			this->footerText->SetColor({255,255,255,255});
+
+			this->helpText = new pu::element::TextBlock(10, 690, "A: select  X: Add new game  Y: add Amiibo to game", 20);
+			this->helpText->SetColor({255,255,255,255});
+			this->helpText->SetHorizontalAlign(pu::element::HorizontalAlign::Right);
 			
 			this->mainLayout = new MainLayout();
 			this->mainLayout->Add(this->header);
@@ -44,6 +54,7 @@ namespace ui
 			this->mainLayout->Add(this->logo);
 			this->mainLayout->Add(this->headerText);
 			this->mainLayout->Add(this->footerText);
+			this->mainLayout->Add(this->helpText);
 			
 			this->setLayout = new SettingsLayout();
 			this->setLayout->Add(this->header);
@@ -51,6 +62,7 @@ namespace ui
 			this->setLayout->Add(this->logo);
 			this->setLayout->Add(this->headerText);
 			this->setLayout->Add(this->footerText);
+			this->setLayout->Add(this->helpText);
 			
 			this->errorLayout = new ErrorLayout();
 			this->errorLayout->Add(this->header);
@@ -58,6 +70,7 @@ namespace ui
 			this->errorLayout->Add(this->logo);
 			this->errorLayout->Add(this->headerText);
 			this->errorLayout->Add(this->footerText);
+			this->errorLayout->Add(this->helpText);
 			
 			this->mainLayout->SetOnInput([&](u64 Down, u64 Up, u64 Held, bool Touch)
 			{
@@ -71,7 +84,6 @@ namespace ui
 				}
 			});
 			this->LoadLayout(this->mainLayout);
-			GetMainLayout()->populateGamesMenu();
 		}
 	}
 
@@ -85,6 +97,7 @@ namespace ui
 		delete this->headerText;
 		delete this->footer;
 		delete this->footerText;
+		delete this->helpText;
 	}
 
 	void MainApplication::SetWaitBack(bool state)
@@ -99,10 +112,13 @@ namespace ui
 
 	void MainApplication::SetFooterText(std::string Text)
 	{
-		//TODO doesn't work. make it work and add SetHeaderText
 		if(this->footerText != NULL) this->footerText->SetText(Text);
 	}
 
+	void MainApplication::SetHelpText(std::string Text)
+	{
+		if(this->helpText != NULL) this->helpText->SetText(Text);
+	}
 	void MainApplication::ShowError(std::string text)
 	{
 		this->errorLayout->SetText(text);
@@ -123,4 +139,127 @@ namespace ui
     {
         return this->errorLayout;
     }
+	
+	set::Settings *MainApplication::GetSettings()
+    {
+        return this->settings;
+    }
+
+	void MainApplication::SetSettings(set::Settings *s)
+    {
+        this->settings = s;
+    }
+
+	void MainApplication::InitSettings()
+    {
+        std::string settingsPath = "sdmc:/switch/AmiiSwap/settings.txt";
+        char emuiiboFolder[] = "sdmc:/emuiibo";
+        std::vector<std::string> allAmiibos;
+        utils::get_amiibos_directories(emuiiboFolder, &allAmiibos);
+        allAmiibos.erase(std::remove(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/miis"), allAmiibos.end());
+        std::ifstream settingsIfs(settingsPath);
+        if(!settingsIfs.good()){ //no settings.txt found, generate.
+           	std::ofstream settingsOfs(settingsPath);
+			settingsOfs << "[ALL]" << "\r" << "\n";
+            for (auto & elem : allAmiibos) {
+                settingsOfs << elem.substr(sizeof(emuiiboFolder)) << "\r" << "\n";
+            }
+            if(settingsOfs.is_open())
+                settingsOfs.close();
+			set::Settings *s = new set::Settings(settingsPath);
+            this->SetSettings(s);
+        } else { // settings.txt available compare with actually available amiibos and rewrite
+            if(settingsIfs.is_open())
+                settingsIfs.close();
+			set::Settings *s = new set::Settings(settingsPath);
+            this->SetSettings(s);
+            std::vector<amiibo::AmiiboGame*> gamesInConfig = this->settings->GetGames();
+            std::vector<std::string> amiibosInConfig;
+            std::vector<std::string> removedAmiibos;
+            for(auto & game : gamesInConfig) {
+                std::vector<amiibo::AmiiboFile*> files = game->GetBinFiles();
+                for (auto & element : files) {
+					if(find(amiibosInConfig.begin(), amiibosInConfig.end(), std::string(element->GetName())) == amiibosInConfig.end())
+                    	amiibosInConfig.push_back(element->GetName());
+                } 
+            }
+            
+            for(auto & element : amiibosInConfig){
+                if(find(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/" + element) != allAmiibos.end()){
+                    allAmiibos.erase(std::remove(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/" + element), allAmiibos.end());
+                } else {
+                    removedAmiibos.push_back(element);
+                }
+            }
+            
+            std::ofstream settingsOfs(settingsPath,std::ofstream::trunc);
+            bool allwritten = false;
+            for(auto & game : gamesInConfig) {
+				std::vector<amiibo::AmiiboFile*> files = game->GetBinFiles();
+				settingsOfs << "[" << game->GetName() <<"]" << "\r" << "\n";
+				for (auto & element : files) {
+					if(find(removedAmiibos.begin(), removedAmiibos.end(), element->GetName()) == removedAmiibos.end()) // missing amiibos are already ignored when creating menu but let's keep settings clean
+						settingsOfs << element->GetName() << "\r" << "\n";
+				}
+				
+				if (game->GetName() == "ALL"){
+					allwritten = true;
+					for(auto & element : allAmiibos){
+						settingsOfs << element.substr(sizeof(emuiiboFolder)) << "\r" << "\n";
+					}
+				}
+            }
+           
+		   if(settingsOfs.is_open())
+                settingsOfs.close();
+        }
+    }
+
+	void MainApplication::UpdateSettings()
+	{
+        std::string settingsPath = "sdmc:/switch/AmiiSwap/settings.txt";
+        char emuiiboFolder[] = "sdmc:/emuiibo";
+        std::vector<std::string> allAmiibos;
+        utils::get_amiibos_directories(emuiiboFolder, &allAmiibos);
+        allAmiibos.erase(std::remove(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/miis"), allAmiibos.end());
+		std::vector<amiibo::AmiiboGame*> gamesInConfig = this->settings->GetGames();
+		std::vector<std::string> amiibosInConfig;
+		std::vector<std::string> removedAmiibos;
+		for(auto & game : gamesInConfig) {
+			std::vector<amiibo::AmiiboFile*> files = game->GetBinFiles();
+			for (auto & element : files) {
+				if(find(amiibosInConfig.begin(), amiibosInConfig.end(), std::string(element->GetName())) == amiibosInConfig.end())
+					amiibosInConfig.push_back(element->GetName());
+			} 
+		}
+		
+		for(auto & element : amiibosInConfig){
+			if(find(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/" + element) != allAmiibos.end()){
+				allAmiibos.erase(std::remove(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/" + element), allAmiibos.end());
+			} else {
+				removedAmiibos.push_back(element);
+			}
+		}
+		
+		std::ofstream settingsOfs(settingsPath,std::ofstream::trunc);
+		bool allwritten = false;
+		for(auto & game : gamesInConfig) {
+			std::vector<amiibo::AmiiboFile*> files = game->GetBinFiles();
+			settingsOfs << "[" << game->GetName() <<"]" << "\r" << "\n";
+			for (auto & element : files) {
+				if(find(removedAmiibos.begin(), removedAmiibos.end(), element->GetName()) == removedAmiibos.end()) // missing amiibos are already ignored when creating menu but let's keep settings clean
+					settingsOfs << element->GetName() << "\r" << "\n";
+			}
+			
+			if (game->GetName() == "ALL"){
+				allwritten = true;
+				for(auto & element : allAmiibos){
+					settingsOfs << element.substr(sizeof(emuiiboFolder)) << "\r" << "\n";
+				}
+			}
+		}
+		
+		if(settingsOfs.is_open())
+			settingsOfs.close();
+	}
 }

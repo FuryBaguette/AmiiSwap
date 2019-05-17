@@ -66,78 +66,6 @@ namespace utils
         return src && dest;
     }
 
-    void InitSettings()
-    {
-        std::string settingsPath = "sdmc:/switch/AmiiSwap/settings.txt";
-        char emuiiboFolder[] = "sdmc:/emuiibo";
-        std::vector<std::string> allAmiibos;
-        get_amiibos_directories(emuiiboFolder, &allAmiibos);
-        allAmiibos.erase(std::remove(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/miis"), allAmiibos.end());
-        std::ifstream settingsIfs(settingsPath);
-        if(!settingsIfs.good()){ //no settings.txt found, generate.
-           std::ofstream settingsOfs(settingsPath);
-            settingsOfs << "[ALL]" << "\r" << "\n";
-            for (auto & elem : allAmiibos) {
-                settingsOfs << elem.substr(sizeof(emuiiboFolder)) << "\r" << "\n";
-            }
-            if(settingsOfs.is_open())
-                settingsOfs.close();
-        } else { // settings.txt available compare with actually available amiibos and rewrite
-            if(settingsIfs.is_open())
-                settingsIfs.close();
-            set::Settings *settings = new set::Settings(settingsPath);
-            std::vector<amiibo::AmiiboGame*> configuredGames = settings->GetGames();
-            std::vector<std::string> configuredAmiibos;
-            std::vector<std::string> removedAmiibos;
-            for(auto & game : configuredGames) {
-                std::vector<amiibo::AmiiboFile*> files = game->GetBinFiles();
-                for (auto & element : files) {
-                    configuredAmiibos.push_back(element->GetName());
-                } 
-            }
-            
-            for(auto & element : configuredAmiibos){
-                if(find(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/" + element) != allAmiibos.end()){
-                    allAmiibos.erase(std::remove(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/" + element), allAmiibos.end());
-                } else {
-                    removedAmiibos.push_back(element);
-                }
-            }
-            
-            std::ofstream settingsOfs(settingsPath,std::ofstream::trunc);
-            bool allwritten = false;
-            for(auto & game : configuredGames) {
-                bool writegame = true;
-                std::vector<amiibo::AmiiboFile*> files = game->GetBinFiles();
-                for (auto & element : files) {
-                    if(find(removedAmiibos.begin(), removedAmiibos.end(), element->GetName()) == removedAmiibos.end()){ // missing amiibos are already ignored when creating menu but let's keep settings clean
-                        if(writegame){
-                            settingsOfs << "[" << game->GetName() <<"]" << "\r" << "\n";
-                            writegame = false;
-                        }
-                        settingsOfs << element->GetName() << "\r" << "\n";
-                    }
-                }
-                if (game->GetName() == "ALL" && !writegame){
-                    allwritten = true;
-                    for(auto & element : allAmiibos){
-                        settingsOfs << element.substr(sizeof(emuiiboFolder)) << "\r" << "\n";
-                    }
-                }
-            }
-            
-            if(!allwritten && !allAmiibos.empty()){
-                settingsOfs << "[ALL]" << "\r" << "\n";
-                for(auto & element : allAmiibos){
-                    settingsOfs << element.substr(sizeof(emuiiboFolder)) << "\r" << "\n";
-                }
-            }
-            
-            if(settingsOfs.is_open())
-                settingsOfs.close();
-        }
-    }
-
     void get_amiibos_directories(char *path, std::vector<std::string> *r)
     {
         DIR *dir = opendir(path);
@@ -154,7 +82,7 @@ namespace utils
             }
         }
         closedir(dir);
-        return r;
+        //return r;
     }
 
     std::string GetRomFsResource(std::string path)
@@ -172,5 +100,24 @@ namespace utils
         logOfs << Text << "\r" << "\n";
         if(logOfs.is_open())
             logOfs.close();
+    }
+
+    std::string UserInput(std::string Guide, std::string Initial)
+    {
+        std::string out = "";
+        char tmpout[FS_MAX_PATH] = { 0 };
+        SwkbdConfig kbd;
+        Result rc = swkbdCreate(&kbd, 0);
+        if(rc == 0)
+        {
+
+            swkbdConfigMakePresetDefault(&kbd);
+            if(Guide != "") swkbdConfigSetGuideText(&kbd, Guide.c_str());
+            if(Initial != "") swkbdConfigSetInitialText(&kbd, Initial.c_str());
+            rc = swkbdShow(&kbd, tmpout, sizeof(tmpout));
+            if(rc == 0) out = std::string(tmpout);
+        }
+        swkbdClose(&kbd);
+        return out;
     }
 }

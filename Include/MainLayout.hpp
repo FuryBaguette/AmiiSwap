@@ -12,8 +12,11 @@ namespace ui
 			void selectItem_Click(amiibo::AmiiboFile *menuItem);
 			void randomizeUuid_Click(amiibo::AmiiboFile *menuItem);
 			void category_Click(amiibo::AmiiboGame *game);
+			void addGame_Click();
+			void addAmiibos_Click(amiibo::AmiiboGame *game);
 			void GetAmiibos();
 			void populateGamesMenu();
+			pu::element::MenuItem *MainLayout::CreateItem(amiibo::AmiiboGame *game);
 			pu::element::Menu *MainLayout::GetGamesMenu();
 			pu::element::Menu *MainLayout::GetAmiiboMenu();
 	    private:
