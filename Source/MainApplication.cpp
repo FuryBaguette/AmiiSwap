@@ -11,8 +11,7 @@ namespace ui
         srand(time(NULL));
 		if(R_FAILED(svcSetHeapSize(&ghaddr, 0x10000000))) exit(1);
 		fake_heap_end = (char*)ghaddr + 0x10000000;
-        if(R_FAILED(appletInitialize())) exit(1);
-	}
+    }
 
 	void Finalize()
 	{

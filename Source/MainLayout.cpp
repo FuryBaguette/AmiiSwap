@@ -36,6 +36,7 @@ namespace ui
     
     void MainLayout::populateGamesMenu()
     {
+        this->gamesMenu->ClearItems();
         this->GetAmiibos();
         for (auto & element : this->amiiboGames) {
             this->gamesMenu->AddItem(CreateItem(element));
@@ -167,7 +168,9 @@ namespace ui
             set::Settings *s = mainapp->GetSettings();
             s->AddGame(game);
             mainapp->UpdateSettings();
-            pu::overlay::Toast *toast = new pu::overlay::Toast("Add new Game", 20, {255,255,255,255}, {0,0,0,200});
+            populateGamesMenu();
+            mainapp->SetFooterText("Games: " + std::to_string(amiiboGames.size()));
+            pu::overlay::Toast *toast = new pu::overlay::Toast(name + " added", 20, {255,255,255,255}, {0,0,0,200});
             mainapp->StartOverlayWithTimeout(toast, 1500);
         }
     }
