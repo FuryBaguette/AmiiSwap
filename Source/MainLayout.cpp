@@ -28,12 +28,17 @@ namespace ui
         delete this->amiiboMenu;
     }
 
+    std::vector<amiibo::AmiiboGame*> MainLayout::GetAmiiboGames()
+    {
+        return (this->amiiboGames);
+    }
+
     void MainLayout::GetAmiibos()
     {
         set::Settings *settings = new set::Settings("sdmc:/switch/AmiiSwap/settings.txt");
         this->amiiboGames = settings->GetGames();
     }
-    
+
     void MainLayout::populateGamesMenu()
     {
         this->gamesMenu->ClearItems();
@@ -58,6 +63,7 @@ namespace ui
         item->AddOnClick(std::bind(&MainLayout::category_Click, this, element), KEY_A);
         item->AddOnClick(std::bind(&MainLayout::addGame_Click, this), KEY_X);
         item->AddOnClick(std::bind(&MainLayout::addAmiibos_Click, this, element), KEY_Y);
+        item->AddOnClick(std::bind(&MainLayout::removeGame_Click, this), KEY_MINUS);
         return item;
     }
 
@@ -149,8 +155,8 @@ namespace ui
 
     pu::element::Menu *MainLayout::GetGamesMenu()
     {
-        mainapp->SetFooterText("Games: " + std::to_string(amiiboGames.size()));
-        mainapp->SetHelpText("A: select  X: Add new game  Y: add Amiibo to game");
+        mainapp->SetFooterText("Games: " + std::to_string(this->amiiboGames.size()));
+        mainapp->SetHelpText("A: Select  X: Add new game  Y: Manage game's amiibos  Minus: Remove game");
     	return (this->gamesMenu);
     }
 
@@ -164,9 +170,8 @@ namespace ui
         std::string name = utils::UserInput("Game Name", "");
         if(name != ""){
             amiibo::AmiiboGame *game = new amiibo::AmiiboGame(name);
+            this->amiiboGames.push_back(game);
             this->gamesMenu->AddItem(CreateItem(game));
-            set::Settings *s = mainapp->GetSettings();
-            s->AddGame(game);
             mainapp->UpdateSettings();
             populateGamesMenu();
             mainapp->SetFooterText("Games: " + std::to_string(amiiboGames.size()));
@@ -174,10 +179,107 @@ namespace ui
             mainapp->StartOverlayWithTimeout(toast, 1500);
         }
     }
-    
+
+    void MainLayout::removeGame_Click()
+    {
+        std::string gameName = this->gamesMenu->GetSelectedItem()->GetName();
+        int position = 0;
+        for (auto & elem : this->amiiboGames) {
+            if (elem->GetName() == gameName) {
+                this->amiiboGames.erase(this->amiiboGames.begin() + position);
+                mainapp->UpdateSettings();
+                // TO-DO: Crashes here
+                //populateGamesMenu();
+                mainapp->SetFooterText("Games: " + std::to_string(this->amiiboGames.size()));
+                pu::overlay::Toast *toast = new pu::overlay::Toast(gameName + " removed", 20, {255,255,255,255}, {0,0,0,200});
+                mainapp->StartOverlayWithTimeout(toast, 1500);
+                return;
+            }
+            position++;
+        }
+    }
+
+    void MainLayout::GetAllAmiibos()
+    {
+        std::vector<std::string> amiibos = utils::get_directories("sdmc:/emuiibo");
+        for (auto & elem : amiibos) {
+            std::size_t found = elem.find_last_of("/\\");
+			std::string name = elem.substr(found+1);
+            if (name != "miis") {
+                amiibo::AmiiboFile *file = new amiibo::AmiiboFile(name, elem, elem + "amiibo.png");
+                this->allAmiiboFiles.push_back(file);
+            }
+        }
+    }
+
+    void MainLayout::multiSelectItem_Click(amiibo::AmiiboFile *element, amiibo::AmiiboGame *game)
+    {
+        std::string amiiboName = element->GetName();
+        size_t size = amiiboName.find("/");
+        if (size != std::string::npos)
+            amiiboName = amiiboName.substr(size + 1);
+        std::vector<amiibo::AmiiboFile*> gameFiles = game->GetBinFiles();
+        bool isInGame = false;
+        int position = 0;
+        pu::overlay::Toast *toast;
+        for (auto & elem : gameFiles) {
+            if (elem->GetName() == element->GetName()) {
+                isInGame = true;
+                break;
+            }
+            position++;
+        }
+        if (!isInGame) {
+            game->AddAmiiboFile(element);
+            this->amiiboMenu->GetSelectedItem()->SetIcon(utils::GetRomFsResource("Common/ingame.png"));
+            toast = new pu::overlay::Toast("Added: " + amiiboName, 20, {255,255,255,255}, {0,0,0,200});
+        } else {
+            gameFiles.erase(gameFiles.begin() + position);
+            game->SetAmiiboFiles(gameFiles);
+            this->amiiboMenu->GetSelectedItem()->SetIcon(utils::GetRomFsResource("Common/notingame.png"));
+            toast = new pu::overlay::Toast("Removed: " + amiiboName, 20, {255,255,255,255}, {0,0,0,200});
+        }
+        mainapp->UpdateSettings();
+        mainapp->StartOverlayWithTimeout(toast, 700);
+    }
+
     void MainLayout::addAmiibos_Click(amiibo::AmiiboGame *game)
     {
-        pu::overlay::Toast *toast = new pu::overlay::Toast("Add amiibos to " + game->GetName(), 20, {255,255,255,255}, {0,0,0,200});
-        mainapp->StartOverlayWithTimeout(toast, 1500);
+        this->amiiboMenu->ClearItems();
+        this->allAmiiboFiles.clear();
+        this->GetAllAmiibos();
+        this->waitInput = true;
+        if (this->allAmiiboFiles.empty()) {
+            pu::overlay::Toast *toast = new pu::overlay::Toast("You don't have any amiibos", 20, {255,255,255,255}, {0,0,0,200});
+            mainapp->StartOverlayWithTimeout(toast, 1500);
+            return;
+        } else {
+            mainapp->SetFooterText("Amiibos: " + std::to_string(this->allAmiiboFiles.size()));
+            mainapp->SetHelpText("A: Select  B: Finish & Quit");
+        	for (auto & element : this->allAmiiboFiles) {
+                bool inGame = false;
+                std::string amiiboName = element->GetName();
+                size_t size = amiiboName.find("/");
+                if (size != std::string::npos)
+                    amiiboName = amiiboName.substr(size + 1);
+                pu::element::MenuItem *item = new pu::element::MenuItem(amiiboName);
+                std::vector<amiibo::AmiiboGame *> parents = element->GetParents(this->amiiboGames);
+                for (auto & elem : parents) {
+                    if (elem->GetName() == game->GetName()) {
+                        item->SetIcon(utils::GetRomFsResource("Common/ingame.png"));
+                        inGame = true;
+                        break;
+                    }
+                }
+                if (!inGame)
+                    item->SetIcon(utils::GetRomFsResource("Common/notingame.png"));
+                item->AddOnClick(std::bind(&MainLayout::multiSelectItem_Click, this, element, game), KEY_A);
+                this->amiiboMenu->AddItem(item);
+        	}
+        	this->amiiboMenu->SetSelectedIndex(0);
+        	this->SetElementOnFocus(this->amiiboMenu);
+        	this->amiiboMenu->SetVisible(true);
+        	this->gamesMenu->SetVisible(false);
+        }
     }
 }

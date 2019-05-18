@@ -27,26 +27,26 @@ namespace ui
 			nfpemuInitialize();
         	utils::EnsureDirectories();
 			InitSettings();
-			
+
 			this->header = new pu::element::Rectangle(0, 0, 1280, 80, {0,102,153,255});
-			
+
 			this->footer = new pu::element::Rectangle(0, 680, 1280, 40, {0,102,153,255});
-			
+
 			this->logo = new pu::element::Image(10, 10, utils::GetRomFsResource("Common/logo.png"));
 			this->logo->SetHeight(60);
 			this->logo->SetWidth(60);
-			
+
 			this->headerText = new pu::element::TextBlock(640, 15, "AmiiSwap", 40);
 			this->headerText->SetHorizontalAlign(pu::element::HorizontalAlign::Center);
 			this->headerText->SetColor({255,255,255,255});
-			
+
 			this->footerText = new pu::element::TextBlock(10, 690, "-", 20);
 			this->footerText->SetColor({255,255,255,255});
 
-			this->helpText = new pu::element::TextBlock(10, 690, "A: select  X: Add new game  Y: add Amiibo to game", 20);
+			this->helpText = new pu::element::TextBlock(10, 690, "A: Select  X: Add new game  Y: Manage game's amiibos  Minus: Remove game", 20);
 			this->helpText->SetColor({255,255,255,255});
 			this->helpText->SetHorizontalAlign(pu::element::HorizontalAlign::Right);
-			
+
 			this->mainLayout = new MainLayout();
 			this->mainLayout->Add(this->header);
 			this->mainLayout->Add(this->footer);
@@ -54,7 +54,7 @@ namespace ui
 			this->mainLayout->Add(this->headerText);
 			this->mainLayout->Add(this->footerText);
 			this->mainLayout->Add(this->helpText);
-			
+
 			this->setLayout = new SettingsLayout();
 			this->setLayout->Add(this->header);
 			this->setLayout->Add(this->footer);
@@ -62,7 +62,7 @@ namespace ui
 			this->setLayout->Add(this->headerText);
 			this->setLayout->Add(this->footerText);
 			this->setLayout->Add(this->helpText);
-			
+
 			this->errorLayout = new ErrorLayout();
 			this->errorLayout->Add(this->header);
 			this->errorLayout->Add(this->footer);
@@ -70,7 +70,7 @@ namespace ui
 			this->errorLayout->Add(this->headerText);
 			this->errorLayout->Add(this->footerText);
 			this->errorLayout->Add(this->helpText);
-			
+
 			this->mainLayout->SetOnInput([&](u64 Down, u64 Up, u64 Held, bool Touch)
 			{
 				if(Down & KEY_PLUS) this->Close();
@@ -78,9 +78,9 @@ namespace ui
 					this->mainLayout->GetGamesMenu()->SetVisible(true);
 					this->mainLayout->SetElementOnFocus(this->mainLayout->GetGamesMenu());
 					this->mainLayout->GetAmiiboMenu()->SetVisible(false);
-				} else if (Down & KEY_MINUS) {
+				} /*else if (Down & KEY_MINUS) {
 					this->LoadLayout(this->setLayout);
-				}
+				}*/
 			});
 			this->LoadLayout(this->mainLayout);
 		}
@@ -138,7 +138,7 @@ namespace ui
     {
         return this->errorLayout;
     }
-	
+
 	set::Settings *MainApplication::GetSettings()
     {
         return this->settings;
@@ -180,9 +180,9 @@ namespace ui
                 for (auto & element : files) {
 					if(find(amiibosInConfig.begin(), amiibosInConfig.end(), std::string(element->GetName())) == amiibosInConfig.end())
                     	amiibosInConfig.push_back(element->GetName());
-                } 
+                }
             }
-            
+
             for(auto & element : amiibosInConfig){
                 if(find(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/" + element) != allAmiibos.end()){
                     allAmiibos.erase(std::remove(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/" + element), allAmiibos.end());
@@ -190,7 +190,7 @@ namespace ui
                     removedAmiibos.push_back(element);
                 }
             }
-            
+
             std::ofstream settingsOfs(settingsPath,std::ofstream::trunc);
             bool allwritten = false;
             for(auto & game : gamesInConfig) {
@@ -200,7 +200,7 @@ namespace ui
 					if(find(removedAmiibos.begin(), removedAmiibos.end(), element->GetName()) == removedAmiibos.end()) // missing amiibos are already ignored when creating menu but let's keep settings clean
 						settingsOfs << element->GetName() << "\r" << "\n";
 				}
-				
+
 				if (game->GetName() == "ALL"){
 					allwritten = true;
 					for(auto & element : allAmiibos){
@@ -208,7 +208,7 @@ namespace ui
 					}
 				}
             }
-           
+
 		   if(settingsOfs.is_open())
                 settingsOfs.close();
         }
@@ -221,7 +221,7 @@ namespace ui
         std::vector<std::string> allAmiibos;
         utils::get_amiibos_directories(emuiiboFolder, &allAmiibos);
         allAmiibos.erase(std::remove(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/miis"), allAmiibos.end());
-		std::vector<amiibo::AmiiboGame*> gamesInConfig = this->settings->GetGames();
+		std::vector<amiibo::AmiiboGame*> gamesInConfig = this->mainLayout->GetAmiiboGames();
 		std::vector<std::string> amiibosInConfig;
 		std::vector<std::string> removedAmiibos;
 		for(auto & game : gamesInConfig) {
@@ -229,9 +229,9 @@ namespace ui
 			for (auto & element : files) {
 				if(find(amiibosInConfig.begin(), amiibosInConfig.end(), std::string(element->GetName())) == amiibosInConfig.end())
 					amiibosInConfig.push_back(element->GetName());
-			} 
+			}
 		}
-		
+
 		for(auto & element : amiibosInConfig){
 			if(find(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/" + element) != allAmiibos.end()){
 				allAmiibos.erase(std::remove(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/" + element), allAmiibos.end());
@@ -239,7 +239,7 @@ namespace ui
 				removedAmiibos.push_back(element);
 			}
 		}
-		
+
 		std::ofstream settingsOfs(settingsPath,std::ofstream::trunc);
 		bool allwritten = false;
 		for(auto & game : gamesInConfig) {
@@ -249,7 +249,7 @@ namespace ui
 				if(find(removedAmiibos.begin(), removedAmiibos.end(), element->GetName()) == removedAmiibos.end()) // missing amiibos are already ignored when creating menu but let's keep settings clean
 					settingsOfs << element->GetName() << "\r" << "\n";
 			}
-			
+
 			if (game->GetName() == "ALL"){
 				allwritten = true;
 				for(auto & element : allAmiibos){
@@ -257,7 +257,7 @@ namespace ui
 				}
 			}
 		}
-		
+
 		if(settingsOfs.is_open())
 			settingsOfs.close();
 	}

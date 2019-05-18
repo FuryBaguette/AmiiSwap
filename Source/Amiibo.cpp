@@ -75,6 +75,7 @@ namespace amiibo
 
 	void AmiiboGame::SetAmiiboFiles(std::vector<AmiiboFile*> files)
 	{
-		this->amiiboFiles.insert(this->amiiboFiles.end(), files.begin(), files.end());
+		this->amiiboFiles.clear();
+		this->amiiboFiles.insert(this->amiiboFiles.begin(), files.begin(), files.end());
 	}
 }
