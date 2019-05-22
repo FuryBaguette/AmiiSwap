@@ -187,21 +187,22 @@ namespace ui
         for (auto & elem : this->amiiboGames) {
             if (elem->GetName() == gameName) {
                 this->amiiboGames.erase(this->amiiboGames.begin() + position);
-                mainapp->UpdateSettings();
-                // TO-DO: Crashes here
-                //populateGamesMenu();
                 mainapp->SetFooterText("Games: " + std::to_string(this->amiiboGames.size()));
                 pu::overlay::Toast *toast = new pu::overlay::Toast(gameName + " removed", 20, {255,255,255,255}, {0,0,0,200});
                 mainapp->StartOverlayWithTimeout(toast, 1500);
-                return;
+                break;
             }
             position++;
         }
+        mainapp->UpdateSettings();
+        populateGamesMenu();
     }
 
     void MainLayout::GetAllAmiibos()
     {
-        std::vector<std::string> amiibos = utils::get_directories("sdmc:/emuiibo");
+        std::vector<std::string> amiibos;
+        char emuiiboFolder[] = "sdmc:/emuiibo";
+        utils::get_amiibos_directories(emuiiboFolder, &amiibos);
         for (auto & elem : amiibos) {
             std::size_t found = elem.find_last_of("/\\");
 			std::string name = elem.substr(found+1);
@@ -239,6 +240,8 @@ namespace ui
             this->amiiboMenu->GetSelectedItem()->SetIcon(utils::GetRomFsResource("Common/notingame.png"));
             toast = new pu::overlay::Toast("Removed: " + amiiboName, 20, {255,255,255,255}, {0,0,0,200});
         }
+        this->amiiboGames.erase(std::remove(this->amiiboGames.begin(), this->amiiboGames.end(), game), this->amiiboGames.end());
+        this->amiiboGames.push_back(game);
         mainapp->UpdateSettings();
         mainapp->StartOverlayWithTimeout(toast, 700);
     }
