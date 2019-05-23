@@ -77,8 +77,8 @@ namespace ui
             mainapp->StartOverlayWithTimeout(toast, 1500);
         } else {
         	for (auto & element : amiiboFiles) {
-                mainapp->SetFooterText("Amiibos: " + std::to_string(amiiboFiles.size()));
-                mainapp->SetHelpText("A: select  X: Toggle RandomUUID");
+                mainapp->SetFooterText("Amiibos in " + game->GetName() +": " + std::to_string(amiiboFiles.size()));
+                mainapp->SetHelpText("A: Select  X: Toggle RandomUUID");
                 std::string amiiboName = element->GetName();
                 size_t size = amiiboName.find("/");
                 if (size != std::string::npos)
@@ -183,6 +183,11 @@ namespace ui
     void MainLayout::removeGame_Click()
     {
         std::string gameName = this->gamesMenu->GetSelectedItem()->GetName();
+        if(gameName == "ALL"){
+            pu::overlay::Toast *toast = new pu::overlay::Toast("ALL deletion is not allowed", 20, {255,255,255,255}, {0,0,0,200});
+            mainapp->StartOverlayWithTimeout(toast, 1500);
+            return;
+        }
         int position = 0;
         for (auto & elem : this->amiiboGames) {
             if (elem->GetName() == gameName) {
@@ -205,7 +210,8 @@ namespace ui
         utils::get_amiibos_directories(emuiiboFolder, &amiibos);
         for (auto & elem : amiibos) {
             std::size_t found = elem.find_last_of("/\\");
-			std::string name = elem.substr(found+1);
+			//std::string name = elem.substr(found+1);
+            std::string name = elem.substr(sizeof(emuiiboFolder));
             if (name != "miis") {
                 amiibo::AmiiboFile *file = new amiibo::AmiiboFile(name, elem, elem + "amiibo.png");
                 this->allAmiiboFiles.push_back(file);
@@ -252,12 +258,17 @@ namespace ui
         this->allAmiiboFiles.clear();
         this->GetAllAmiibos();
         this->waitInput = true;
+        if(game->GetName() == "ALL"){
+            pu::overlay::Toast *toast = new pu::overlay::Toast("ALL is autamatically populated.", 20, {255,255,255,255}, {0,0,0,200});
+            mainapp->StartOverlayWithTimeout(toast, 1500);
+            return;
+        }
         if (this->allAmiiboFiles.empty()) {
             pu::overlay::Toast *toast = new pu::overlay::Toast("You don't have any amiibos", 20, {255,255,255,255}, {0,0,0,200});
             mainapp->StartOverlayWithTimeout(toast, 1500);
             return;
         } else {
-            mainapp->SetFooterText("Amiibos: " + std::to_string(this->allAmiiboFiles.size()));
+            mainapp->SetFooterText("Selecting amiibos for " + game->GetName());
             mainapp->SetHelpText("A: Select  B: Finish & Quit");
         	for (auto & element : this->allAmiiboFiles) {
                 bool inGame = false;
