@@ -175,14 +175,18 @@ namespace ui
             std::vector<amiibo::AmiiboGame*> gamesInConfig = this->settings->GetGames();
             std::vector<std::string> amiibosInConfig;
             std::vector<std::string> removedAmiibos;
+			bool all=false;
             for(auto & game : gamesInConfig) {
+				if (game->GetName()=="ALL")
+					all=true;
                 std::vector<amiibo::AmiiboFile*> files = game->GetBinFiles();
                 for (auto & element : files) {
 					if(find(amiibosInConfig.begin(), amiibosInConfig.end(), std::string(element->GetName())) == amiibosInConfig.end())
                     	amiibosInConfig.push_back(element->GetName());
                 }
             }
-
+			std::sort(amiibosInConfig.begin(), amiibosInConfig.end(), &utils::NoPathSort);
+			
             for(auto & element : amiibosInConfig){
                 if(find(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/" + element) != allAmiibos.end()){
                     allAmiibos.erase(std::remove(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/" + element), allAmiibos.end());
@@ -192,7 +196,14 @@ namespace ui
             }
 
             std::ofstream settingsOfs(settingsPath,std::ofstream::trunc);
-            bool allwritten = false;
+			
+			if(!all) {
+				settingsOfs << "[ALL]" << "\r" << "\n";
+				for(auto & element : allAmiibos){
+						settingsOfs << element.substr(sizeof(emuiiboFolder)) << "\r" << "\n";
+				}
+			}
+
             for(auto & game : gamesInConfig) {
 				std::vector<amiibo::AmiiboFile*> files = game->GetBinFiles();
 				settingsOfs << "[" << game->GetName() <<"]" << "\r" << "\n";
@@ -202,7 +213,6 @@ namespace ui
 				}
 
 				if (game->GetName() == "ALL"){
-					allwritten = true;
 					for(auto & element : allAmiibos){
 						settingsOfs << element.substr(sizeof(emuiiboFolder)) << "\r" << "\n";
 					}
@@ -241,7 +251,6 @@ namespace ui
 		}
 
 		std::ofstream settingsOfs(settingsPath,std::ofstream::trunc);
-		bool allwritten = false;
 		for(auto & game : gamesInConfig) {
 			std::vector<amiibo::AmiiboFile*> files = game->GetBinFiles();
 			settingsOfs << "[" << game->GetName() <<"]" << "\r" << "\n";
@@ -251,7 +260,6 @@ namespace ui
 			}
 
 			if (game->GetName() == "ALL"){
-				allwritten = true;
 				for(auto & element : allAmiibos){
 					settingsOfs << element.substr(sizeof(emuiiboFolder)) << "\r" << "\n";
 				}
