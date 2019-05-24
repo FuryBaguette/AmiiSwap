@@ -138,6 +138,8 @@ namespace utils
     {
         std::string astring = a->GetName();
         std::string bstring = b->GetName();
+        if(astring == "ALL") return true;
+        if(bstring == "ALL") return false;
         transform(astring.begin(), astring.end(), astring.begin(), ::tolower);
         transform(bstring.begin(), bstring.end(), bstring.begin(), ::tolower);
         return astring < bstring;
