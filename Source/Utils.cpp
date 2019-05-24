@@ -153,4 +153,12 @@ namespace utils
         transform(bstring.begin(), bstring.end(), bstring.begin(), ::tolower);
         return astring < bstring;
     }
+
+    const std::string forbiddenChars = "\\/\"\n\r\t[]";
+    char ClearForbidden(char toCheck)
+    {
+        if(forbiddenChars.find(toCheck) != std::string::npos)
+            return ' ';
+        return toCheck;
+    }
 }
