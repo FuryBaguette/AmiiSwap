@@ -65,6 +65,7 @@ namespace amiibo
 
 	std::vector<AmiiboFile*> AmiiboGame::GetBinFiles()
 	{
+		sort(this->amiiboFiles.begin(), this->amiiboFiles.end(), utils::AmiibosSort);
 		return (this->amiiboFiles);
 	}
 

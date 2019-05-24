@@ -229,6 +229,7 @@ namespace ui
         std::vector<std::string> amiibos;
         char emuiiboFolder[] = "sdmc:/emuiibo";
         utils::get_amiibos_directories(emuiiboFolder, &amiibos);
+        std::sort(amiibos.begin(), amiibos.end(), &utils::NoPathSort);
         for (auto & elem : amiibos) {
             std::size_t found = elem.find_last_of("/\\");
 			//std::string name = elem.substr(found+1);

@@ -31,6 +31,7 @@ namespace set
 
 	std::vector<amiibo::AmiiboGame*> Settings::GetGames()
 	{
+		sort(this->games.begin(), this->games.end(), utils::GamesSort);
 		return (this->games);
 	}
 

@@ -17,6 +17,9 @@ namespace utils
     std::string GetRomFsResource(std::string path);
     void Log(std::string Text);
     std::string UserInput(std::string Guide, std::string Initial);
+    bool NoPathSort(const std::string& a, const std::string& b);
+    bool GamesSort(const amiibo::AmiiboGame* a, const amiibo::AmiiboGame* b);
+    bool AmiibosSort(const amiibo::AmiiboFile* a, const amiibo::AmiiboFile* b);
     inline bool folderExists(const std::string& dirName) {
         DIR *dir = opendir(dirName.c_str());
         if (dir) {

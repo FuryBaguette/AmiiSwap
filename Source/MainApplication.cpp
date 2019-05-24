@@ -156,6 +156,7 @@ namespace ui
         std::vector<std::string> allAmiibos;
         utils::get_amiibos_directories(emuiiboFolder, &allAmiibos);
         allAmiibos.erase(std::remove(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/miis"), allAmiibos.end());
+		std::sort(allAmiibos.begin(), allAmiibos.end(), &utils::NoPathSort);
         std::ifstream settingsIfs(settingsPath);
         if(!settingsIfs.good()){ //no settings.txt found, generate.
            	std::ofstream settingsOfs(settingsPath);
@@ -231,6 +232,7 @@ namespace ui
         std::vector<std::string> allAmiibos;
         utils::get_amiibos_directories(emuiiboFolder, &allAmiibos);
         allAmiibos.erase(std::remove(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/miis"), allAmiibos.end());
+		std::sort(allAmiibos.begin(), allAmiibos.end(), &utils::NoPathSort);
 		std::vector<amiibo::AmiiboGame*> gamesInConfig = this->mainLayout->GetAmiiboGames();
 		std::vector<std::string> amiibosInConfig;
 		std::vector<std::string> removedAmiibos;
@@ -241,6 +243,7 @@ namespace ui
 					amiibosInConfig.push_back(element->GetName());
 			}
 		}
+		std::sort(amiibosInConfig.begin(), amiibosInConfig.end(), &utils::NoPathSort);
 
 		for(auto & element : amiibosInConfig){
 			if(find(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/" + element) != allAmiibos.end()){
