@@ -221,6 +221,7 @@ namespace ui
         }
         mainapp->UpdateSettings();
         populateGamesMenu();
+        this->gamesMenu->SetSelectedIndex(0);
     }
 
     void MainLayout::GetAllAmiibos()
