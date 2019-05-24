@@ -125,23 +125,20 @@ namespace utils
     {
         std::string astring = a;
         std::string bstring = b;
-        //Log(astring + " - " + bstring);
         size_t found = astring.find_last_of("/\\");;
         astring = astring.substr(found + 1);
-        
         found = bstring.find_last_of("/\\");
         bstring = bstring.substr(found + 1);
-        //Log(astring + " - " + bstring);
-        return astring < bstring;
+        return lowercase(astring) < lowercase(bstring);
     }
 
     bool GamesSort(const amiibo::AmiiboGame* a, const amiibo::AmiiboGame* b)
     {
-        return a->GetName() < b->GetName();
+        return lowercase(a->GetName()) < lowercase(b->GetName());
     }
 
     bool AmiibosSort(const amiibo::AmiiboFile* a, const amiibo::AmiiboFile* b)
     {
-        return a->GetName() < b->GetName();
+        return lowercase(a->GetName()) < lowercase(b->GetName());
     }
 }
