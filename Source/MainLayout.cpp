@@ -168,6 +168,26 @@ namespace ui
     void MainLayout::addGame_Click()
     {
         std::string name = utils::UserInput("Game Name", "");
+        
+        size_t size = name.find("/");
+        if (size != std::string::npos) {
+            pu::overlay::Toast *toast = new pu::overlay::Toast("/ in game name is not allowed", 20, {255,255,255,255}, {0,0,0,200});
+            mainapp->StartOverlayWithTimeout(toast, 1500);
+            return;
+        }
+
+        if(find_if(name.begin(), name.end(), isalnum) == name.end()){
+            pu::overlay::Toast *toast = new pu::overlay::Toast("Please use only alphanumeric characters", 20, {255,255,255,255}, {0,0,0,200});
+            mainapp->StartOverlayWithTimeout(toast, 1500);
+            return;
+        }
+
+        if(name == "ALL"){
+            pu::overlay::Toast *toast = new pu::overlay::Toast("ALL name is reserved", 20, {255,255,255,255}, {0,0,0,200});
+            mainapp->StartOverlayWithTimeout(toast, 1500);
+            return;
+        }
+
         if(name != ""){
             amiibo::AmiiboGame *game = new amiibo::AmiiboGame(name);
             this->amiiboGames.push_back(game);
