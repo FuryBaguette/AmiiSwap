@@ -33,7 +33,7 @@ include $(DEVKITPRO)/libnx/switch_rules
 
 APP_TITLE := AmiiSwap
 APP_AUTHOR := FuryBaguette
-APP_VERSION := 0.2
+APP_VERSION := 0.3
 
 # ICON := Icon.jpg
 TARGET		:=	AmiiSwap
