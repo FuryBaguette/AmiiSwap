@@ -32,8 +32,8 @@ include $(DEVKITPRO)/libnx/switch_rules
 #---------------------------------------------------------------------------------
 
 APP_TITLE := AmiiSwap
-APP_AUTHOR := FuryBaguette
-APP_VERSION := 0.3
+APP_AUTHOR := FuryBaguette, AD2076
+APP_VERSION := 0.5
 
 # ICON := Icon.jpg
 TARGET		:=	AmiiSwap
@@ -52,7 +52,7 @@ ARCH	:=	-march=armv8-a -mtune=cortex-a57 -mtp=soft -fPIE
 CFLAGS	:=	-g -O2 -fpermissive -ffunction-sections -w \
 			$(ARCH) $(DEFINES)
 
-CFLAGS	+=	$(INCLUDE) -D__SWITCH__
+CFLAGS	+=	$(INCLUDE) -D__SWITCH__ -DAMIISWAP_VERSION=\"$(APP_VERSION)\"
 
 CXXFLAGS	:= $(CFLAGS) -fexceptions -std=gnu++17
 

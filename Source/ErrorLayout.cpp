@@ -6,8 +6,9 @@ namespace ui
 
     ErrorLayout::ErrorLayout() : pu::Layout()
     {
-        this->warningText = new pu::element::TextBlock(0, 80, "", 30);
-        this->warningText->SetColor({255,0,0,255});
+        this->warningText = new pu::element::TextBlock(40, 100, "", 30);
+        this->warningText->SetColor({204,0,0,255});
+        this->warningText->SetHorizontalAlign(pu::element::HorizontalAlign::Center);
         this->Add(this->warningText);
     }
 

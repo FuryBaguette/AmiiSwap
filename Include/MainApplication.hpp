@@ -12,8 +12,11 @@
 #include "Utils.hpp"
 #include "Settings.hpp"
 #include "MainLayout.hpp"
+#include "ManageLayout.hpp"
 #include "SettingsLayout.hpp"
 #include "ErrorLayout.hpp"
+#include "AboutLayout.hpp"
+#include "EmuiiboLayout.hpp"
 
 namespace ui
 {
@@ -30,28 +33,41 @@ namespace ui
 	        MainApplication();
 			~MainApplication();
 			MainLayout *GetMainLayout();
+			ManageLayout *GetManageLayout();
 			SettingsLayout *GetSettingsLayout();
 			ErrorLayout *GetErrorLayout();
+			AboutLayout *GetAboutLayout();
+			EmuiiboLayout *GetEmuiiboLayout();
 			set::Settings *GetSettings();
 			void SetSettings(set::Settings *s);
 			void SetWaitBack(bool state);
+			bool GetWaitBack();
 			void SetFooterText(std::string Text);
 			void SetHelpText(std::string Text);
 			void ShowError(std::string text);
 			void InitSettings();
 			void UpdateSettings();
+			void OnInput(u64 Down, u64 Up, u64 Held);
+			std::string MainApplication::GetEmuiiboStatus();
+			void MainApplication::UpdateEmuiiboStatus();
+			void MainApplication::ShowSelectedAmiibo();
 	    private:
 			set::Settings *settings;
 	        ui::MainLayout *mainLayout;
+	        ui::ManageLayout *manageLayout;
 			ui::SettingsLayout *setLayout;
 			ui::ErrorLayout *errorLayout;
+			ui::AboutLayout *aboutLayout;
+			ui::EmuiiboLayout *emuiiboLayout;
 			bool waitBack = false;
 			pu::element::Image *logo;
 			pu::element::Rectangle *header;
 			pu::element::TextBlock *headerText;
+			pu::element::TextBlock *emuiiboText;
 			pu::element::Rectangle *footer;
 			pu::element::TextBlock *footerText;
 			pu::element::TextBlock *helpText;
+			//NfpEmuToggleStatus *nfpStatus;
 	};
 
 	void SetMainApplication(MainApplication *MainApp);

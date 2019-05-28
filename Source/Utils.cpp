@@ -161,4 +161,16 @@ namespace utils
             return ' ';
         return toCheck;
     }
+
+    std::string bufferToString(char* buffer, int bufflen)
+    {
+        std::string ret(buffer, bufflen);
+        return ret;
+    }
+
+    char* bufferToCString(char *buff, int buffSize, char *str)
+    {
+        memset(str, '\0', buffSize + 1);
+        return(strncpy(str, buff, buffSize));
+    }
 }

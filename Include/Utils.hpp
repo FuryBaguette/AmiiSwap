@@ -21,6 +21,8 @@ namespace utils
     bool GamesSort(const amiibo::AmiiboGame* a, const amiibo::AmiiboGame* b);
     bool AmiibosSort(const amiibo::AmiiboFile* a, const amiibo::AmiiboFile* b);
     char ClearForbidden(char toCheck);
+    std::string bufferToString(char* buffer, int bufflen);
+    char* bufferToCString(char *buff, int buffSize, char *str);
     inline bool folderExists(const std::string& dirName) {
         DIR *dir = opendir(dirName.c_str());
         if (dir) {
