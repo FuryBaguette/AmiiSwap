@@ -33,6 +33,11 @@ namespace ui
         item->AddOnClick(std::bind(&MainLayout::emuiibo_Click, this), KEY_A);
         this->mainMenu->AddItem(item);
 
+        item = new pu::element::MenuItem("Active amiibo");
+        item->SetIcon(utils::GetRomFsResource("Common/active.png"));
+        item->AddOnClick(std::bind(&MainLayout::showSelected_Click, this), KEY_A);
+        this->mainMenu->AddItem(item);
+
         item = new pu::element::MenuItem("Settings");
         item->SetIcon(utils::GetRomFsResource("Common/gears.png"));
         item->AddOnClick(std::bind(&MainLayout::settings_Click, this), KEY_A);
@@ -79,6 +84,22 @@ namespace ui
         mainapp->SetFooterText("Join us on Discord (https://discord.gg/ap6yfR2)");
         mainapp->SetHelpText("B: Back ");
     }
+
+	void MainLayout::showSelected_Click()
+	{
+        char key[] = { 0 };
+		char amiibo[FS_MAX_PATH] = { 0 };
+		Result rs = nfpemuGetAmiibo(amiibo);
+        if(rs == 0 && strcmp (key,amiibo) != 0) {
+            std::string path = utils::trim_right_copy(std::string(amiibo));
+            std::string amiiboName = utils::getLastFromPath(path);
+            bool random = utils::isRandomUuid(path+"/amiibo.json");
+			mainapp->CreateShowDialog("Active amiibo: " + amiiboName, "Located in: " + path + "\nRandom UUID: " + ((random) ? "enabled":"disabled"), { "Close" }, true, path + "/amiibo.png");
+		} else {
+			pu::overlay::Toast *toast = new pu::overlay::Toast("No active amiibo.", 20, {255,255,255,255}, {0,0,0,200});
+			mainapp->StartOverlayWithTimeout(toast, 1500);
+		}
+	}
 
     pu::element::Menu *MainLayout::GetMainMenu()
     {

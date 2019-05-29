@@ -13,6 +13,7 @@ namespace ui
 			void emuiibo_Click();
 			void settings_Click();
 			void about_Click();
+			void showSelected_Click();
 			void populateMainMenu();
 			pu::element::Menu *MainLayout::GetMainMenu();
 	    private:

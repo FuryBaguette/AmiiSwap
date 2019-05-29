@@ -29,12 +29,16 @@ namespace ui
 		this->logo->SetHeight(60);
 		this->logo->SetWidth(60);
 
-		this->headerText = new pu::element::TextBlock(80, 15, "AmiiSwap " + std::string(AMIISWAP_VERSION), 40);
+		this->headerText = new pu::element::TextBlock(80, 20, "AmiiSwap " + std::string(AMIISWAP_VERSION), 40);
 		this->headerText->SetColor({255,255,255,255});
 
-		this->emuiiboText = new pu::element::TextBlock(80, 55, "-", 20);
+		this->emuiiboText = new pu::element::TextBlock(80, 30, "", 20);
 		this->emuiiboText->SetColor({255,255,255,255});
 		this->emuiiboText->SetHorizontalAlign(pu::element::HorizontalAlign::Right);
+
+		this->amiiboText = new pu::element::TextBlock(80, 55, "", 20);
+		this->amiiboText->SetColor({255,255,255,255});
+		this->amiiboText->SetHorizontalAlign(pu::element::HorizontalAlign::Right);
 
 		this->footerText = new pu::element::TextBlock(10, 690, "", 20);
 		this->footerText->SetColor({255,255,255,255});
@@ -67,6 +71,7 @@ namespace ui
 			this->mainLayout->Add(this->logo);
 			this->mainLayout->Add(this->headerText);
 			this->mainLayout->Add(this->emuiiboText);
+			this->mainLayout->Add(this->amiiboText);
 			this->mainLayout->Add(this->footerText);
 			this->mainLayout->Add(this->helpText);
 
@@ -76,6 +81,7 @@ namespace ui
 			this->manageLayout->Add(this->logo);
 			this->manageLayout->Add(this->headerText);
 			this->manageLayout->Add(this->emuiiboText);
+			this->manageLayout->Add(this->amiiboText);
 			this->manageLayout->Add(this->footerText);
 			this->manageLayout->Add(this->helpText);
 
@@ -85,6 +91,7 @@ namespace ui
 			this->emuiiboLayout->Add(this->logo);
 			this->emuiiboLayout->Add(this->headerText);
 			this->emuiiboLayout->Add(this->emuiiboText);
+			this->emuiiboLayout->Add(this->amiiboText);
 			this->emuiiboLayout->Add(this->footerText);
 			this->emuiiboLayout->Add(this->helpText);
 
@@ -94,6 +101,7 @@ namespace ui
 			this->setLayout->Add(this->logo);
 			this->setLayout->Add(this->headerText);
 			this->setLayout->Add(this->emuiiboText);
+			this->setLayout->Add(this->amiiboText);
 			this->setLayout->Add(this->footerText);
 			this->setLayout->Add(this->helpText);
 
@@ -103,12 +111,14 @@ namespace ui
 			this->aboutLayout->Add(this->logo);
 			this->aboutLayout->Add(this->headerText);
 			this->aboutLayout->Add(this->emuiiboText);
+			this->aboutLayout->Add(this->amiiboText);
 			this->aboutLayout->Add(this->footerText);
 			this->aboutLayout->Add(this->helpText);
 
 			this->AddThread(std::bind(&MainApplication::UpdateEmuiiboStatus, this));
 			this->SetOnInput(std::bind(&MainApplication::OnInput, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 			this->LoadLayout(this->mainLayout);
+			this->start = std::chrono::steady_clock::now();
 		}
 	}
 
@@ -123,6 +133,8 @@ namespace ui
 		delete this->logo;
 		delete this->header;
 		delete this->headerText;
+		delete this->amiiboText;
+		delete this->emuiiboText;
 		delete this->footer;
 		delete this->footerText;
 		delete this->helpText;
@@ -347,29 +359,20 @@ namespace ui
 		return status;
 	}
 
-	void MainApplication::ShowSelectedAmiibo()
-	{
-		char* amiibo;
-		Result rs = nfpemuGetAmiibo(amiibo);
-		//utils::Log(std::to_string(rs));
-		if(rs == 0){
-			//utils::Log("rs==0");
-			pu::overlay::Toast *toast = new pu::overlay::Toast("Selected amiibo is: ", 20, {255,255,255,255}, {0,0,0,200});
-			mainapp->StartOverlayWithTimeout(toast, 1500);
-		} else {
-			pu::overlay::Toast *toast = new pu::overlay::Toast("No amiibo selected.", 20, {255,255,255,255}, {0,0,0,200});
-			mainapp->StartOverlayWithTimeout(toast, 1500);
-		}
-	}
-
 	void MainApplication::UpdateEmuiiboStatus()
 	{
-		this->emuiiboText->SetText("emuiibo is " + this->GetEmuiiboStatus() + " ");
+		auto ct = std::chrono::steady_clock::now();
+        auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(ct - this->start).count();
+        if((diff >= 500))
+        {
+			std::string amiibo = utils::trim_right_copy(utils::getActiveAmiibo());
+			this->emuiiboText->SetText("emuiibo status: " + this->GetEmuiiboStatus() + " ");
+			this->amiiboText->SetText("active amiibo: " + amiibo + " ");
+		}
 	}
 
 	void MainApplication::OnInput(u64 Down, u64 Up, u64 Held)
     {
         if(Down & KEY_PLUS) this->Close();
-		//else if(Down & KEY_ZL) this->ShowSelectedAmiibo();
     }
 }

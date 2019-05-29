@@ -173,4 +173,29 @@ namespace utils
         memset(str, '\0', buffSize + 1);
         return(strncpy(str, buff, buffSize));
     }
+
+    std::string getLastFromPath(std::string str)
+    {
+        std::size_t found = str.find_last_of("/\\");
+        return str.substr(found+1);
+    }
+
+    bool isRandomUuid(std::string jsonPath)
+    {
+        std::ifstream ifs(jsonPath);
+        auto amiiboJson = json::parse(ifs);
+        if(ifs.is_open())
+            ifs.close();
+        return amiiboJson.value<bool>("randomizeUuid", false);
+    }
+
+    std::string getActiveAmiibo()
+    {
+        char key[] = { 0 };
+        char amiibo[FS_MAX_PATH] = { 0 };
+		Result rs = nfpemuGetAmiibo(amiibo);
+        if(rs == 0 && strcmp (key,amiibo) != 0)
+            return utils::getLastFromPath(utils::trim_right_copy(std::string(amiibo)));
+        return "none";
+    }
 }

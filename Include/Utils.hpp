@@ -23,6 +23,9 @@ namespace utils
     char ClearForbidden(char toCheck);
     std::string bufferToString(char* buffer, int bufflen);
     char* bufferToCString(char *buff, int buffSize, char *str);
+    std::string getLastFromPath(std::string str);
+    std::string getActiveAmiibo();
+    bool isRandomUuid(std::string jsonPath);
     inline bool folderExists(const std::string& dirName) {
         DIR *dir = opendir(dirName.c_str());
         if (dir) {
@@ -33,7 +36,12 @@ namespace utils
     }
 
     inline bool fileExists(const std::string& name) {
-	  struct stat buffer;
-	  return (stat (name.c_str(), &buffer) == 0);
+	    struct stat buffer;
+	    return (stat (name.c_str(), &buffer) == 0);
 	}
+
+    inline std::string trim_right_copy(const std::string& s, const std::string& delimiters = " \f\n\r\t\v\0" )
+    {
+        return s.substr( 0, s.find_last_not_of( delimiters ) + 1 );
+    }
 }

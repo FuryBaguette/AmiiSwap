@@ -17,6 +17,9 @@
 #include "ErrorLayout.hpp"
 #include "AboutLayout.hpp"
 #include "EmuiiboLayout.hpp"
+#include "json.hpp"
+
+using json = nlohmann::json;
 
 namespace ui
 {
@@ -50,7 +53,6 @@ namespace ui
 			void OnInput(u64 Down, u64 Up, u64 Held);
 			std::string MainApplication::GetEmuiiboStatus();
 			void MainApplication::UpdateEmuiiboStatus();
-			void MainApplication::ShowSelectedAmiibo();
 	    private:
 			set::Settings *settings;
 	        ui::MainLayout *mainLayout;
@@ -64,10 +66,12 @@ namespace ui
 			pu::element::Rectangle *header;
 			pu::element::TextBlock *headerText;
 			pu::element::TextBlock *emuiiboText;
+			pu::element::TextBlock *amiiboText;
 			pu::element::Rectangle *footer;
 			pu::element::TextBlock *footerText;
 			pu::element::TextBlock *helpText;
 			//NfpEmuToggleStatus *nfpStatus;
+			std::chrono::time_point<std::chrono::steady_clock> start;
 	};
 
 	void SetMainApplication(MainApplication *MainApp);

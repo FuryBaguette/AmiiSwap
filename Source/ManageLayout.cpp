@@ -1,7 +1,4 @@
 #include "MainApplication.hpp"
-#include "json.hpp"
-
-using json = nlohmann::json;
 
 namespace ui
 {
@@ -140,8 +137,8 @@ namespace ui
             size_t size = amiiboName.find("/");
             if (size != std::string::npos)
                 amiiboName = amiiboName.substr(size + 1);
-            bool randomStatus = isRandomUuid(jsonPath);
-            int sopt = mainapp->CreateShowDialog("Randomize UUID?", "This will toggle randomize UUID for the " + amiiboName + " Amiibo\nStatus: " + (randomStatus ? "enabled":"disabled"), { "Toggle", "Cancel" }, true, element->GetIconPath());
+            bool randomStatus = utils::isRandomUuid(jsonPath);
+            int sopt = mainapp->CreateShowDialog("Toggle Randomize UUID?", "Randomize UUID for " + amiiboName + " is actually " + (randomStatus ? "enabled":"disabled"), { "Toggle", "Cancel" }, true, element->GetIconPath());
             if(sopt == 0){
                 toggleRandomUuid(jsonPath, !randomStatus);
                 pu::overlay::Toast *toast = new pu::overlay::Toast("Random UUID for " + amiiboName + ((!randomStatus) ? " enabled." : " disabled"), 20, {255,255,255,255}, {0,0,0,200});
@@ -149,15 +146,6 @@ namespace ui
             }
             mainapp->SetWaitBack(false);
     	} else this->waitInput = false;
-    }
-
-    bool ManageLayout::isRandomUuid(std::string jsonPath)
-    {
-        std::ifstream ifs(jsonPath);
-        auto amiiboJson = json::parse(ifs);
-        if(ifs.is_open())
-            ifs.close();
-        return amiiboJson.value<bool>("randomizeUuid", false);
     }
 
     void ManageLayout::toggleRandomUuid(std::string jsonPath, bool toggle)
@@ -268,12 +256,12 @@ namespace ui
         }
         if (!isInGame) {
             game->AddAmiiboFile(element);
-            this->amiiboMenu->GetSelectedItem()->SetIcon(utils::GetRomFsResource("Common/ingame.png"));
+            this->amiiboMenu->GetSelectedItem()->SetIcon(utils::GetRomFsResource("Common/ingame2.png"));
             toast = new pu::overlay::Toast("Added: " + amiiboName, 20, {255,255,255,255}, {0,0,0,200});
         } else {
             gameFiles.erase(gameFiles.begin() + position);
             game->SetAmiiboFiles(gameFiles);
-            this->amiiboMenu->GetSelectedItem()->SetIcon(utils::GetRomFsResource("Common/notingame.png"));
+            this->amiiboMenu->GetSelectedItem()->SetIcon(utils::GetRomFsResource("Common/notingame2.png"));
             toast = new pu::overlay::Toast("Removed: " + amiiboName, 20, {255,255,255,255}, {0,0,0,200});
         }
         this->amiiboGames.erase(std::remove(this->amiiboGames.begin(), this->amiiboGames.end(), game), this->amiiboGames.end());
@@ -310,13 +298,13 @@ namespace ui
                 std::vector<amiibo::AmiiboGame *> parents = element->GetParents(this->amiiboGames);
                 for (auto & elem : parents) {
                     if (elem->GetName() == game->GetName()) {
-                        item->SetIcon(utils::GetRomFsResource("Common/ingame.png"));
+                        item->SetIcon(utils::GetRomFsResource("Common/ingame2.png"));
                         inGame = true;
                         break;
                     }
                 }
                 if (!inGame)
-                    item->SetIcon(utils::GetRomFsResource("Common/notingame.png"));
+                    item->SetIcon(utils::GetRomFsResource("Common/notingame2.png"));
                 item->AddOnClick(std::bind(&ManageLayout::multiSelectItem_Click, this, element, game), KEY_A);
                 item->AddOnClick(std::bind(&ManageLayout::backToGame_Click, this), KEY_B);
                 this->amiiboMenu->AddItem(item);

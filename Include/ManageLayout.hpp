@@ -33,7 +33,7 @@ namespace ui
 			std::vector<amiibo::AmiiboFile*> allAmiiboFiles;
 			bool waitInput;
 			bool isEmuuibo;
-			bool isRandomUuid(std::string jsonPath);
+			//bool isRandomUuid(std::string jsonPath);
 			void toggleRandomUuid(std::string jsonPath, bool toggle);
 	};
 }
