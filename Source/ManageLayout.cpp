@@ -6,15 +6,13 @@ namespace ui
 
     ManageLayout::ManageLayout() : pu::Layout()
     {
-        this->gamesMenu = new pu::element::Menu(0, 80, 1280, {255,255,255,255}, 75, 8);
-        this->amiiboMenu = new pu::element::Menu(0, 80, 1280, {255,255,255,255}, 75, 8);
+        this->gamesMenu = new pu::element::Menu(0, 80, 1280, {255,255,255,255}, 100, 6);
+        this->amiiboMenu = new pu::element::Menu(0, 80, 1280, {255,255,255,255}, 60, 10);
         this->gamesMenu->SetOnFocusColor({102,153,204,255});
         this->amiiboMenu->SetOnFocusColor({102,153,204,255});
         this->gamesMenu->SetScrollbarColor({102,153,204,255});
-        this->gamesMenu->SetDrawShadow(true);
         this->amiiboMenu->SetScrollbarColor({102,153,204,255});
         this->amiiboMenu->SetVisible(false);
-        this->amiiboMenu->SetDrawShadow(true);
         this->Add(this->gamesMenu);
         this->Add(this->amiiboMenu);
         this->SetElementOnFocus(this->gamesMenu);
@@ -86,7 +84,7 @@ namespace ui
     	this->amiiboMenu->ClearItems();
     	this->amiiboFiles = game->GetBinFiles();
         if (amiiboFiles.empty()) {
-            pu::overlay::Toast *toast = new pu::overlay::Toast("List is empty", 20, {255,255,255,255}, {0,0,0,200});
+            pu::overlay::Toast *toast = new pu::overlay::Toast("List is empty", 20, {255,255,255,255}, {0,51,102,255});
             mainapp->StartOverlayWithTimeout(toast, 1500);
         } else {
         	for (auto & element : amiiboFiles) {
@@ -121,7 +119,7 @@ namespace ui
             int sopt = mainapp->CreateShowDialog("Use " + amiiboName + " ?", "This will set the current Amiibo to " + amiiboName, { "Yes", "No" }, true, element->GetIconPath());
     		if (sopt == 0) {
                 nfpemuSetAmiibo(element->GetPath().c_str());
-                pu::overlay::Toast *toast = new pu::overlay::Toast("Active amiibo updated to: " + amiiboName, 20, {255,255,255,255}, {0,0,0,200});
+                pu::overlay::Toast *toast = new pu::overlay::Toast("Active amiibo updated to: " + amiiboName, 20, {255,255,255,255}, {0,51,102,255});
                 mainapp->StartOverlayWithTimeout(toast, 1500);
             }
     		mainapp->SetWaitBack(false);
@@ -141,7 +139,7 @@ namespace ui
             int sopt = mainapp->CreateShowDialog("Toggle Randomize UUID?", "Randomize UUID for " + amiiboName + " is actually " + (randomStatus ? "enabled":"disabled"), { "Toggle", "Cancel" }, true, element->GetIconPath());
             if(sopt == 0){
                 toggleRandomUuid(jsonPath, !randomStatus);
-                pu::overlay::Toast *toast = new pu::overlay::Toast("Random UUID for " + amiiboName + ((!randomStatus) ? " enabled." : " disabled"), 20, {255,255,255,255}, {0,0,0,200});
+                pu::overlay::Toast *toast = new pu::overlay::Toast("Random UUID for " + amiiboName + ((!randomStatus) ? " enabled." : " disabled"), 20, {255,255,255,255}, {0,51,102,255});
                 mainapp->StartOverlayWithTimeout(toast, 1500);
             }
             mainapp->SetWaitBack(false);
@@ -179,7 +177,7 @@ namespace ui
         std::transform(name.begin(), name.end(), name.begin(), utils::ClearForbidden);
        
         if(name == "ALL"){
-            pu::overlay::Toast *toast = new pu::overlay::Toast("ALL name is reserved", 20, {255,255,255,255}, {0,0,0,200});
+            pu::overlay::Toast *toast = new pu::overlay::Toast("ALL name is reserved", 20, {255,255,255,255}, {0,51,102,255});
             mainapp->StartOverlayWithTimeout(toast, 1500);
             return;
         }
@@ -191,7 +189,7 @@ namespace ui
             mainapp->UpdateSettings();
             populateGamesMenu();
             mainapp->SetFooterText("Games: " + std::to_string(amiiboGames.size()));
-            pu::overlay::Toast *toast = new pu::overlay::Toast(name + " added", 20, {255,255,255,255}, {0,0,0,200});
+            pu::overlay::Toast *toast = new pu::overlay::Toast(name + " added", 20, {255,255,255,255}, {0,51,102,255});
             mainapp->StartOverlayWithTimeout(toast, 1500);
         }
     }
@@ -200,7 +198,7 @@ namespace ui
     {
         std::string gameName = this->gamesMenu->GetSelectedItem()->GetName();
         if(gameName == "ALL"){
-            pu::overlay::Toast *toast = new pu::overlay::Toast("ALL deletion is not allowed", 20, {255,255,255,255}, {0,0,0,200});
+            pu::overlay::Toast *toast = new pu::overlay::Toast("ALL deletion is not allowed", 20, {255,255,255,255}, {0,51,102,255});
             mainapp->StartOverlayWithTimeout(toast, 1500);
             return;
         }
@@ -209,7 +207,7 @@ namespace ui
             if (elem->GetName() == gameName) {
                 this->amiiboGames.erase(this->amiiboGames.begin() + position);
                 mainapp->SetFooterText("Games: " + std::to_string(this->amiiboGames.size()));
-                pu::overlay::Toast *toast = new pu::overlay::Toast(gameName + " removed", 20, {255,255,255,255}, {0,0,0,200});
+                pu::overlay::Toast *toast = new pu::overlay::Toast(gameName + " removed", 20, {255,255,255,255}, {0,51,102,255});
                 mainapp->StartOverlayWithTimeout(toast, 1500);
                 break;
             }
@@ -257,12 +255,12 @@ namespace ui
         if (!isInGame) {
             game->AddAmiiboFile(element);
             this->amiiboMenu->GetSelectedItem()->SetIcon(utils::GetRomFsResource("Common/ingame2.png"));
-            toast = new pu::overlay::Toast("Added: " + amiiboName, 20, {255,255,255,255}, {0,0,0,200});
+            toast = new pu::overlay::Toast("Added: " + amiiboName, 20, {255,255,255,255}, {0,51,102,255});
         } else {
             gameFiles.erase(gameFiles.begin() + position);
             game->SetAmiiboFiles(gameFiles);
             this->amiiboMenu->GetSelectedItem()->SetIcon(utils::GetRomFsResource("Common/notingame2.png"));
-            toast = new pu::overlay::Toast("Removed: " + amiiboName, 20, {255,255,255,255}, {0,0,0,200});
+            toast = new pu::overlay::Toast("Removed: " + amiiboName, 20, {255,255,255,255}, {0,51,102,255});
         }
         this->amiiboGames.erase(std::remove(this->amiiboGames.begin(), this->amiiboGames.end(), game), this->amiiboGames.end());
         this->amiiboGames.push_back(game);
@@ -277,12 +275,12 @@ namespace ui
         this->GetAllAmiibos();
         this->waitInput = true;
         if(game->GetName() == "ALL"){
-            pu::overlay::Toast *toast = new pu::overlay::Toast("ALL is autamatically populated.", 20, {255,255,255,255}, {0,0,0,200});
+            pu::overlay::Toast *toast = new pu::overlay::Toast("ALL is autamatically populated.", 20, {255,255,255,255}, {0,51,102,255});
             mainapp->StartOverlayWithTimeout(toast, 1500);
             return;
         }
         if (this->allAmiiboFiles.empty()) {
-            pu::overlay::Toast *toast = new pu::overlay::Toast("You don't have any amiibos", 20, {255,255,255,255}, {0,0,0,200});
+            pu::overlay::Toast *toast = new pu::overlay::Toast("You don't have any amiibos", 20, {255,255,255,255}, {0,51,102,255});
             mainapp->StartOverlayWithTimeout(toast, 1500);
             return;
         } else {

@@ -6,7 +6,7 @@ namespace ui
 
     EmuiiboLayout::EmuiiboLayout() : pu::Layout()
     {
-        this->emuiiboMenu = new pu::element::Menu(0, 80, 1280, {255,255,255,255}, 75, 8);
+        this->emuiiboMenu = new pu::element::Menu(0, 80, 1280, {255,255,255,255}, 100, 6);
         this->emuiiboMenu->SetOnFocusColor({102,153,204,255});
         this->emuiiboMenu->SetScrollbarColor({102,153,204,255});
         this->Add(this->emuiiboMenu);
@@ -53,21 +53,21 @@ namespace ui
     {
         nfpemuUntoggle();
         nfpemuToggle();
-        pu::overlay::Toast *toast = new pu::overlay::Toast("Emuiibo enabled", 20, {255,255,255,255}, {0,0,0,200});
+        pu::overlay::Toast *toast = new pu::overlay::Toast("Emuiibo enabled", 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);     
     }
 
     void EmuiiboLayout::enableonce_Click()
     {
         nfpemuToggleOnce();
-        pu::overlay::Toast *toast = new pu::overlay::Toast("Emuiibo enabled once", 20, {255,255,255,255}, {0,0,0,200});
+        pu::overlay::Toast *toast = new pu::overlay::Toast("Emuiibo enabled once", 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);      
     }
     
     void EmuiiboLayout::disable_Click()
     {
         nfpemuUntoggle();
-        pu::overlay::Toast *toast = new pu::overlay::Toast("Emuiibo disabled", 20, {255,255,255,255}, {0,0,0,200});
+        pu::overlay::Toast *toast = new pu::overlay::Toast("Emuiibo disabled", 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);
     }
 

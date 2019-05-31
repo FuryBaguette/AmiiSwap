@@ -51,8 +51,9 @@ namespace ui
 			void InitSettings();
 			void UpdateSettings();
 			void OnInput(u64 Down, u64 Up, u64 Held);
-			std::string MainApplication::GetEmuiiboStatus();
+			int MainApplication::GetEmuiiboStatus();
 			void MainApplication::UpdateEmuiiboStatus();
+			std::string activeAmiibo;
 	    private:
 			set::Settings *settings;
 	        ui::MainLayout *mainLayout;
@@ -64,10 +65,13 @@ namespace ui
 			bool waitBack = false;
 			pu::element::Image *logo;
 			pu::element::Rectangle *header;
+			pu::element::Rectangle *headerShadow;
+			pu::element::Rectangle *footer;
+			pu::element::Rectangle *footerShadow;
+			pu::element::Rectangle *emuiiboLed;
 			pu::element::TextBlock *headerText;
 			pu::element::TextBlock *emuiiboText;
 			pu::element::TextBlock *amiiboText;
-			pu::element::Rectangle *footer;
 			pu::element::TextBlock *footerText;
 			pu::element::TextBlock *helpText;
 			//NfpEmuToggleStatus *nfpStatus;

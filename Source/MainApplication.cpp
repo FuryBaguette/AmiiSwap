@@ -22,8 +22,11 @@ namespace ui
 
 	MainApplication::MainApplication() : pu::Application()
 	{
-		this->header = new pu::element::Rectangle(0, 0, 1280, 80, {0,102,153,255});
-		this->footer = new pu::element::Rectangle(0, 680, 1280, 40, {0,102,153,255});
+		this->header = new pu::element::Rectangle(0, 0, 1280, 79, {0,102,153,255});
+		this->footer = new pu::element::Rectangle(0, 681, 1280, 39, {0,102,153,255});
+		this->headerShadow = new pu::element::Rectangle(0, 79, 1280, 1, {0,51,102,255});
+		this->footerShadow = new pu::element::Rectangle(0, 680, 1280, 1, {0,51,102,255});
+		this->emuiiboLed = new pu::element::Rectangle(1255, 10, 15, 15, {0,102,153,255}, 7);
 
 		this->logo = new pu::element::Image(10, 10, utils::GetRomFsResource("Common/logo.png"));
 		this->logo->SetHeight(60);
@@ -68,6 +71,9 @@ namespace ui
 			this->mainLayout = new MainLayout();
 			this->mainLayout->Add(this->header);
 			this->mainLayout->Add(this->footer);
+			this->mainLayout->Add(this->headerShadow);
+			this->mainLayout->Add(this->footerShadow);
+			this->mainLayout->Add(this->emuiiboLed);
 			this->mainLayout->Add(this->logo);
 			this->mainLayout->Add(this->headerText);
 			this->mainLayout->Add(this->emuiiboText);
@@ -78,6 +84,9 @@ namespace ui
 			this->manageLayout = new ManageLayout();
 			this->manageLayout->Add(this->header);
 			this->manageLayout->Add(this->footer);
+			this->manageLayout->Add(this->headerShadow);
+			this->manageLayout->Add(this->footerShadow);
+			this->manageLayout->Add(this->emuiiboLed);
 			this->manageLayout->Add(this->logo);
 			this->manageLayout->Add(this->headerText);
 			this->manageLayout->Add(this->emuiiboText);
@@ -88,6 +97,9 @@ namespace ui
 			this->emuiiboLayout = new EmuiiboLayout();
 			this->emuiiboLayout->Add(this->header);
 			this->emuiiboLayout->Add(this->footer);
+			this->emuiiboLayout->Add(this->headerShadow);
+			this->emuiiboLayout->Add(this->footerShadow);
+			this->emuiiboLayout->Add(this->emuiiboLed);
 			this->emuiiboLayout->Add(this->logo);
 			this->emuiiboLayout->Add(this->headerText);
 			this->emuiiboLayout->Add(this->emuiiboText);
@@ -98,6 +110,9 @@ namespace ui
 			this->setLayout = new SettingsLayout();
 			this->setLayout->Add(this->header);
 			this->setLayout->Add(this->footer);
+			this->setLayout->Add(this->headerShadow);
+			this->setLayout->Add(this->footerShadow);
+			this->setLayout->Add(this->emuiiboLed);
 			this->setLayout->Add(this->logo);
 			this->setLayout->Add(this->headerText);
 			this->setLayout->Add(this->emuiiboText);
@@ -108,6 +123,9 @@ namespace ui
 			this->aboutLayout = new AboutLayout();
 			this->aboutLayout->Add(this->header);
 			this->aboutLayout->Add(this->footer);
+			this->aboutLayout->Add(this->headerShadow);
+			this->aboutLayout->Add(this->footerShadow);
+			this->aboutLayout->Add(this->emuiiboLed);
 			this->aboutLayout->Add(this->logo);
 			this->aboutLayout->Add(this->headerText);
 			this->aboutLayout->Add(this->emuiiboText);
@@ -138,6 +156,9 @@ namespace ui
 		delete this->footer;
 		delete this->footerText;
 		delete this->helpText;
+		delete this->headerShadow;
+		delete this->footerShadow;
+		delete this->emuiiboLed;
 	}
 
 	void MainApplication::SetWaitBack(bool state)
@@ -335,28 +356,14 @@ namespace ui
 			settingsOfs.close();
 	}
 
-	std::string MainApplication::GetEmuiiboStatus()
+	int MainApplication::GetEmuiiboStatus()
 	{
 		NfpEmuToggleStatus nfpStatus;
 		std::string status = "";
 		Result rc = nfpemuGetToggleStatus(&nfpStatus);
-		if(rc == 0){
-			switch(nfpStatus){
-				case NfpEmuToggleStatus_Off:
-					status = "disabled";
-					break;
-				case NfpEmuToggleStatus_On:
-					status = "enabled";
-					break;
-				case NfpEmuToggleStatus_Once:
-					status = "enabled once";
-					break;
-				default:
-					status = "unknown";
-					break;
-			}	
-		}
-		return status;
+		if(rc == 0)
+			return nfpStatus;
+		return -1;
 	}
 
 	void MainApplication::UpdateEmuiiboStatus()
@@ -365,9 +372,26 @@ namespace ui
         auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(ct - this->start).count();
         if((diff >= 500))
         {
-			std::string amiibo = utils::trim_right_copy(utils::getActiveAmiibo());
-			this->emuiiboText->SetText("emuiibo status: " + this->GetEmuiiboStatus() + " ");
-			this->amiiboText->SetText("active amiibo: " + amiibo + " ");
+			switch(this->GetEmuiiboStatus()){
+				case NfpEmuToggleStatus_Off:
+					this->emuiiboText->SetText("emuiibo status: disabled ");
+					this->emuiiboLed->SetColor({255,0,0,255});
+					break;
+				case NfpEmuToggleStatus_On:
+					this->emuiiboText->SetText("emuiibo status: enabled ");
+					this->emuiiboLed->SetColor({0,153,0,255});
+					break;
+				case NfpEmuToggleStatus_Once:
+					this->emuiiboText->SetText("emuiibo status: enabled once ");
+					this->emuiiboLed->SetColor({255,128,0,255});
+					break;
+				default:
+					this->emuiiboText->SetText("emuiibo status: unknown ");
+					this->emuiiboLed->SetColor({0,102,153,255});
+					break;
+			}
+			this->activeAmiibo = utils::trim_right_copy(utils::getActiveAmiibo());
+			this->amiiboText->SetText("active amiibo: " + this->activeAmiibo + " ");
 		}
 	}
 

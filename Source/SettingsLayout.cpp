@@ -52,10 +52,10 @@ namespace ui
     		mainapp->SetWaitBack(true);
     		int sopt = mainapp->CreateShowDialog(element->GetName(), "What do you want to do with " + element->GetName() + "?\nIt's in the following game(s):\n" + element->DisplayParents(this->amiiboGames), { "Add to game", "Remove from game", "Cancel" }, true, element->GetIconPath());
     		if (sopt == 0) {
-                pu::overlay::Toast *toast = new pu::overlay::Toast("Add to game", 20, {255,255,255,255}, {0,0,0,200});
+                pu::overlay::Toast *toast = new pu::overlay::Toast("Add to game", 20, {255,255,255,255}, {0,51,102,255});
                 mainapp->StartOverlayWithTimeout(toast, 1500);
             } else if (sopt == 1) {
-                pu::overlay::Toast *toast = new pu::overlay::Toast("Remove from game", 20, {255,255,255,255}, {0,0,0,200});
+                pu::overlay::Toast *toast = new pu::overlay::Toast("Remove from game", 20, {255,255,255,255}, {0,51,102,255});
                 mainapp->StartOverlayWithTimeout(toast, 1500);
             }
     		mainapp->SetWaitBack(false);

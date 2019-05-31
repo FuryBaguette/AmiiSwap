@@ -6,7 +6,7 @@ namespace ui
 
     MainLayout::MainLayout() : pu::Layout()
     {
-        this->mainMenu = new pu::element::Menu(0, 80, 1280, {255,255,255,255}, 75, 8);
+        this->mainMenu = new pu::element::Menu(0, 80, 1280, {255,255,255,255}, 100, 6);
         this->mainMenu->SetOnFocusColor({102,153,204,255});
         this->mainMenu->SetScrollbarColor({102,153,204,255});
         this->Add(this->mainMenu);
@@ -72,7 +72,7 @@ namespace ui
 
     void MainLayout::settings_Click()
     {
-        pu::overlay::Toast *toast = new pu::overlay::Toast("settings", 20, {255,255,255,255}, {0,0,0,200});
+        pu::overlay::Toast *toast = new pu::overlay::Toast("settings", 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);
         //mainapp->LoadLayout(mainapp->GetManageLayout());
     }
@@ -96,7 +96,7 @@ namespace ui
             bool random = utils::isRandomUuid(path+"/amiibo.json");
 			mainapp->CreateShowDialog("Active amiibo: " + amiiboName, "Located in: " + path + "\nRandom UUID: " + ((random) ? "enabled":"disabled"), { "Close" }, true, path + "/amiibo.png");
 		} else {
-			pu::overlay::Toast *toast = new pu::overlay::Toast("No active amiibo.", 20, {255,255,255,255}, {0,0,0,200});
+			pu::overlay::Toast *toast = new pu::overlay::Toast("No active amiibo.", 20, {255,255,255,255}, {0,51,102,255});
 			mainapp->StartOverlayWithTimeout(toast, 1500);
 		}
 	}
