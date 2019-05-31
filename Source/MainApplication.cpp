@@ -26,7 +26,7 @@ namespace ui
 		this->footer = new pu::element::Rectangle(0, 681, 1280, 39, {0,102,153,255});
 		this->headerShadow = new pu::element::Rectangle(0, 79, 1280, 1, {0,51,102,255});
 		this->footerShadow = new pu::element::Rectangle(0, 680, 1280, 1, {0,51,102,255});
-		this->emuiiboLed = new pu::element::Rectangle(1255, 10, 15, 15, {0,102,153,255}, 7);
+		this->emuiiboLed = new pu::element::Rectangle(1255, 10, 15, 15, {0,102,153,255}, 90U);
 
 		this->logo = new pu::element::Image(10, 10, utils::GetRomFsResource("Common/logo.png"));
 		this->logo->SetHeight(60);
@@ -43,7 +43,7 @@ namespace ui
 		this->amiiboText->SetColor({255,255,255,255});
 		this->amiiboText->SetHorizontalAlign(pu::element::HorizontalAlign::Right);
 
-		this->footerText = new pu::element::TextBlock(10, 690, "", 20);
+		this->footerText = new pu::element::TextBlock(10, 690, "Manage and organize your amiibos", 20);
 		this->footerText->SetColor({255,255,255,255});
 
 		this->helpText = new pu::element::TextBlock(10, 690, "", 20);
@@ -65,7 +65,6 @@ namespace ui
         	utils::EnsureDirectories();
 			InitSettings();			
 
-			this->emuiiboText->SetText("emuiibo is " + this->GetEmuiiboStatus());
 			this->helpText->SetText("A: Select "); 
 
 			this->mainLayout = new MainLayout();
@@ -374,24 +373,24 @@ namespace ui
         {
 			switch(this->GetEmuiiboStatus()){
 				case NfpEmuToggleStatus_Off:
-					this->emuiiboText->SetText("emuiibo status: disabled ");
+					this->emuiiboText->SetText("amiibo emulation is not active ");
 					this->emuiiboLed->SetColor({255,0,0,255});
 					break;
 				case NfpEmuToggleStatus_On:
-					this->emuiiboText->SetText("emuiibo status: enabled ");
-					this->emuiiboLed->SetColor({0,153,0,255});
+					this->emuiiboText->SetText("amiibo emulation is active ");
+					this->emuiiboLed->SetColor({0,255,0,255});
 					break;
 				case NfpEmuToggleStatus_Once:
-					this->emuiiboText->SetText("emuiibo status: enabled once ");
+					this->emuiiboText->SetText("amiibo emulation is active once ");
 					this->emuiiboLed->SetColor({255,128,0,255});
 					break;
 				default:
-					this->emuiiboText->SetText("emuiibo status: unknown ");
+					this->emuiiboText->SetText("amiibo emulation status is unknown ");
 					this->emuiiboLed->SetColor({0,102,153,255});
 					break;
 			}
 			this->activeAmiibo = utils::trim_right_copy(utils::getActiveAmiibo());
-			this->amiiboText->SetText("active amiibo: " + this->activeAmiibo + " ");
+			this->amiiboText->SetText("selected amiibo is " + this->activeAmiibo + " ");
 		}
 	}
 

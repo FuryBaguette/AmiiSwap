@@ -9,6 +9,7 @@ namespace ui
         this->emuiiboMenu = new pu::element::Menu(0, 80, 1280, {255,255,255,255}, 100, 6);
         this->emuiiboMenu->SetOnFocusColor({102,153,204,255});
         this->emuiiboMenu->SetScrollbarColor({102,153,204,255});
+        this->emuiiboMenu->SetOnSelectionChanged(std::bind(&EmuiiboLayout::selectionChange,this));
         this->Add(this->emuiiboMenu);
         this->SetElementOnFocus(this->emuiiboMenu);
         populateEmuiiboMenu();
@@ -16,9 +17,10 @@ namespace ui
         this->SetOnInput([&](u64 Down, u64 Up, u64 Held, bool Touch)
         {
             if (Down & KEY_B){
-                mainapp->SetFooterText("");
+                mainapp->SetHelpText("A: Select ");
                 mainapp->GetMainLayout()->GetMainMenu()->SetVisible(true);
                 mainapp->GetMainLayout()->SetElementOnFocus(mainapp->GetMainLayout()->GetMainMenu());
+                mainapp->GetMainLayout()->selectionChange();
                 mainapp->LoadLayout(mainapp->GetMainLayout());
             }
         });
@@ -47,6 +49,8 @@ namespace ui
         item->SetIcon(utils::GetRomFsResource("Common/untoggle.png"));
         item->AddOnClick(std::bind(&EmuiiboLayout::disable_Click, this), KEY_A);
         this->emuiiboMenu->AddItem(item);
+
+        this->emuiiboMenu->SetSelectedIndex(0);
     }
 
     void EmuiiboLayout::enable_Click()
@@ -74,5 +78,23 @@ namespace ui
     pu::element::Menu *EmuiiboLayout::GetEmuiiboMenu()
     {
         return (this->emuiiboMenu);
+    }
+    
+    void EmuiiboLayout::selectionChange()
+    {
+        switch(this->emuiiboMenu->GetSelectedIndex()){
+            case 0:
+                mainapp->SetFooterText("Activate amiibo emulation");
+                break;
+            case 1:
+                mainapp->SetFooterText("Activate amiibo emulation once");
+                break;
+            case 2:
+                mainapp->SetFooterText("Deactivate amiibo emulation");
+                break;
+            default:
+                mainapp->SetFooterText("");
+                break;    
+        }
     }
 }

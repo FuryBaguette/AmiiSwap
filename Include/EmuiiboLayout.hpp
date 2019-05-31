@@ -13,6 +13,7 @@ namespace ui
 			void enableonce_Click();
 			void disable_Click();
 			void populateEmuiiboMenu();
+			void selectionChange();
 			pu::element::Menu *EmuiiboLayout::GetEmuiiboMenu();
 	    private:
 	        pu::element::Menu *emuiiboMenu;

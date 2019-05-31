@@ -26,10 +26,10 @@ namespace ui
         this->SetOnInput([&](u64 Down, u64 Up, u64 Held, bool Touch)
         {
             if (Down & KEY_B){
-                mainapp->SetFooterText("");
                 mainapp->SetHelpText("A: Select ");
                 mainapp->GetMainLayout()->GetMainMenu()->SetVisible(true);
                 mainapp->GetMainLayout()->SetElementOnFocus(mainapp->GetMainLayout()->GetMainMenu());
+                mainapp->GetMainLayout()->selectionChange();
                 mainapp->LoadLayout(mainapp->GetMainLayout());
             }
         });

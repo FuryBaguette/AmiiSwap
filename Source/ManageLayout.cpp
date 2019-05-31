@@ -26,10 +26,10 @@ namespace ui
 			if(mainapp->GetManageLayout()->GetAmiiboMenu()->IsVisible()){
 				mainapp->GetManageLayout()->backToGame_Click();
 			} else {
-				mainapp->SetFooterText("");
 				mainapp->SetHelpText("A: Select ");
 				mainapp->GetMainLayout()->GetMainMenu()->SetVisible(true);
 				mainapp->GetMainLayout()->SetElementOnFocus(mainapp->GetMainLayout()->GetMainMenu());
+                mainapp->GetMainLayout()->selectionChange();
 				mainapp->LoadLayout(mainapp->GetMainLayout());
 			}
 		}

@@ -9,6 +9,7 @@ namespace ui
         this->mainMenu = new pu::element::Menu(0, 80, 1280, {255,255,255,255}, 100, 6);
         this->mainMenu->SetOnFocusColor({102,153,204,255});
         this->mainMenu->SetScrollbarColor({102,153,204,255});
+        this->mainMenu->SetOnSelectionChanged(std::bind(&MainLayout::selectionChange,this));
         this->Add(this->mainMenu);
         this->SetElementOnFocus(this->mainMenu);
         populateMainMenu();
@@ -33,7 +34,7 @@ namespace ui
         item->AddOnClick(std::bind(&MainLayout::emuiibo_Click, this), KEY_A);
         this->mainMenu->AddItem(item);
 
-        item = new pu::element::MenuItem("Active amiibo");
+        item = new pu::element::MenuItem("Selected amiibo");
         item->SetIcon(utils::GetRomFsResource("Common/active.png"));
         item->AddOnClick(std::bind(&MainLayout::showSelected_Click, this), KEY_A);
         this->mainMenu->AddItem(item);
@@ -47,6 +48,8 @@ namespace ui
         item->SetIcon(utils::GetRomFsResource("Common/about.png"));
         item->AddOnClick(std::bind(&MainLayout::about_Click, this), KEY_A);
         this->mainMenu->AddItem(item);
+
+        this->mainMenu->SetSelectedIndex(0);
     }
 
     void MainLayout::manage_Click()
@@ -66,8 +69,8 @@ namespace ui
         mainapp->GetEmuiiboLayout()->SetElementOnFocus(mainapp->GetEmuiiboLayout()->GetEmuiiboMenu());
         this->GetMainMenu()->SetVisible(false);
     	mainapp->LoadLayout(mainapp->GetEmuiiboLayout());
-        mainapp->SetFooterText("Control emuiibo");
-        mainapp->SetHelpText("A: Select ");
+        mainapp->SetFooterText("Activate amiibo emulation");
+        mainapp->SetHelpText("A: OK ");
     }
 
     void MainLayout::settings_Click()
@@ -104,5 +107,26 @@ namespace ui
     pu::element::Menu *MainLayout::GetMainMenu()
     {
     	return (this->mainMenu);
+    }
+
+    void MainLayout::selectionChange()
+    {
+        switch(this->mainMenu->GetSelectedIndex()){
+            case 0:
+                mainapp->SetFooterText("Manage and organize your amiibos");
+                break;
+            case 1:
+                mainapp->SetFooterText("Ask emuiibo to toggle amiibo emulation");
+                break;
+            case 2:
+                mainapp->SetFooterText("View details about selected amiibo");
+                break;
+            case 3:
+                mainapp->SetFooterText("See who brought you AmiiSwap");
+                break;
+            default:
+                mainapp->SetFooterText("");
+                break;    
+        }
     }
 }
