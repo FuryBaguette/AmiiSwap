@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <string>
 #include <stdlib.h>
+#include <malloc.h>
 #include <filesystem>
 #include "nfpemu.h"
 #include "Amiibo.hpp"
@@ -18,6 +19,7 @@
 #include "AboutLayout.hpp"
 #include "EmuiiboLayout.hpp"
 #include "ImagesLayout.hpp"
+#include "ManualLayout.hpp"
 #include "json.hpp"
 
 using json = nlohmann::json;
@@ -43,6 +45,7 @@ namespace ui
 			AboutLayout *GetAboutLayout();
 			EmuiiboLayout *GetEmuiiboLayout();
 			ImagesLayout *GetImagesLayout();
+			ManualLayout *GetManualLayout();
 			set::Settings *GetSettings();
 			void SetSettings(set::Settings *s);
 			void SetWaitBack(bool state);
@@ -65,6 +68,7 @@ namespace ui
 			ui::AboutLayout *aboutLayout;
 			ui::EmuiiboLayout *emuiiboLayout;
 			ui::ImagesLayout *imagesLayout;
+			ui::ManualLayout *manualLayout;
 			bool waitBack = false;
 			pu::element::Image *logo;
 			pu::element::Rectangle *header;

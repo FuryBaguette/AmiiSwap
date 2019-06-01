@@ -49,6 +49,11 @@ namespace ui
         item->AddOnClick(std::bind(&MainLayout::settings_Click, this), KEY_A);
         //this->mainMenu->AddItem(item);
 
+        item = new pu::element::MenuItem("User Manual");
+        item->SetIcon(utils::GetRomFsResource("Common/user-manual.png"));
+        item->AddOnClick(std::bind(&MainLayout::manual_Click, this), KEY_A);
+        this->mainMenu->AddItem(item);
+
         item = new pu::element::MenuItem("About");
         item->SetIcon(utils::GetRomFsResource("Common/about.png"));
         item->AddOnClick(std::bind(&MainLayout::about_Click, this), KEY_A);
@@ -91,6 +96,15 @@ namespace ui
         pu::overlay::Toast *toast = new pu::overlay::Toast("settings", 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);
         //mainapp->LoadLayout(mainapp->GetManageLayout());
+    }
+
+    void MainLayout::manual_Click()
+    {
+        this->mainMenu->SetVisible(false);
+        mainapp->LoadLayout(mainapp->GetManualLayout());
+        mainapp->GetManualLayout()->LoadFile(utils::GetRomFsResource("Common/manual.txt"));
+        mainapp->SetFooterText("RTFM");
+        mainapp->SetHelpText("B: Back ");
     }
 
     void MainLayout::about_Click()
@@ -138,6 +152,9 @@ namespace ui
                 mainapp->SetFooterText("View details about selected amiibo");
                 break;
             case 4:
+                mainapp->SetFooterText("RTFM");
+                break;
+            case 5:
                 mainapp->SetFooterText("See who brought you AmiiSwap");
                 break;
             default:

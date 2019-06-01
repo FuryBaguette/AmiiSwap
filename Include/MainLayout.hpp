@@ -13,6 +13,7 @@ namespace ui
 			void emuiibo_Click();
 			void images_Click();
 			void settings_Click();
+			void manual_Click();
 			void about_Click();
 			void showSelected_Click();
 			void populateMainMenu();

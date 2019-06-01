@@ -132,6 +132,19 @@ namespace ui
 			this->setLayout->Add(this->footerText);
 			this->setLayout->Add(this->helpText);
 
+			this->manualLayout = new ManualLayout();
+			this->manualLayout->Add(this->header);
+			this->manualLayout->Add(this->footer);
+			this->manualLayout->Add(this->headerShadow);
+			this->manualLayout->Add(this->footerShadow);
+			this->manualLayout->Add(this->emuiiboLed);
+			this->manualLayout->Add(this->logo);
+			this->manualLayout->Add(this->headerText);
+			this->manualLayout->Add(this->emuiiboText);
+			this->manualLayout->Add(this->amiiboText);
+			this->manualLayout->Add(this->footerText);
+			this->manualLayout->Add(this->helpText);
+
 			this->aboutLayout = new AboutLayout();
 			this->aboutLayout->Add(this->header);
 			this->aboutLayout->Add(this->footer);
@@ -161,6 +174,7 @@ namespace ui
 		delete this->aboutLayout;
 		delete this->emuiiboLayout;
 		delete this->imagesLayout;
+		delete this->manualLayout;
 		delete this->logo;
 		delete this->header;
 		delete this->headerText;
@@ -239,6 +253,11 @@ namespace ui
 	ImagesLayout *MainApplication::GetImagesLayout()
     {
         return this->imagesLayout;
+    }
+
+	ManualLayout *MainApplication::GetManualLayout()
+    {
+        return this->manualLayout;
     }
 
 	set::Settings *MainApplication::GetSettings()

@@ -214,4 +214,80 @@ namespace utils
             return utils::getLastFromPath(utils::trim_right_copy(std::string(amiibo)));
         return "none";
     }
+
+    std::vector<std::string> ReadFileLines(std::string Path, u32 LineOffset, u32 LineCount)
+    {
+        std::vector<std::string> data;
+        std::string path = Path;
+        u64 fsize = GetFileSize(path);
+        if(fsize == 0) return data;
+        std::string tmpline;
+        u32 tmpc = 0;
+        u32 tmpo = 0;
+        u64 szrem = fsize;
+        u64 off = 0;
+        u8 *tmpdata = (u8*)memalign(0x1000, 0x100);
+        bool end = false;
+        while(szrem && !end)
+        {
+            u64 rsize = ReadFileBlock(path, off, std::min((u64)0x100, szrem), tmpdata);
+            if(rsize == 0) return data;
+            szrem -= rsize;
+            off += rsize;
+            for(u32 i = 0; i < rsize; i++)
+            {
+                char ch = (char)tmpdata[i];
+                if(ch == '\n')
+                {
+                    if(tmpc >= LineCount)
+                    {
+                        end = true;
+                        break;
+                    }
+                    if((tmpo < LineOffset) && (LineOffset != 0))
+                    {
+                        tmpo++;
+                        tmpline = "";
+                        continue;
+                    }
+                    std::string tab = "\t";
+                    while(true)
+                    {
+                        size_t spos = tmpline.find(tab);
+                        if(spos == std::string::npos) break;
+                        tmpline.replace(spos, tab.length(), "    ");
+                    }
+                    data.push_back(tmpline);
+                    tmpc++;
+                    tmpline = "";
+                }
+                else tmpline += (char)ch;
+            }
+        }
+        free(tmpdata);
+        return data;
+    }
+
+    u64 GetFileSize(std::string Path)
+    {
+        u64 sz = 0;
+        std::string path = Path;
+        struct stat st;
+        if(stat(path.c_str(), &st) == 0) sz = st.st_size;
+        return sz;
+    }
+
+    u64 ReadFileBlock(std::string Path, u64 Offset, u64 Size, u8 *Out)
+    {
+        u64 rsz = 0;
+        std::string path = Path;
+        FILE *f = fopen(path.c_str(), "rb");
+        if(f)
+        {
+            fseek(f, Offset, SEEK_SET);
+            rsz = fread(Out, 1, Size, f);
+        }
+        fclose(f);
+        return rsz;
+    }
 }

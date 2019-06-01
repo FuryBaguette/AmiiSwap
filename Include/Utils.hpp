@@ -3,6 +3,7 @@
 #include <sys/stat.h>
 #include <string>
 #include <stdlib.h>
+#include <malloc.h>
 #include <filesystem>
 
 namespace utils
@@ -26,6 +27,9 @@ namespace utils
     char* bufferToCString(char *buff, int buffSize, char *str);
     std::string getLastFromPath(std::string str);
     std::string getActiveAmiibo();
+    std::vector<std::string> ReadFileLines(std::string Path, u32 LineOffset, u32 LineCount);
+    u64 GetFileSize(std::string Path);
+    u64 ReadFileBlock(std::string Path, u64 Offset, u64 Size, u8 *Out);
     bool isRandomUuid(std::string jsonPath);
     inline bool folderExists(const std::string& dirName) {
         DIR *dir = opendir(dirName.c_str());
