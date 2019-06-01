@@ -65,7 +65,7 @@ namespace ui
     {
         pu::element::MenuItem *item = new pu::element::MenuItem(element->GetName());
         std::string iconFile = element->GetName() + ".png";
-        std::string amiiswapFolder ="sdmc:/switch/AmiiSwap/";
+        std::string amiiswapFolder ="sdmc:/switch/AmiiSwap/game_icons/";
         if(std::fstream{amiiswapFolder+iconFile}){
             item->SetIcon(amiiswapFolder+iconFile);
         }else{
