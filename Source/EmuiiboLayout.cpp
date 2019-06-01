@@ -49,8 +49,6 @@ namespace ui
         item->SetIcon(utils::GetRomFsResource("Common/untoggle.png"));
         item->AddOnClick(std::bind(&EmuiiboLayout::disable_Click, this), KEY_A);
         this->emuiiboMenu->AddItem(item);
-
-        this->emuiiboMenu->SetSelectedIndex(0);
     }
 
     void EmuiiboLayout::enable_Click()

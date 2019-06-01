@@ -14,6 +14,7 @@ namespace utils
     bool IsEmuiiboPresent();
     bool copyFile(const char *SRC, const char* DEST);
     void get_amiibos_directories(char *path, std::vector<std::string> *r);
+    void getImages(const std::string &path, std::vector<std::string> *r);
     std::string GetRomFsResource(std::string path);
     void Log(std::string Text);
     std::string UserInput(std::string Guide, std::string Initial);

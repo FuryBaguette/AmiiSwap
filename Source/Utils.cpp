@@ -40,6 +40,21 @@ namespace utils
     	}
     }
 
+    void getImages(const std::string &path, std::vector<std::string> *r)
+    {
+    	if (auto dir = opendir(path.c_str())) {
+    		while (auto f = readdir(dir)) {
+    			if (!f->d_name || f->d_name[0] == '.') continue;
+    			if (f->d_type == DT_REG) {
+    				const char* ext = ui::getExtension(f->d_name);
+    				if (strcasecmp(ext, ".png")==0)
+    					r->push_back(path + "/" + f->d_name);
+    			}
+    		}
+    		closedir(dir);
+    	}
+    }
+
     std::vector<std::string> get_directories(char *path)
     {
         std::vector<std::string> r;

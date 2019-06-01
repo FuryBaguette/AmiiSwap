@@ -17,6 +17,7 @@
 #include "ErrorLayout.hpp"
 #include "AboutLayout.hpp"
 #include "EmuiiboLayout.hpp"
+#include "ImagesLayout.hpp"
 #include "json.hpp"
 
 using json = nlohmann::json;
@@ -41,6 +42,7 @@ namespace ui
 			ErrorLayout *GetErrorLayout();
 			AboutLayout *GetAboutLayout();
 			EmuiiboLayout *GetEmuiiboLayout();
+			ImagesLayout *GetImagesLayout();
 			set::Settings *GetSettings();
 			void SetSettings(set::Settings *s);
 			void SetWaitBack(bool state);
@@ -62,6 +64,7 @@ namespace ui
 			ui::ErrorLayout *errorLayout;
 			ui::AboutLayout *aboutLayout;
 			ui::EmuiiboLayout *emuiiboLayout;
+			ui::ImagesLayout *imagesLayout;
 			bool waitBack = false;
 			pu::element::Image *logo;
 			pu::element::Rectangle *header;

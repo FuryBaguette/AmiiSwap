@@ -34,6 +34,11 @@ namespace ui
         item->AddOnClick(std::bind(&MainLayout::emuiibo_Click, this), KEY_A);
         this->mainMenu->AddItem(item);
 
+        item = new pu::element::MenuItem("Images");
+        item->SetIcon(utils::GetRomFsResource("Common/images.png"));
+        item->AddOnClick(std::bind(&MainLayout::images_Click, this), KEY_A);
+        this->mainMenu->AddItem(item);
+
         item = new pu::element::MenuItem("Selected amiibo");
         item->SetIcon(utils::GetRomFsResource("Common/active.png"));
         item->AddOnClick(std::bind(&MainLayout::showSelected_Click, this), KEY_A);
@@ -48,8 +53,6 @@ namespace ui
         item->SetIcon(utils::GetRomFsResource("Common/about.png"));
         item->AddOnClick(std::bind(&MainLayout::about_Click, this), KEY_A);
         this->mainMenu->AddItem(item);
-
-        this->mainMenu->SetSelectedIndex(0);
     }
 
     void MainLayout::manage_Click()
@@ -70,6 +73,16 @@ namespace ui
         this->GetMainMenu()->SetVisible(false);
     	mainapp->LoadLayout(mainapp->GetEmuiiboLayout());
         mainapp->SetFooterText("Activate amiibo emulation");
+        mainapp->SetHelpText("A: OK ");
+    }
+
+    void MainLayout::images_Click()
+    {
+        mainapp->GetImagesLayout()->GetImagesMenu()->SetVisible(true);
+        mainapp->GetImagesLayout()->SetElementOnFocus(mainapp->GetImagesLayout()->GetImagesMenu());
+        this->GetMainMenu()->SetVisible(false);
+    	mainapp->LoadLayout(mainapp->GetImagesLayout());
+        mainapp->SetFooterText("Search amiibo icons in AmiiSwap and emuiibo folders");
         mainapp->SetHelpText("A: OK ");
     }
 
@@ -119,9 +132,12 @@ namespace ui
                 mainapp->SetFooterText("Ask emuiibo to toggle amiibo emulation");
                 break;
             case 2:
-                mainapp->SetFooterText("View details about selected amiibo");
+                mainapp->SetFooterText("Manage images for you amiibos");
                 break;
             case 3:
+                mainapp->SetFooterText("View details about selected amiibo");
+                break;
+            case 4:
                 mainapp->SetFooterText("See who brought you AmiiSwap");
                 break;
             default:

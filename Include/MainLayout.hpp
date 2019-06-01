@@ -11,6 +11,7 @@ namespace ui
 			~MainLayout();
 			void manage_Click();
 			void emuiibo_Click();
+			void images_Click();
 			void settings_Click();
 			void about_Click();
 			void showSelected_Click();
