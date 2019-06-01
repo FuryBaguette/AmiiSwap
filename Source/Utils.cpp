@@ -20,6 +20,7 @@ namespace utils
     void EnsureDirectories()
     {
         CreateDirectory("sdmc:/emuiibo");
+        CreateDirectory("sdmc:/switch/AmiiSwap/game_icons");
     }
 
     void getFiles(const std::string &path, std::function<void(const std::string &)> cb)
