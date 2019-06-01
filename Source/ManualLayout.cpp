@@ -6,7 +6,7 @@ namespace ui
 
     ManualLayout::ManualLayout()
     {
-        this->cntText = new pu::element::TextBlock(20, 120, "");
+        this->cntText = new pu::element::TextBlock(20, 100, "");
         this->cntText->SetColor({0,51,102,255});
         this->Add(this->cntText);
         this->loffset = 0;
