@@ -98,10 +98,11 @@ namespace ui
         //nfpemuRescanAmiibos(); //UNCOMMENT WHEN EMUIIBO WILL MERGE PR AND RELEASE
         this->progressBar->IncrementProgress(50.0f);
         mainapp->CallForRender();
-        nfpemuSetAmiibo(amiibo);
+        mainapp->InitSettings();
         this->progressBar->SetProgress(75.0f);
         mainapp->CallForRender();
-        mainapp->UpdateSettings();
+        mainapp->GetManageLayout()->populateGamesMenu();
+        nfpemuSetAmiibo(amiibo);
         this->progressBar->SetProgress(100.0f);
         mainapp->CallForRender();
         this->progressBar->SetVisible(false);
