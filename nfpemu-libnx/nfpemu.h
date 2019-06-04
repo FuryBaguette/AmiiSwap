@@ -24,6 +24,7 @@ Result nfpemuToggleOnce();
 Result nfpemuUntoggle();
 Result nfpemuSwapNext();
 Result nfpemuGetToggleStatus(NfpEmuToggleStatus *out);
+Result nfpemuRescanAmiibos();
 
 #ifdef __cplusplus
 }

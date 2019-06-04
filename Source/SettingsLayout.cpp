@@ -11,7 +11,7 @@ namespace ui
             std::size_t found = elem.find_last_of("/\\");
 			std::string name = elem.substr(found+1);
             if (name != "miis") {
-                amiibo::AmiiboFile *file = new amiibo::AmiiboFile(name, elem, elem + "amiibo.png");
+                amiibo::AmiiboFile *file = new amiibo::AmiiboFile(name, elem, elem + "amiibo.icon");
                 this->amiiboFiles.push_back(file);
             }
         }

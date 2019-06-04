@@ -1,4 +1,5 @@
 #include <MainApplication.hpp>
+
 extern char *fake_heap_end;
 
 namespace ui
@@ -22,11 +23,14 @@ namespace ui
 
 	MainApplication::MainApplication() : pu::Application()
 	{
+		this->bootLayout = new BootLayout();
+		this->LoadLayout(this->bootLayout);
+		this->CallForRender();
+
 		this->header = new pu::element::Rectangle(0, 0, 1280, 79, {0,102,153,255});
 		this->footer = new pu::element::Rectangle(0, 681, 1280, 39, {0,102,153,255});
 		this->headerShadow = new pu::element::Rectangle(0, 79, 1280, 1, {0,51,102,255});
 		this->footerShadow = new pu::element::Rectangle(0, 680, 1280, 1, {0,51,102,255});
-		this->emuiiboLed = new pu::element::Rectangle(1255, 10, 15, 15, {0,102,153,255}, 90U);
 
 		this->logo = new pu::element::Image(10, 10, utils::GetRomFsResource("Common/logo.png"));
 		this->logo->SetHeight(60);
@@ -34,6 +38,8 @@ namespace ui
 
 		this->headerText = new pu::element::TextBlock(80, 20, "AmiiSwap " + std::string(AMIISWAP_VERSION), 40);
 		this->headerText->SetColor({255,255,255,255});
+		
+		this->emuiiboLed = new pu::element::Rectangle(1255, 10, 15, 15, {0,102,153,255}, 90U);
 
 		this->emuiiboText = new pu::element::TextBlock(80, 30, "", 20);
 		this->emuiiboText->SetColor({255,255,255,255});
@@ -49,6 +55,7 @@ namespace ui
 		this->helpText = new pu::element::TextBlock(10, 690, "", 20);
 		this->helpText->SetColor({255,255,255,255});
 		this->helpText->SetHorizontalAlign(pu::element::HorizontalAlign::Right);
+		this->helpText->SetText("A: Select "); 
 
 		this->errorLayout = new ErrorLayout();
 		this->errorLayout->Add(this->header);
@@ -57,109 +64,113 @@ namespace ui
 		this->errorLayout->Add(this->headerText);
 		this->errorLayout->Add(this->footerText);
 		this->errorLayout->Add(this->helpText);
+		
+		this->manageLayout = new ManageLayout();
+		this->manageLayout->Add(this->header);
+		this->manageLayout->Add(this->footer);
+		this->manageLayout->Add(this->headerShadow);
+		this->manageLayout->Add(this->footerShadow);
+		this->manageLayout->Add(this->emuiiboLed);
+		this->manageLayout->Add(this->logo);
+		this->manageLayout->Add(this->headerText);
+		this->manageLayout->Add(this->emuiiboText);
+		this->manageLayout->Add(this->amiiboText);
+		this->manageLayout->Add(this->footerText);
+		this->manageLayout->Add(this->helpText);
+		
+		this->emuiiboLayout = new EmuiiboLayout();
+		this->emuiiboLayout->Add(this->header);
+		this->emuiiboLayout->Add(this->footer);
+		this->emuiiboLayout->Add(this->headerShadow);
+		this->emuiiboLayout->Add(this->footerShadow);
+		this->emuiiboLayout->Add(this->emuiiboLed);
+		this->emuiiboLayout->Add(this->logo);
+		this->emuiiboLayout->Add(this->headerText);
+		this->emuiiboLayout->Add(this->emuiiboText);
+		this->emuiiboLayout->Add(this->amiiboText);
+		this->emuiiboLayout->Add(this->footerText);
+		this->emuiiboLayout->Add(this->helpText);
+		
+		this->imagesLayout = new ImagesLayout();
+		this->imagesLayout->Add(this->header);
+		this->imagesLayout->Add(this->footer);
+		this->imagesLayout->Add(this->headerShadow);
+		this->imagesLayout->Add(this->footerShadow);
+		this->imagesLayout->Add(this->emuiiboLed);
+		this->imagesLayout->Add(this->logo);
+		this->imagesLayout->Add(this->headerText);
+		this->imagesLayout->Add(this->emuiiboText);
+		this->imagesLayout->Add(this->amiiboText);
+		this->imagesLayout->Add(this->footerText);
+		this->imagesLayout->Add(this->helpText);
+		
+		this->setLayout = new SettingsLayout();
+		this->setLayout->Add(this->header);
+		this->setLayout->Add(this->footer);
+		this->setLayout->Add(this->headerShadow);
+		this->setLayout->Add(this->footerShadow);
+		this->setLayout->Add(this->emuiiboLed);
+		this->setLayout->Add(this->logo);
+		this->setLayout->Add(this->headerText);
+		this->setLayout->Add(this->emuiiboText);
+		this->setLayout->Add(this->amiiboText);
+		this->setLayout->Add(this->footerText);
+		this->setLayout->Add(this->helpText);
+		
+		this->manualLayout = new ManualLayout();
+		this->manualLayout->Add(this->header);
+		this->manualLayout->Add(this->footer);
+		this->manualLayout->Add(this->headerShadow);
+		this->manualLayout->Add(this->footerShadow);
+		this->manualLayout->Add(this->emuiiboLed);
+		this->manualLayout->Add(this->logo);
+		this->manualLayout->Add(this->headerText);
+		this->manualLayout->Add(this->emuiiboText);
+		this->manualLayout->Add(this->amiiboText);
+		this->manualLayout->Add(this->footerText);
+		this->manualLayout->Add(this->helpText);
+
+		this->aboutLayout = new AboutLayout();
+		this->aboutLayout->Add(this->header);
+		this->aboutLayout->Add(this->footer);
+		this->aboutLayout->Add(this->headerShadow);
+		this->aboutLayout->Add(this->footerShadow);
+		this->aboutLayout->Add(this->emuiiboLed);
+		this->aboutLayout->Add(this->logo);
+		this->aboutLayout->Add(this->headerText);
+		this->aboutLayout->Add(this->emuiiboText);
+		this->aboutLayout->Add(this->amiiboText);
+		this->aboutLayout->Add(this->footerText);
+		this->aboutLayout->Add(this->helpText);
+		
+		this->mainLayout = new MainLayout();
+		this->mainLayout->Add(this->header);
+		this->mainLayout->Add(this->footer);
+		this->mainLayout->Add(this->headerShadow);
+		this->mainLayout->Add(this->footerShadow);
+		this->mainLayout->Add(this->emuiiboLed);
+		this->mainLayout->Add(this->logo);
+		this->mainLayout->Add(this->headerText);
+		this->mainLayout->Add(this->emuiiboText);
+		this->mainLayout->Add(this->amiiboText);
+		this->mainLayout->Add(this->footerText);
+		this->mainLayout->Add(this->helpText);
+		
+		this->SetOnInput(std::bind(&MainApplication::OnInput, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+		
+		this->bootLayout->SetText("Initializing settings...");
+		this->CallForRender();
+		utils::EnsureDirectories();
+		InitSettings();
 
 		if (!utils::IsEmuiiboPresent()) {
-            this->ShowError("Emuiibo is not running on this console, please install it before using AmiiSwap");
+			this->header->SetColor({204,0,0,255});
+			this->footer->SetColor({204,0,0,255});
+			this->emuiiboText->SetText("emuiibo is not installed");
+			this->LoadLayout(this->mainLayout);
 		} else {
 			nfpemuInitialize();
-        	utils::EnsureDirectories();
-			InitSettings();			
-
-			this->helpText->SetText("A: Select "); 
-
-			this->mainLayout = new MainLayout();
-			this->mainLayout->Add(this->header);
-			this->mainLayout->Add(this->footer);
-			this->mainLayout->Add(this->headerShadow);
-			this->mainLayout->Add(this->footerShadow);
-			this->mainLayout->Add(this->emuiiboLed);
-			this->mainLayout->Add(this->logo);
-			this->mainLayout->Add(this->headerText);
-			this->mainLayout->Add(this->emuiiboText);
-			this->mainLayout->Add(this->amiiboText);
-			this->mainLayout->Add(this->footerText);
-			this->mainLayout->Add(this->helpText);
-
-			this->manageLayout = new ManageLayout();
-			this->manageLayout->Add(this->header);
-			this->manageLayout->Add(this->footer);
-			this->manageLayout->Add(this->headerShadow);
-			this->manageLayout->Add(this->footerShadow);
-			this->manageLayout->Add(this->emuiiboLed);
-			this->manageLayout->Add(this->logo);
-			this->manageLayout->Add(this->headerText);
-			this->manageLayout->Add(this->emuiiboText);
-			this->manageLayout->Add(this->amiiboText);
-			this->manageLayout->Add(this->footerText);
-			this->manageLayout->Add(this->helpText);
-
-			this->emuiiboLayout = new EmuiiboLayout();
-			this->emuiiboLayout->Add(this->header);
-			this->emuiiboLayout->Add(this->footer);
-			this->emuiiboLayout->Add(this->headerShadow);
-			this->emuiiboLayout->Add(this->footerShadow);
-			this->emuiiboLayout->Add(this->emuiiboLed);
-			this->emuiiboLayout->Add(this->logo);
-			this->emuiiboLayout->Add(this->headerText);
-			this->emuiiboLayout->Add(this->emuiiboText);
-			this->emuiiboLayout->Add(this->amiiboText);
-			this->emuiiboLayout->Add(this->footerText);
-			this->emuiiboLayout->Add(this->helpText);
-
-			this->imagesLayout = new ImagesLayout();
-			this->imagesLayout->Add(this->header);
-			this->imagesLayout->Add(this->footer);
-			this->imagesLayout->Add(this->headerShadow);
-			this->imagesLayout->Add(this->footerShadow);
-			this->imagesLayout->Add(this->emuiiboLed);
-			this->imagesLayout->Add(this->logo);
-			this->imagesLayout->Add(this->headerText);
-			this->imagesLayout->Add(this->emuiiboText);
-			this->imagesLayout->Add(this->amiiboText);
-			this->imagesLayout->Add(this->footerText);
-			this->imagesLayout->Add(this->helpText);
-
-			this->setLayout = new SettingsLayout();
-			this->setLayout->Add(this->header);
-			this->setLayout->Add(this->footer);
-			this->setLayout->Add(this->headerShadow);
-			this->setLayout->Add(this->footerShadow);
-			this->setLayout->Add(this->emuiiboLed);
-			this->setLayout->Add(this->logo);
-			this->setLayout->Add(this->headerText);
-			this->setLayout->Add(this->emuiiboText);
-			this->setLayout->Add(this->amiiboText);
-			this->setLayout->Add(this->footerText);
-			this->setLayout->Add(this->helpText);
-
-			this->manualLayout = new ManualLayout();
-			this->manualLayout->Add(this->header);
-			this->manualLayout->Add(this->footer);
-			this->manualLayout->Add(this->headerShadow);
-			this->manualLayout->Add(this->footerShadow);
-			this->manualLayout->Add(this->emuiiboLed);
-			this->manualLayout->Add(this->logo);
-			this->manualLayout->Add(this->headerText);
-			this->manualLayout->Add(this->emuiiboText);
-			this->manualLayout->Add(this->amiiboText);
-			this->manualLayout->Add(this->footerText);
-			this->manualLayout->Add(this->helpText);
-
-			this->aboutLayout = new AboutLayout();
-			this->aboutLayout->Add(this->header);
-			this->aboutLayout->Add(this->footer);
-			this->aboutLayout->Add(this->headerShadow);
-			this->aboutLayout->Add(this->footerShadow);
-			this->aboutLayout->Add(this->emuiiboLed);
-			this->aboutLayout->Add(this->logo);
-			this->aboutLayout->Add(this->headerText);
-			this->aboutLayout->Add(this->emuiiboText);
-			this->aboutLayout->Add(this->amiiboText);
-			this->aboutLayout->Add(this->footerText);
-			this->aboutLayout->Add(this->helpText);
-
 			this->AddThread(std::bind(&MainApplication::UpdateEmuiiboStatus, this));
-			this->SetOnInput(std::bind(&MainApplication::OnInput, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 			this->LoadLayout(this->mainLayout);
 			this->start = std::chrono::steady_clock::now();
 		}
@@ -168,13 +179,13 @@ namespace ui
     MainApplication::~MainApplication()
     {
 		delete this->mainLayout;
+		delete this->errorLayout;
+		delete this->manualLayout;
+		delete this->aboutLayout;
 		delete this->manageLayout;
 		delete this->setLayout;
-		delete this->errorLayout;
-		delete this->aboutLayout;
 		delete this->emuiiboLayout;
 		delete this->imagesLayout;
-		delete this->manualLayout;
 		delete this->logo;
 		delete this->header;
 		delete this->headerText;
@@ -212,11 +223,12 @@ namespace ui
 	{
 		if(this->helpText != NULL) this->helpText->SetText(Text);
 	}
+
 	void MainApplication::ShowError(std::string text)
 	{
 		this->header->SetColor({204,0,0,255});
 		this->footer->SetColor({204,0,0,255});
-		this->LoadLayout(this->errorLayout);
+		//this->LoadLayout(this->errorLayout);
 		this->errorLayout->SetText(text);
 	}
 
@@ -258,6 +270,11 @@ namespace ui
 	ManualLayout *MainApplication::GetManualLayout()
     {
         return this->manualLayout;
+    }
+
+	BootLayout *MainApplication::GetBootLayout()
+    {
+        return this->bootLayout;
     }
 
 	set::Settings *MainApplication::GetSettings()

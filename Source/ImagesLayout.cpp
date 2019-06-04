@@ -7,13 +7,15 @@ namespace ui
     ImagesLayout::ImagesLayout() : pu::Layout()
     {
         this->imagesMenu = new pu::element::Menu(0, 80, 1280, {255,255,255,255}, 100, 6);
-        this->progressBar = new pu::element::ProgressBar(640,110,600,40,100);
+        this->progressBar = new pu::element::ProgressBar(640,120,600,20,100.0f);
         this->progressBar->SetColor({255,255,255,255});
         this->progressBar->SetProgressColor({0,102,153,255});
+        this->progressBar->SetVisible(false);
         this->imagesMenu->SetOnFocusColor({102,153,204,255});
         this->imagesMenu->SetScrollbarColor({102,153,204,255});
         this->imagesMenu->SetOnSelectionChanged(std::bind(&ImagesLayout::selectionChange,this));
         this->Add(this->imagesMenu);
+        this->Add(this->progressBar);
         this->SetElementOnFocus(this->imagesMenu);
         populateImagesMenu();
 
@@ -32,6 +34,7 @@ namespace ui
     ImagesLayout::~ImagesLayout()
     {
         delete this->imagesMenu;
+        delete this->progressBar;
     }
 
     void ImagesLayout::populateImagesMenu()
@@ -52,7 +55,7 @@ namespace ui
     void ImagesLayout::search_Click()
     {
         int imgCount = 0;
-        int progress = 0;
+        double progress = 0.0f;
         char emuiiboFolder[] = "sdmc:/emuiibo";
         char amiiswapFolder[] = "sdmc:/switch/AmiiSwap";
         std::string imgName;
@@ -63,19 +66,23 @@ namespace ui
         utils::getImages(emuiiboFolder, &images);
         utils::getImages(amiiswapFolder, &images);
         utils::get_amiibos_directories(emuiiboFolder, &amiibos);
-        this->progressBar->ClearProgress();
-        this->progressBar->SetY(110);
-        this->progressBar->SetMaxValue(images.size());
+        //this->progressBar->ClearProgress();
+        this->progressBar->SetY(120);
+        this->progressBar->SetMaxValue(double(images.size()));
         this->progressBar->SetVisible(true);
+        mainapp->CallForRender();
+        this->SetElementOnFocus(this->progressBar);
         for(auto image : images){
             progress++;
-            this->progressBar->SetProgress((progress/images.size())*100);
+            this->progressBar->SetProgress((progress/double(images.size()))*100.0f);
+            mainapp->CallForRender();
             imgName = utils::getLastFromPath(image);
-            imgName = imgName.substr(0,imgName.size()-4);
+            const char* ext = ui::getExtension(imgName.c_str());
+            imgName = imgName.substr(0,imgName.size() - (unsigned)strlen(ext));
             for(auto amiibo : amiibos){
                 amiiboName = utils::getLastFromPath(amiibo);
                 if(amiiboName == imgName){
-                    newname = amiibo + "/amiibo.png";
+                    newname = amiibo + "/amiibo.icon"; // + std::string(ext);
                     if(std::rename(image.c_str(),newname.c_str()) == 0 ){
                         imgCount++;
                     }
@@ -83,7 +90,11 @@ namespace ui
                 }
             }  
         }
+        this->progressBar->FillProgress();
+        mainapp->CallForRender();
         this->progressBar->SetVisible(false);
+        mainapp->CallForRender();
+        this->SetElementOnFocus(this->imagesMenu);
         pu::overlay::Toast *toast = new pu::overlay::Toast("Found " + std::to_string(imgCount) + " images", 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);     
     }
@@ -91,27 +102,30 @@ namespace ui
     void ImagesLayout::rename_Click()
     {
         int imgCount = 0;
-        int progress = 0;
+        double progress = 0.0f;
         char emuiiboFolder[] = "sdmc:/emuiibo";
         std::vector<std::string> amiibos;
         utils::get_amiibos_directories(emuiiboFolder, &amiibos);
         std::string oldname;
         std::string newname;
-        this->progressBar->ClearProgress();
-        this->progressBar->SetY(210);
-        this->progressBar->SetMaxValue(amiibos.size());
+        //this->progressBar->ClearProgress();
+        this->progressBar->SetY(220);
+        this->progressBar->SetMaxValue(double(amiibos.size()));
         this->progressBar->SetVisible(true);
+        mainapp->CallForRender();
+        this->SetElementOnFocus(this->progressBar);
         for(auto amiibo : amiibos){
             progress++;
-            this->progressBar->SetProgress((progress/amiibos.size())*100);
+            this->progressBar->SetProgress((progress/double(amiibos.size()))*100.0f);
+            mainapp->CallForRender();
             if (auto dir = opendir(amiibo.c_str())) {
                 while (auto f = readdir(dir)) {
                     if (!f->d_name || f->d_name[0] == '.') continue;
-                    if (f->d_type == DT_REG && f->d_name != "amiibo.png") {
+                    if (f->d_type == DT_REG && (f->d_name != "amiibo.icon")){ //|| f->d_name != "amiibo.jpg" || f->d_name != "amiibo.jpeg")) {
                         const char* ext = ui::getExtension(f->d_name);
-                        if (strcasecmp(ext, ".png")==0){
+                        if (strcasecmp(ext, ".png") == 0 || strcasecmp(ext, ".jpg") == 0 || strcasecmp(ext, ".jpeg") == 0){
                             oldname = amiibo + "/" + f->d_name;
-                            newname = amiibo+"/amiibo.png";
+                            newname = amiibo+"/amiibo.icon"; // + std::string(ext);
                             if(std::rename(oldname.c_str(),newname.c_str()) == 0 ){
                                 imgCount++;
                                 break;
@@ -122,7 +136,11 @@ namespace ui
                 closedir(dir);
             }
         }
+        this->progressBar->FillProgress();
+        mainapp->CallForRender();
         this->progressBar->SetVisible(false);
+        mainapp->CallForRender();
+        this->SetElementOnFocus(this->imagesMenu);
         pu::overlay::Toast *toast = new pu::overlay::Toast("Renamed " + std::to_string(imgCount) + " images", 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);      
     }

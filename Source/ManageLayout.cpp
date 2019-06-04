@@ -229,7 +229,7 @@ namespace ui
 			//std::string name = elem.substr(found+1);
             std::string name = elem.substr(sizeof(emuiiboFolder));
             if (name != "miis") {
-                amiibo::AmiiboFile *file = new amiibo::AmiiboFile(name, elem, elem + "amiibo.png");
+                amiibo::AmiiboFile *file = new amiibo::AmiiboFile(name, elem, elem + "amiibo.icon");
                 this->allAmiiboFiles.push_back(file);
             }
         }

@@ -12,10 +12,12 @@ namespace ui
 			void enable_Click();
 			void enableonce_Click();
 			void disable_Click();
+			void scan_Click();
 			void populateEmuiiboMenu();
 			void selectionChange();
 			pu::element::Menu *EmuiiboLayout::GetEmuiiboMenu();
 	    private:
 	        pu::element::Menu *emuiiboMenu;
+			pu::element::ProgressBar *progressBar;
 	};
 }

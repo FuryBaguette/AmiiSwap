@@ -1,4 +1,5 @@
 #include "nfpemu.h"
+#include <string.h>
 
 bool emuiiboIsPresent()
 {
@@ -269,6 +270,36 @@ Result nfpemuGetToggleStatus(NfpEmuToggleStatus *out)
 
         rc = resp->result;
         if(R_SUCCEEDED(rc)) *out = (NfpEmuToggleStatus)resp->status;
+    }
+
+    return rc;
+}
+
+Result nfpemuRescanAmiibos()
+{
+    IpcCommand c;
+    ipcInitialize(&c);
+    struct {
+        u64 magic;
+        u64 cmd_id;
+    } *raw;
+
+    raw = ipcPrepareHeader(&c, sizeof(*raw));
+    raw->magic = SFCI_MAGIC;
+    raw->cmd_id = 8;
+    Result rc = serviceIpcDispatch(&g_nfpEmuSrv);
+
+    if(R_SUCCEEDED(rc))
+    {
+        IpcParsedCommand r;
+        ipcParse(&r);
+
+        struct {
+            u64 magic;
+            u64 result;
+        } *resp = r.Raw;
+
+        rc = resp->result;
     }
 
     return rc;

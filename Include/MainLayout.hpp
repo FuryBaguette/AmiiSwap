@@ -16,6 +16,7 @@ namespace ui
 			void manual_Click();
 			void about_Click();
 			void showSelected_Click();
+			void disabled_Click();
 			void populateMainMenu();
 			void selectionChange();
 			pu::element::Menu *MainLayout::GetMainMenu();

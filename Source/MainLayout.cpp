@@ -23,30 +23,56 @@ namespace ui
     void MainLayout::populateMainMenu()
     {
         this->mainMenu->ClearItems();
+        bool emuiibo = utils::IsEmuiiboPresent();
 
         pu::element::MenuItem *item = new pu::element::MenuItem("Amiibos");
         item->SetIcon(utils::GetRomFsResource("Common/game.png"));
-        item->AddOnClick(std::bind(&MainLayout::manage_Click, this), KEY_A);
+        if(emuiibo) {
+            item->AddOnClick(std::bind(&MainLayout::manage_Click, this), KEY_A);
+        } else {
+            item->AddOnClick(std::bind(&MainLayout::disabled_Click, this), KEY_A);
+            item->SetColor({204,0,0,255});
+        }
         this->mainMenu->AddItem(item);
         
         item = new pu::element::MenuItem("Emuiibo");
         item->SetIcon(utils::GetRomFsResource("Common/emuiibo.png"));
-        item->AddOnClick(std::bind(&MainLayout::emuiibo_Click, this), KEY_A);
+        if(emuiibo) {
+            item->AddOnClick(std::bind(&MainLayout::emuiibo_Click, this), KEY_A);
+        } else {
+            item->AddOnClick(std::bind(&MainLayout::disabled_Click, this), KEY_A);
+            item->SetColor({204,0,0,255});
+        }
         this->mainMenu->AddItem(item);
 
         item = new pu::element::MenuItem("Images");
         item->SetIcon(utils::GetRomFsResource("Common/images.png"));
-        item->AddOnClick(std::bind(&MainLayout::images_Click, this), KEY_A);
+        if(emuiibo) {
+            item->AddOnClick(std::bind(&MainLayout::images_Click, this), KEY_A);
+        } else {
+            item->AddOnClick(std::bind(&MainLayout::disabled_Click, this), KEY_A);
+            item->SetColor({204,0,0,255});
+        }
         this->mainMenu->AddItem(item);
 
         item = new pu::element::MenuItem("Selected amiibo");
         item->SetIcon(utils::GetRomFsResource("Common/active.png"));
-        item->AddOnClick(std::bind(&MainLayout::showSelected_Click, this), KEY_A);
+        if(emuiibo) {
+            item->AddOnClick(std::bind(&MainLayout::showSelected_Click, this), KEY_A);
+        } else {
+            item->AddOnClick(std::bind(&MainLayout::disabled_Click, this), KEY_A);
+            item->SetColor({204,0,0,255});
+        }
         this->mainMenu->AddItem(item);
 
         item = new pu::element::MenuItem("Settings");
         item->SetIcon(utils::GetRomFsResource("Common/gears.png"));
-        item->AddOnClick(std::bind(&MainLayout::settings_Click, this), KEY_A);
+        if(emuiibo) {
+            item->AddOnClick(std::bind(&MainLayout::settings_Click, this), KEY_A);
+        } else {
+            item->AddOnClick(std::bind(&MainLayout::disabled_Click, this), KEY_A);
+            item->SetColor({204,0,0,255});
+        }
         //this->mainMenu->AddItem(item);
 
         item = new pu::element::MenuItem("User Manual");
@@ -124,11 +150,17 @@ namespace ui
             std::string path = utils::trim_right_copy(std::string(amiibo));
             std::string amiiboName = utils::getLastFromPath(path);
             bool random = utils::isRandomUuid(path+"/amiibo.json");
-			mainapp->CreateShowDialog("Active amiibo: " + amiiboName, "Located in: " + path + "\nRandom UUID: " + ((random) ? "enabled":"disabled"), { "Close" }, true, path + "/amiibo.png");
+			mainapp->CreateShowDialog("Active amiibo: " + amiiboName, "Located in: " + path + "\nRandom UUID: " + ((random) ? "enabled":"disabled"), { "Close" }, true, path + "/amiibo.icon");
 		} else {
 			pu::overlay::Toast *toast = new pu::overlay::Toast("No active amiibo.", 20, {255,255,255,255}, {0,51,102,255});
 			mainapp->StartOverlayWithTimeout(toast, 1500);
 		}
+	}
+
+	void MainLayout::disabled_Click()
+	{
+		pu::overlay::Toast *toast = new pu::overlay::Toast("Emuiibo is not installed, can't use this feature.", 20, {255,255,255,255}, {204,0,0,255});
+		mainapp->StartOverlayWithTimeout(toast, 1500);
 	}
 
     pu::element::Menu *MainLayout::GetMainMenu()
