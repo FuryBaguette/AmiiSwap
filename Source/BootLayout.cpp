@@ -12,7 +12,6 @@ namespace ui
         this->bootText->SetColor({255,255,255,255});
         this->bootText->SetHorizontalAlign(pu::element::HorizontalAlign::Center);
         this->Add(this->bootText);
-        //this->SetOnInput(std::bind(&ErrorLayout::error_Input, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     }
 
     BootLayout::~BootLayout()
