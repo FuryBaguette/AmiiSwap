@@ -1,37 +1,36 @@
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla eleifend ipsum et leo porta, vel 
-faucibus velit dapibus. Integer fringilla facilisis velit a tincidunt. Pellentesque tempor non 
-nulla sed rhoncus. Curabitur rhoncus lectus vitae volutpat malesuada. Mauris sit amet nisi interdum, 
-fermentum libero vel, ultricies urna. Orci varius natoque penatibus et magnis dis parturient montes, 
-nascetur ridiculus mus. Fusce ac ex rhoncus lectus pretium suscipit. Vivamus hendrerit condimentum massa, 
-quis dapibus purus molestie volutpat. Etiam nec congue lacus, quis faucibus tortor. 
-Suspendisse sollicitudin est non urna tempor, eu facilisis est molestie. Proin euismod magna eget purus egestas, 
-eget imperdiet nunc maximus. Nunc et iaculis purus, a cursus odio. Nullam a nunc turpis. Vestibulum sodales eu mi ut tempor. 
-Aenean ac orci id purus accumsan blandit. Sed a faucibus lacus.
+AmiiSwap:
+Nintendo Switch GUI Amiibo Manager homebrew
 
-Class aptent taciti sociosqu ad litora torquent per conubia nostra, 
-per inceptos himenaeos. Proin condimentum sapien enim, non venenatis tortor ultrices ac. 
-Maecenas condimentum lobortis orci, in consectetur mi vehicula sed. Nam non mattis tortor. 
-Vivamus vitae dictum purus. Nunc cursus sodales tellus eget fermentum. Morbi non ultrices quam.
+Menus:
+- Amiibos: This menu is used to manage and use amiibos
+- Emuiibo: Allows you to change emuiibo's state
+- Images: Find, place, delete images used for amiibo icons
+- Selected amiibo: Shows the currently activated amiibo and some info
+- User Manual: Basicly this readme inside AmiiSwap
+- About: Information about AmiiSwap
 
-Etiam a cursus nisi. Sed mattis nulla sed leo hendrerit facilisis. Aliquam lacinia convallis tellus, 
-sed vehicula mi molestie vitae. Proin nec quam placerat, efficitur erat non, volutpat lorem. 
-Cras pretium accumsan dui a congue. Nullam elementum nulla hendrerit purus sagittis, feugiat luctus nisi commodo. 
-Proin nisi velit, commodo ut hendrerit vel, ultrices tempus lectus.
+Adding Categories and Managing Amiibos:
+- Go to the Amiibos menu in the main menu of AmiiSwap
+- Press "X" to add a new category -> Enter a name
+- Press "Y" to manage selected category's amiibos
+- When managing amiibos, simply click on amiibos to add/remove them from the category
 
-Nulla facilisi. Sed ac odio sed ex condimentum congue eget eget nulla. Nullam interdum magna ut lacus dignissim rutrum. 
-Vivamus mauris mauris, dictum in elementum at, rutrum in urna. Cras sit amet iaculis orci. Ut molestie arcu at lectus ultrices, 
-faucibus egestas ipsum ullamcorper. Vivamus hendrerit sem vel purus porttitor blandit. Morbi turpis dui, eleifend ac pretium eu, 
-molestie quis neque. Cras faucibus odio tortor, ut ornare lorem finibus sed. Nullam maximus vel tortor ut ornare. 
-Nunc a enim sit amet nisi dictum porta et aliquam turpis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, 
-per inceptos himenaeos. Sed eu nisi nunc.
+How to use:
+- Go to the "Amiibos" menu in the main menu of AmiiSwap
+- Select a category then a amiibo, from here press `A` to use the amiibo or press X to toggle Random UUID
+- If you want to use emuiibo combos for emulation, quit here and use emuiibo normaly. **OR**
+- Go to the "Emuiibo" menu in the main menu of AmiiSwap
+- Select "Enable" to have emulation activated all the time, "Enable once" to emulate only once,
+"Disable" to use original combo system
 
-Mauris faucibus, neque ac condimentum tristique, eros ante lacinia ligula, vitae gravida ante mauris vitae odio. 
-Duis at urna bibendum, convallis erat eu, dictum augue. Morbi eget massa lacus. Aenean sodales sapien ut scelerisque suscipit. 
-Pellentesque ullamcorper, nulla ac consectetur lobortis, lectus eros imperdiet eros, a dapibus urna justo eu lorem. 
-Donec vitae erat consectetur libero pharetra lobortis sit amet a erat. Vestibulum mi ex, hendrerit vel varius eu, sagittis at justo.
+How to navigate:
+- Use the "dpad" or the "left stick" to navigate menus, "right stick" to navigate faster.
+- Use "A" to select
+- Use "B" to go back
+- Use "X" to add a new game in the `Amiibos menu`
+- Use "Y" to manage amiibos of a selected category
 
-Nulla leo orci, aliquam a vulputate at, accumsan vel sem. Nulla felis leo, sagittis in porttitor ac, auctor eget mauris. 
-Vivamus urna sapien, viverra eget dui et, ultrices molestie justo. Aenean fermentum sem mauris. Maecenas hendrerit facilisis tortor non tempus. 
-Phasellus eleifend diam ac felis egestas ullamcorper. Vivamus quis felis in enim ullamcorper maximus et non nunc. 
-Nulla vel ligula in velit faucibus condimentum eu maximus augue. Duis interdum nulla sapien, non scelerisque lectus ullamcorper ut. 
-Donec sagittis ullamcorper consectetur. Duis pretium dui condimentum pretium tincidunt. Nunc ipsum metus, egestas eget.
+Support:
+- Use the github issues to report problems/bugs **OR**
+- Join the [discord server](https://discord.gg/ap6yfR2) for support, news/announcements before anyone,
+be a tester or just talk.
