@@ -162,6 +162,7 @@ namespace ui
 		this->CallForRender();
 		utils::EnsureDirectories();
 		InitSettings();
+		this->manageLayout->populateGamesMenu();
 
 		if (!utils::IsEmuiiboPresent()) {
 			this->header->SetColor({204,0,0,255});
