@@ -1,48 +1,49 @@
 # AmiiSwap
 Nintendo Switch GUI Amiibo Manager homebrew for emulation with [emuiibo](https://github.com/XorTroll/emuiibo) (nfp mitm)
 
-## How to use
-- Download and setup [emuiibo](https://github.com/XorTroll/emuiibo) on your Switch. Once all your bin files have been placed in the emuiibo folder and that you rebooted your console, you should see that they have been replaced with folders of the same name and files inside (including the amiibo.bin file), keep that in mind.
+## How to setup
+- Download and setup [emuiibo](https://github.com/XorTroll/emuiibo) on your Switch. Once all your bin files have been placed in the emuiibo folder and that you rebooted your console, you should see that they have been replaced with folders of the same name and files inside (including the amiibo.bin file).
 - Download [AmiiSwap](https://github.com/FuryBaguette/AmiiSwap/releases) and place the `switch` folder inside the zip file at the root of your sd card.
-- The folder at `sdmc:/switch/AmiiSwap` contains a settings.txt file, it's an example file and you need to edit it to fit your amiibos and needs. There's a section below explaining how to set it up.
-- Launch AmiiSwap, select a game/category you created in the settings file -> select the amiibo you want -> press A -> Confirm
-- Enjoy
+- Launch AmiiSwap, you'll now see a menu with multiple options
 
-You can change amiibos whenever you want by just going back into AmiiSwap and selecting another amiibo.
+### Menus
+- **Amiibos**: This menu is used to manage and use amiibos
+- **Emuiibo**: Allows you to change emuiibo's state
+- **Images**: Find, place, delete images used for amiibo icons
+- **Selected amiibo**: Shows the currently activated amiibo and some info
+- **User Manual**: Basicly this readme inside AmiiSwap
+- **About**: Information about AmiiSwap
 
-## How to setup the settings file
-The settings.txt should be place in `sdmc/switch/AmiiSwap`, the format is really simple.
-This file allows you to "create" categories of amiibos, you can choose to organize them by anything (game name, category ect.). For the sake of this guide we'll use game names to organize amiibos
+## Adding Categories and Managing Amiibos
+- Go to the `Amiibos` menu in the main menu of AmiiSwap
+- Press `X` to add a new category -> Enter a name
+- Press `Y` to manage selected category's amiibos
+- When managing amiibos, simply click on amiibos to add/remove them from the category
 
-Here's an example settings file:
-```
-[Mario Kart 8]
-Bowser
-Captain Falcon
-Donkey Kong
-[Zelda BOTW]
-20 Heart Wolf Link
-Bokoblin
-Guardian
-```
-And [here](https://raw.githubusercontent.com/FuryBaguette/AmiiSwap/master/Screenshots/FolderPlacement.png) is how the emuiibo folder is set
-
-Your game names should be between brackets (you can set it to anything), example: [Super Smash Bros].
-After that, create a new line for each amiibos (with their name) you have and want to put in that game. The amiibo name should be the name of the folders created by emuiibo.
-You can add another game by simply doing these 2 steps again
+## How to use
+- Go to the `Amiibos` menu in the main menu of AmiiSwap
+- Select a category then a amiibo, from here press `A` to use the amiibo or press `X` to toggle Random UUID
+- If you want to use emuiibo combos for emulation, quit here and use emuiibo normaly. **OR**
+- Go to the `Emuiibo` menu in the main menu of AmiiSwap
+- Select `Enable` to have emulation activated all the time, `Enable once` to emulate only once, `Disable` to use original combo system
 
 ## How to navigate
 - Use the `dpad` or the `left stick` to navigate menus, `right stick` to navigate faster.
 - Use `A` to select
-- Use `B` to go back to the main menu
+- Use `B` to go back
+- Use `X` to add a new game in the `Amiibos menu`
+- Use `Y` to manage amiibos of a selected category
 
 ## Support
 - Use the github issues to report problems/bugs **OR**
 - Join the [discord server](https://discord.gg/ap6yfR2) for support, news/announcements before anyone, be a tester or just talk.
 
-## Screenshot
-Main menu showing the games:
+## Screenshots
+Main menu:
 ![](https://github.com/FuryBaguette/AmiiSwap/blob/master/Screenshots/MainScreen.jpg)
+
+Games list:
+![](https://github.com/FuryBaguette/AmiiSwap/blob/master/Screenshots/GameList.jpg)
 
 Amiibo list for the selected game:
 ![](https://github.com/FuryBaguette/AmiiSwap/blob/master/Screenshots/AmiiboList.jpg)
@@ -50,8 +51,21 @@ Amiibo list for the selected game:
 Confirmation dialog:
 ![](https://github.com/FuryBaguette/AmiiSwap/blob/master/Screenshots/UseAmiibo.jpg)
 
+Emuiibo toggles:
+![](https://github.com/FuryBaguette/AmiiSwap/blob/master/Screenshots/EmuiiboToggle.jpg)
+
+Images setup menu:
+![](https://github.com/FuryBaguette/AmiiSwap/blob/master/Screenshots/ImagesMenu.jpg)
+
+Currently active amiibo:
+![](https://github.com/FuryBaguette/AmiiSwap/blob/master/Screenshots/ActiveAmiibo.jpg)
+
+About screen:
+![](https://github.com/FuryBaguette/AmiiSwap/blob/master/Screenshots/AboutScreen.jpg)
+
 ## Credits
+- [FuryBaguette](https://github.com/FuryBaguette) - Author and developper
+- [AD2076](https://github.com/AD2076) - Developper
 - [XorTroll](https://github.com/XorTroll/) - For [emuiibo](https://github.com/XorTroll/emuiibo)
-- [AD2076](https://github.com/AD2076) - For some dev and ideas on AmiiSwap
 - [spx01](https://github.com/spx01) - His fork of switch-nfp-mitm you can find [here](https://github.com/spx01/switch-nfp-mitm). I should also thank [averne](https://github.com/averne/) and [ogniK5377](https://github.com/ogniK5377). (Fork of fork of fork)
 - [Subv](https://github.com/Subv) - For making [switch-nfp-mitm](https://github.com/Subv/switch-nfp-mitm)
