@@ -11,6 +11,7 @@ namespace ui
 			~ImagesLayout();
 			void search_Click();
 			void rename_Click();
+			void remove_Click();
 			void organize_Click();
 			void populateImagesMenu();
 			void selectionChange();

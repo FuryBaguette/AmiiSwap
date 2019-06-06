@@ -41,7 +41,7 @@ namespace ui
     {
         this->imagesMenu->ClearItems();
 
-        pu::element::MenuItem *item = new pu::element::MenuItem("Search and move images");
+        pu::element::MenuItem *item = new pu::element::MenuItem("Search and apply images");
         item->SetIcon(utils::GetRomFsResource("Common/search-folder.png"));
         item->AddOnClick(std::bind(&ImagesLayout::search_Click, this), KEY_A);
         this->imagesMenu->AddItem(item);
@@ -49,6 +49,11 @@ namespace ui
         item = new pu::element::MenuItem("Rename images");
         item->SetIcon(utils::GetRomFsResource("Common/edit-image.png"));
         item->AddOnClick(std::bind(&ImagesLayout::rename_Click, this), KEY_A);
+        this->imagesMenu->AddItem(item);
+        
+        item = new pu::element::MenuItem("Delete images");
+        item->SetIcon(utils::GetRomFsResource("Common/remove-image.png"));
+        item->AddOnClick(std::bind(&ImagesLayout::remove_Click, this), KEY_A);
         this->imagesMenu->AddItem(item);
     }
 
@@ -82,7 +87,7 @@ namespace ui
             for(auto amiibo : amiibos){
                 amiiboName = utils::getLastFromPath(amiibo);
                 if(amiiboName == imgName){
-                    newname = amiibo + "/amiibo.icon"; // + std::string(ext);
+                    newname = amiibo + "/amiibo.icon";
                     if(std::rename(image.c_str(),newname.c_str()) == 0 ){
                         imgCount++;
                     }
@@ -121,11 +126,11 @@ namespace ui
             if (auto dir = opendir(amiibo.c_str())) {
                 while (auto f = readdir(dir)) {
                     if (!f->d_name || f->d_name[0] == '.') continue;
-                    if (f->d_type == DT_REG && (f->d_name != "amiibo.icon")){ //|| f->d_name != "amiibo.jpg" || f->d_name != "amiibo.jpeg")) {
+                    if (f->d_type == DT_REG ){
                         const char* ext = ui::getExtension(f->d_name);
                         if (strcasecmp(ext, ".png") == 0 || strcasecmp(ext, ".jpg") == 0 || strcasecmp(ext, ".jpeg") == 0){
                             oldname = amiibo + "/" + f->d_name;
-                            newname = amiibo+"/amiibo.icon"; // + std::string(ext);
+                            newname = amiibo+"/amiibo.icon";
                             if(std::rename(oldname.c_str(),newname.c_str()) == 0 ){
                                 imgCount++;
                                 break;
@@ -144,7 +149,48 @@ namespace ui
         pu::overlay::Toast *toast = new pu::overlay::Toast("Renamed " + std::to_string(imgCount) + " images", 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);      
     }
-    
+
+    void ImagesLayout::remove_Click()
+    {
+        int imgCount = 0;
+        double progress = 0.0f;
+        char emuiiboFolder[] = "sdmc:/emuiibo";
+        std::vector<std::string> amiibos;
+        utils::get_amiibos_directories(emuiiboFolder, &amiibos);
+        std::string path;
+        this->progressBar->SetY(320);
+        this->progressBar->SetMaxValue(double(amiibos.size()));
+        this->progressBar->SetVisible(true);
+        mainapp->CallForRender();
+        this->SetElementOnFocus(this->progressBar);
+        for(auto amiibo : amiibos){
+            progress++;
+            this->progressBar->SetProgress((progress/double(amiibos.size()))*100.0f);
+            mainapp->CallForRender();
+            if (auto dir = opendir(amiibo.c_str())) {
+                while (auto f = readdir(dir)) {
+                    if (!f->d_name || f->d_name[0] == '.') continue;
+                    if (f->d_type == DT_REG && std::string(f->d_name) == "amiibo.icon"){
+                        path = amiibo + "/" + f->d_name;
+                        utils::Log(path);
+                        if(std::remove(path.c_str()) == 0 ){
+                            imgCount++;
+                            break;
+                        }
+                    }
+                }
+                closedir(dir);
+            }
+        }
+        this->progressBar->FillProgress();
+        mainapp->CallForRender();
+        this->progressBar->SetVisible(false);
+        mainapp->CallForRender();
+        this->SetElementOnFocus(this->imagesMenu);
+        pu::overlay::Toast *toast = new pu::overlay::Toast("Deleted " + std::to_string(imgCount) + " images", 20, {255,255,255,255}, {0,51,102,255});
+        mainapp->StartOverlayWithTimeout(toast, 1500);      
+    }
+
     pu::element::Menu *ImagesLayout::GetImagesMenu()
     {
         return (this->imagesMenu);
@@ -154,10 +200,13 @@ namespace ui
     {
         switch(this->imagesMenu->GetSelectedIndex()){
             case 0:
-                mainapp->SetFooterText("Search amiibo icons in AmiiSwap and emuiibo folders");
+                mainapp->SetFooterText("Search in AmiiSwap and emuiibo folders for amiibo images to apply");
                 break;
             case 1:
-                mainapp->SetFooterText("Rename .png in each amiibo folder for use with AmiiSwap");
+                mainapp->SetFooterText("Rename images in each amiibo folder for use with AmiiSwap");
+                break;
+            case 2:
+                mainapp->SetFooterText("Delete all amiibo images");
                 break;
             default:
                 mainapp->SetFooterText("");
