@@ -16,7 +16,6 @@ namespace ui
         this->Add(this->gamesMenu);
         this->Add(this->amiiboMenu);
         this->SetElementOnFocus(this->gamesMenu);
-        populateGamesMenu();
         this->SetOnInput(std::bind(&ManageLayout::manage_Input, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     }
 
