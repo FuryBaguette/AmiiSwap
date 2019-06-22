@@ -60,7 +60,7 @@ namespace ui
         item = new pu::element::MenuItem("Scan for new Amiibos");
         item->SetIcon(utils::GetRomFsResource("Common/scan.png"));
         item->AddOnClick(std::bind(&EmuiiboLayout::scan_Click, this), KEY_A);
-        //this->emuiiboMenu->AddItem(item);  //UNCOMMENT WHEN EMUIIBO WILL MERGE PR AND RELEASE
+        this->emuiiboMenu->AddItem(item);
     }
 
     void EmuiiboLayout::enable_Click()
@@ -95,7 +95,7 @@ namespace ui
 		nfpemuGetAmiibo(amiibo);
         this->progressBar->SetProgress(25.0f);
         mainapp->CallForRender();
-        //nfpemuRescanAmiibos(); //UNCOMMENT WHEN EMUIIBO WILL MERGE PR AND RELEASE
+        nfpemuRescanAmiibos();
         this->progressBar->IncrementProgress(50.0f);
         mainapp->CallForRender();
         mainapp->InitSettings();
