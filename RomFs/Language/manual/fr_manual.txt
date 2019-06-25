@@ -1,0 +1,36 @@
+AmiiSwap:
+Nintendo Switch GUI Amiibo Manager homebrew
+
+Menus:
+- Amiibos: This menu is used to manage and use amiibos
+- Emuiibo: Allows you to change emuiibo's state
+- Images: Find, place, delete images used for amiibo icons
+- Selected amiibo: Shows the currently activated amiibo and some info
+- User Manual: Basicly this readme inside AmiiSwap
+- About: Information about AmiiSwap
+
+Adding Categories and Managing Amiibos:
+- Go to the Amiibos menu in the main menu of AmiiSwap
+- Press "X" to add a new category -> Enter a name
+- Press "Y" to manage selected category's amiibos
+- When managing amiibos, simply click on amiibos to add/remove them from the category
+
+How to use:
+- Go to the "Amiibos" menu in the main menu of AmiiSwap
+- Select a category then a amiibo, from here press `A` to use the amiibo or press X to toggle Random UUID
+- If you want to use emuiibo combos for emulation, quit here and use emuiibo normaly. **OR**
+- Go to the "Emuiibo" menu in the main menu of AmiiSwap
+- Select "Enable" to have emulation activated all the time, "Enable once" to emulate only once,
+"Disable" to use original combo system
+
+How to navigate:
+- Use the "dpad" or the "left stick" to navigate menus, "right stick" to navigate faster.
+- Use "A" to select
+- Use "B" to go back
+- Use "X" to add a new game in the `Amiibos menu`
+- Use "Y" to manage amiibos of a selected category
+
+Support:
+- Use the github issues to report problems/bugs **OR**
+- Join the [discord server](https://discord.gg/ap6yfR2) for support, news/announcements before anyone,
+be a tester or just talk.

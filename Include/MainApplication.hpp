@@ -13,7 +13,7 @@
 #include "Utils.hpp"
 #include "Settings.hpp"
 #include "MainLayout.hpp"
-#include "ManageLayout.hpp"
+#include "GamesLayout.hpp"
 #include "SettingsLayout.hpp"
 #include "ErrorLayout.hpp"
 #include "AboutLayout.hpp"
@@ -21,6 +21,9 @@
 #include "ImagesLayout.hpp"
 #include "ManualLayout.hpp"
 #include "BootLayout.hpp"
+#include "AmiiboDetailsLayout.hpp"
+#include "AmiibosLayout.hpp"
+#include "lang/Language.hpp"
 #include "json.hpp"
 
 using json = nlohmann::json;
@@ -40,7 +43,7 @@ namespace ui
 	        MainApplication();
 			~MainApplication();
 			MainLayout *GetMainLayout();
-			ManageLayout *GetManageLayout();
+			GamesLayout *GetGamesLayout();
 			SettingsLayout *GetSettingsLayout();
 			ErrorLayout *GetErrorLayout();
 			AboutLayout *GetAboutLayout();
@@ -48,23 +51,27 @@ namespace ui
 			ImagesLayout *GetImagesLayout();
 			ManualLayout *GetManualLayout();
 			BootLayout *GetBootLayout();
-			set::Settings *GetSettings();
-			void SetSettings(set::Settings *s);
-			void SetWaitBack(bool state);
-			bool GetWaitBack();
+			AmiiboDetailsLayout *GetAmiiboDetailsLayout();
+			AmiibosLayout *GetAmiibosLayout();
+			//set::Settings *GetSettings();
+			//void SetSettings(set::Settings *s);
+			//void SetWaitBack(bool state);
+			//bool GetWaitBack();
 			void SetFooterText(std::string Text);
 			void SetHelpText(std::string Text);
 			void ShowError(std::string text);
-			void InitSettings();
-			void UpdateSettings();
+			//void InitSettings();
+			//void UpdateSettings();
+			//void MakeGamesLayout();
+			//void DeleteManageLayout();
 			void OnInput(u64 Down, u64 Up, u64 Held);
 			int MainApplication::GetEmuiiboStatus();
 			void MainApplication::UpdateEmuiiboStatus();
 			std::string activeAmiibo;
 	    private:
-			set::Settings *settings;
+			//set::Settings *settings;
 	        ui::MainLayout *mainLayout;
-	        ui::ManageLayout *manageLayout;
+	        ui::GamesLayout *gamesLayout;
 			ui::SettingsLayout *setLayout;
 			ui::ErrorLayout *errorLayout;
 			ui::AboutLayout *aboutLayout;
@@ -72,7 +79,10 @@ namespace ui
 			ui::ImagesLayout *imagesLayout;
 			ui::ManualLayout *manualLayout;
 			ui::BootLayout *bootLayout;
-			bool waitBack = false;
+			ui::AmiiboDetailsLayout *amiiboDetailsLayout;
+			ui::AmiibosLayout *amiibosLayout;
+			//bool waitBack = false;
+			//bool manage = true;
 			pu::element::Image *logo;
 			pu::element::Rectangle *header;
 			pu::element::Rectangle *headerShadow;

@@ -13,7 +13,7 @@ namespace ui
             void Update();
             void ScrollUp();
             void ScrollDown();
-            pu::Layout *GetPreviousLayout();
+            //pu::Layout *GetPreviousLayout();
         private:
             u32 loffset;
             u32 rlines;

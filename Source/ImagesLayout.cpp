@@ -1,5 +1,7 @@
 #include "MainApplication.hpp"
 
+extern lang::Language *language;
+
 namespace ui
 {
     extern MainApplication *mainapp;
@@ -22,7 +24,7 @@ namespace ui
         this->SetOnInput([&](u64 Down, u64 Up, u64 Held, bool Touch)
         {
             if (Down & KEY_B){
-                mainapp->SetHelpText("A: Select ");
+                mainapp->SetHelpText(lang::GetDictionaryEntry(2));
                 mainapp->GetMainLayout()->GetMainMenu()->SetVisible(true);
                 mainapp->GetMainLayout()->SetElementOnFocus(mainapp->GetMainLayout()->GetMainMenu());
                 mainapp->GetMainLayout()->selectionChange();
@@ -41,17 +43,17 @@ namespace ui
     {
         this->imagesMenu->ClearItems();
 
-        pu::element::MenuItem *item = new pu::element::MenuItem("Search and apply images");
+        pu::element::MenuItem *item = new pu::element::MenuItem(lang::GetDictionaryEntry(66));
         item->SetIcon(utils::GetRomFsResource("Common/search-folder.png"));
         item->AddOnClick(std::bind(&ImagesLayout::search_Click, this), KEY_A);
         this->imagesMenu->AddItem(item);
         
-        item = new pu::element::MenuItem("Rename images");
+        item = new pu::element::MenuItem(lang::GetDictionaryEntry(67));
         item->SetIcon(utils::GetRomFsResource("Common/edit-image.png"));
         item->AddOnClick(std::bind(&ImagesLayout::rename_Click, this), KEY_A);
         this->imagesMenu->AddItem(item);
         
-        item = new pu::element::MenuItem("Delete images");
+        item = new pu::element::MenuItem(lang::GetDictionaryEntry(68));
         item->SetIcon(utils::GetRomFsResource("Common/remove-image.png"));
         item->AddOnClick(std::bind(&ImagesLayout::remove_Click, this), KEY_A);
         this->imagesMenu->AddItem(item);
@@ -100,7 +102,7 @@ namespace ui
         this->progressBar->SetVisible(false);
         mainapp->CallForRender();
         this->SetElementOnFocus(this->imagesMenu);
-        pu::overlay::Toast *toast = new pu::overlay::Toast("Found " + std::to_string(imgCount) + " images", 20, {255,255,255,255}, {0,51,102,255});
+        pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetDictionaryEntry(69) + std::to_string(imgCount) + lang::GetDictionaryEntry(72), 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);     
     }
 
@@ -146,7 +148,7 @@ namespace ui
         this->progressBar->SetVisible(false);
         mainapp->CallForRender();
         this->SetElementOnFocus(this->imagesMenu);
-        pu::overlay::Toast *toast = new pu::overlay::Toast("Renamed " + std::to_string(imgCount) + " images", 20, {255,255,255,255}, {0,51,102,255});
+        pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetDictionaryEntry(70) + std::to_string(imgCount) + lang::GetDictionaryEntry(72), 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);      
     }
 
@@ -172,7 +174,6 @@ namespace ui
                     if (!f->d_name || f->d_name[0] == '.') continue;
                     if (f->d_type == DT_REG && std::string(f->d_name) == "amiibo.icon"){
                         path = amiibo + "/" + f->d_name;
-                        utils::Log(path);
                         if(std::remove(path.c_str()) == 0 ){
                             imgCount++;
                             break;
@@ -187,7 +188,7 @@ namespace ui
         this->progressBar->SetVisible(false);
         mainapp->CallForRender();
         this->SetElementOnFocus(this->imagesMenu);
-        pu::overlay::Toast *toast = new pu::overlay::Toast("Deleted " + std::to_string(imgCount) + " images", 20, {255,255,255,255}, {0,51,102,255});
+        pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetDictionaryEntry(71) + std::to_string(imgCount) + lang::GetDictionaryEntry(72), 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);      
     }
 
@@ -200,13 +201,13 @@ namespace ui
     {
         switch(this->imagesMenu->GetSelectedIndex()){
             case 0:
-                mainapp->SetFooterText("Search in AmiiSwap and emuiibo folders for amiibo images to apply");
+                mainapp->SetFooterText(lang::GetDictionaryEntry(73));
                 break;
             case 1:
-                mainapp->SetFooterText("Rename images in each amiibo folder for use with AmiiSwap");
+                mainapp->SetFooterText(lang::GetDictionaryEntry(74));
                 break;
             case 2:
-                mainapp->SetFooterText("Delete all amiibo images");
+                mainapp->SetFooterText(lang::GetDictionaryEntry(75));
                 break;
             default:
                 mainapp->SetFooterText("");

@@ -1,32 +1,32 @@
 namespace amiibo
 {
-    class AmiiboGame;
-    class AmiiboFile {
+    class Game;
+    class Amiibo {
     	public:
-    		AmiiboFile(std::string Name, std::string DirPath, std::string IconPath);
+    		Amiibo(std::string Name, std::string DirPath, std::string IconPath);
     		std::string GetName();
     		std::string GetPath();
             std::string GetIconPath();
-            std::vector<AmiiboGame *> GetParents(std::vector<AmiiboGame *> games);
-            std::string DisplayParents(std::vector<AmiiboGame *> games);
+            std::vector<Game *> GetParents(std::vector<Game *> games);
+            std::string DisplayParents(std::vector<Game *> games);
     	private:
     		std::string Name;
     		std::string DirPath;
             std::string IconPath;
-            std::vector<AmiiboGame *> Parents;
+            std::vector<Game *> Parents;
     };
 
-    class AmiiboGame {
+    class Game {
     	public:
-    		AmiiboGame(std::string Name);
+    		Game(std::string Name);
     		std::string GetName();
     		std::string GetPath();
-    		std::vector<AmiiboFile*> GetBinFiles();
-    		void AddAmiiboFile(AmiiboFile*);
-    		void SetAmiiboFiles(std::vector<AmiiboFile*> amiiboFiles);
+    		std::vector<std::string> GetAmiibos();
+    		void AddAmiibo(std::string amiibo);
+    		void SetAmiibos(std::vector<std::string> amiibos);
     	private:
     		std::string Name;
     		std::string FolderPath;
-    		std::vector<AmiiboFile*> amiiboFiles;
+    		std::vector<std::string> amiibos;
     };
 }

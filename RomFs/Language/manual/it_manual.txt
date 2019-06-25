@@ -1,0 +1,35 @@
+AmiiSwap:
+Gestore grafico per amiibo emulati tramite emuiibo su Nintendo Switch
+
+Menu:
+- Amiibo: Gestisci e organizza i tuoi amiibo
+- Emuiibo: Gestisci l'emulazione degli amiibo
+- Immagini: Trova, posiziona, cancella le immagini usate come icone per gli amiibo
+- Amiibo attivo: Informazioni sull'amiibo attivo
+- Manuale Utente: Questo readme integrato in AmiiSwap
+- Info su: Scopri chi ha realizzato AmiiSwap
+
+Aggiungere Categorie e Gestire gli Amiibo
+- Accedere al menu "Amiibo" dal menu prinicipale di AmiiSwap
+- Premere "X" per aggiungere una nuova categoria -> Scrivere il nome
+- Premere "Y" per gestire gli amiibo presenti nella categoria
+- Nella scermata di gestione degli amiibo, premere "A" su un amiibo per aggiungerlo/rimuoverlo dalla categoria
+
+Come usare
+- Accedere al menu "Amiibo" dal menu prinicipale di AmiiSwap
+- Selezionare una categoria e poi un amiibo, premere "A" per attivare l'amiibo o premere "X" per abilitare/disabilitare il Random UUID
+- Se si desidera utilizzare le combo di emuiibo per l'emulazione, fermarsi qui ed utilizzare emuiibo normalmente. 
+  OPPURE
+- Accedere al menu "Emuiibo" dal menu prinicipale di AmiiSwap
+- Selezionare "Abilita" per attivare l'emulazione in modo permanente, "Abilita per una volta sola" per attivarle per un solo utilizzo, "Disabilita" per disattivarla
+
+Come navigare
+- Usare il "dpad" o lo "stick sinitro" per navigare i menu, lo "stick destro" per navigare più velocemente.
+- Usare "A" per selezionare
+- Usare "B" per tornare indietro
+- Usare "X" nel "menu Amiibo" per aggiungere una categoria
+- Usare "Y" per gestire gli amiibo della categoria evidenziata
+
+Supporto
+- Usa la sezione issues di github per segnalare problemi o bug
+- Collegati al [server discord](https://discord.gg/ap6yfR2) per supporto, notizie/annunci in anteprima, diventare tester o semplicemente parlare.

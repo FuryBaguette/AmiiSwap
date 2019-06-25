@@ -1,5 +1,7 @@
 #include <MainApplication.hpp>
 
+extern lang::Language *language;
+
 namespace ui
 {
     extern MainApplication *mainapp;
@@ -14,7 +16,7 @@ namespace ui
         this->SetOnInput([&](u64 Down, u64 Up, u64 Held, bool Touch)
         {
             if (Down & KEY_B){
-                mainapp->SetHelpText("A: Select ");
+                mainapp->SetHelpText(lang::GetDictionaryEntry(2));
                 mainapp->GetMainLayout()->GetMainMenu()->SetVisible(true);
                 mainapp->GetMainLayout()->SetElementOnFocus(mainapp->GetMainLayout()->GetMainMenu());
                 mainapp->GetMainLayout()->selectionChange();

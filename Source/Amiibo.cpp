@@ -2,81 +2,87 @@
 
 namespace amiibo
 {
-	AmiiboFile::AmiiboFile(std::string Name, std::string DirPath, std::string IconPath)
+	Amiibo::Amiibo(std::string Name, std::string DirPath, std::string IconPath)
 	{
 		this->Name = Name;
 		this->DirPath = DirPath;
 		this->IconPath = IconPath;
 	}
 
-	std::string AmiiboFile::GetName()
+	std::string Amiibo::GetName()
 	{
-		return (this->Name);
+		return this->Name;
 	}
 
-	std::string AmiiboFile::GetPath()
+	std::string Amiibo::GetPath()
 	{
-		return (this->DirPath);
+		return this->DirPath;
 	}
 
-	std::string AmiiboFile::GetIconPath()
+	std::string Amiibo::GetIconPath()
 	{
-		return (this->IconPath);
+		return this->IconPath;
 	}
 
-	std::vector<AmiiboGame*> AmiiboFile::GetParents(std::vector<AmiiboGame *> games)
+	std::vector<Game*> Amiibo::GetParents(std::vector<Game *> games)
 	{
-		std::vector<AmiiboGame *> parents;
+		std::vector<Game *> parents;
 
 		for (auto & game : games) {
-			for (auto & amiibo : game->GetBinFiles()) {
-				if (amiibo->GetName() == this->Name && amiibo->GetPath() == this->DirPath)
-					parents.push_back(game);
+			for (auto & amiibo : game->GetAmiibos()) {
+				std::string amiiboName = amiibo;
+				std::string amiiboPath = "sdmc:/emuiibo/" + amiibo;
+				size_t size = amiibo.find_last_of("/\\");
+				if (size != std::string::npos)
+                	amiiboName = amiibo.substr(size + 1);
+				if (amiiboName == this->Name && amiiboPath == this->DirPath)
+					parents.insert(parents.end(), game);
 			}
 		}
-		return (parents);
+		return parents;
 	}
 
-	std::string AmiiboFile::DisplayParents(std::vector<AmiiboGame *> games)
+	std::string Amiibo::DisplayParents(std::vector<Game *> games)
 	{
-		std::vector<AmiiboGame *> amiiboParents = this->GetParents(games);
+		std::vector<Game *> amiiboParents = this->GetParents(games);
 		std::string parents;
 
 		for (auto & elem : amiiboParents) {
 			parents += elem->GetName() + ", ";
 		}
-		return (parents);
+		return parents;
 	}
 
-	AmiiboGame::AmiiboGame(std::string Name)
+	Game::Game(std::string Name)
 	{
 		this->Name = Name;
 	}
 
-	std::string AmiiboGame::GetName()
+	std::string Game::GetName()
 	{
-		return (this->Name);
+		return this->Name;
 	}
 
-	std::string AmiiboGame::GetPath()
+	std::string Game::GetPath()
 	{
-		return (this->FolderPath);
+		return this->FolderPath;
 	}
 
-	std::vector<AmiiboFile*> AmiiboGame::GetBinFiles()
+	std::vector<std::string> Game::GetAmiibos()
 	{
-		sort(this->amiiboFiles.begin(), this->amiiboFiles.end(), utils::AmiibosSort);
-		return (this->amiiboFiles);
+		return this->amiibos;
 	}
 
-	void AmiiboGame::AddAmiiboFile(AmiiboFile *file)
+	void Game::AddAmiibo(std::string amiibo)
 	{
-		this->amiiboFiles.push_back(file);
+		this->amiibos.insert(this->amiibos.end(), amiibo);
+		std::sort(this->amiibos.begin(), this->amiibos.end(), utils::StringSort);
 	}
 
-	void AmiiboGame::SetAmiiboFiles(std::vector<AmiiboFile*> files)
+	void Game::SetAmiibos(std::vector<std::string> newAmiibos)
 	{
-		this->amiiboFiles.clear();
-		this->amiiboFiles.insert(this->amiiboFiles.begin(), files.begin(), files.end());
+		//this->amiibos.clear();
+		//this->amiibos.insert(this->amiibos.begin(), newAmiibos.begin(), newAmiibos.end());
+		newAmiibos.swap(this->amiibos);
 	}
 }

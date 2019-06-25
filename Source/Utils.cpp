@@ -49,7 +49,7 @@ namespace utils
     			if (f->d_type == DT_REG) {
     				const char* ext = ui::getExtension(f->d_name);
     				if (strcasecmp(ext, ".png") == 0 || strcasecmp(ext, ".jpg") == 0 || strcasecmp(ext, ".jpeg") == 0)
-    					r->push_back(path + "/" + f->d_name);
+    					r->insert(r->end(), path + "/" + f->d_name);
     			}
     		}
     		closedir(dir);
@@ -66,11 +66,12 @@ namespace utils
         while (entry != NULL)
         {
             if (entry->d_type == DT_DIR)
-                r.push_back(std::string(path) + std::string("/") + std::string(entry->d_name));
+                r.insert(r.end(), std::string(path) + std::string("/") + std::string(entry->d_name));
 
             entry = readdir(dir);
         }
-        closedir(dir);
+        closedir(dir);        
+        r.shrink_to_fit();
         return r;
     }
 
@@ -89,7 +90,7 @@ namespace utils
         while (auto entry = readdir(dir))
         {
             if (strcasecmp(entry->d_name,"amiibo.bin")==0){
-                r->push_back(std::string(path));
+                r->insert(r->end(), std::string(path));
                 continue;
             }
             if (entry->d_type == DT_DIR){
@@ -98,7 +99,6 @@ namespace utils
             }
         }
         closedir(dir);
-        //return r;
     }
 
     std::string GetRomFsResource(std::string path)
@@ -150,7 +150,7 @@ namespace utils
         return astring < bstring;
     }
 
-    bool GamesSort(const amiibo::AmiiboGame* a, const amiibo::AmiiboGame* b)
+    bool GamesSort(const amiibo::Game* a, const amiibo::Game* b)
     {
         std::string astring = a->GetName();
         std::string bstring = b->GetName();
@@ -161,10 +161,19 @@ namespace utils
         return astring < bstring;
     }
 
-    bool AmiibosSort(const amiibo::AmiiboFile* a, const amiibo::AmiiboFile* b)
+    bool AmiibosSort(const amiibo::Amiibo* a, const amiibo::Amiibo* b)
     {
         std::string astring = a->GetName();
         std::string bstring = b->GetName();
+        transform(astring.begin(), astring.end(), astring.begin(), ::tolower);
+        transform(bstring.begin(), bstring.end(), bstring.begin(), ::tolower);
+        return astring < bstring;
+    }
+
+    bool StringSort(const std::string& a, const std::string& b)
+    {
+        std::string astring = a;
+        std::string bstring = b;
         transform(astring.begin(), astring.end(), astring.begin(), ::tolower);
         transform(bstring.begin(), bstring.end(), bstring.begin(), ::tolower);
         return astring < bstring;
@@ -210,8 +219,8 @@ namespace utils
         char key[] = { 0 };
         char amiibo[FS_MAX_PATH] = { 0 };
 		Result rs = nfpemuGetAmiibo(amiibo);
-        if(rs == 0 && strcmp (key,amiibo) != 0)
-            return utils::getLastFromPath(utils::trim_right_copy(std::string(amiibo)));
+        if(rs == 0 && R_FAILED(strcmp(key,amiibo)))
+            return utils::getLastFromPath(std::string(amiibo));
         return "none";
     }
 
@@ -257,7 +266,7 @@ namespace utils
                         if(spos == std::string::npos) break;
                         tmpline.replace(spos, tab.length(), "    ");
                     }
-                    data.push_back(tmpline);
+                    data.insert(data.end(), tmpline);
                     tmpc++;
                     tmpline = "";
                 }

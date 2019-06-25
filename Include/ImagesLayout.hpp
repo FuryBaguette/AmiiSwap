@@ -12,7 +12,7 @@ namespace ui
 			void search_Click();
 			void rename_Click();
 			void remove_Click();
-			void organize_Click();
+			//void organize_Click();
 			void populateImagesMenu();
 			void selectionChange();
 			pu::element::Menu *ImagesLayout::GetImagesMenu();

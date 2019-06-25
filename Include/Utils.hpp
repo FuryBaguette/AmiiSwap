@@ -5,6 +5,9 @@
 #include <stdlib.h>
 #include <malloc.h>
 #include <filesystem>
+#include "json.hpp"
+
+using json = nlohmann::json;
 
 namespace utils
 {
@@ -20,8 +23,9 @@ namespace utils
     void Log(std::string Text);
     std::string UserInput(std::string Guide, std::string Initial);
     bool NoPathSort(const std::string& a, const std::string& b);
-    bool GamesSort(const amiibo::AmiiboGame* a, const amiibo::AmiiboGame* b);
-    bool AmiibosSort(const amiibo::AmiiboFile* a, const amiibo::AmiiboFile* b);
+    bool GamesSort(const amiibo::Game* a, const amiibo::Game* b);
+    bool AmiibosSort(const amiibo::Amiibo* a, const amiibo::Amiibo* b);
+    bool StringSort(const std::string& a, const std::string& b);
     char ClearForbidden(char toCheck);
     std::string bufferToString(char* buffer, int bufflen);
     char* bufferToCString(char *buff, int buffSize, char *str);

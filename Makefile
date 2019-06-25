@@ -33,14 +33,14 @@ include $(DEVKITPRO)/libnx/switch_rules
 
 APP_TITLE := AmiiSwap
 APP_AUTHOR := FuryBaguette, AD2076
-APP_VERSION := 1.0
+APP_VERSION := 1.1
 
 # ICON := Icon.jpg
 TARGET		:=	AmiiSwap
 BUILD		:=	Build
-SOURCES		:=	Source nfpemu-libnx
+SOURCES		:=	Source Source/lang nfpemu-libnx
 DATA		:=	Bin
-INCLUDES	:=	Include nfpemu-libnx
+INCLUDES	:=	Include Include/lang nfpemu-libnx
 EXEFS_SRC	:=	exefs_src
 ROMFS		:=	RomFs
 

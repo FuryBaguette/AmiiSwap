@@ -1,5 +1,7 @@
 #include "MainApplication.hpp"
 
+extern lang::Language *language;
+
 namespace ui
 {
     extern MainApplication *mainapp;
@@ -23,7 +25,7 @@ namespace ui
         this->SetOnInput([&](u64 Down, u64 Up, u64 Held, bool Touch)
         {
             if (Down & KEY_B){
-                mainapp->SetHelpText("A: Select ");
+                mainapp->SetHelpText(lang::GetDictionaryEntry(2));
                 mainapp->GetMainLayout()->GetMainMenu()->SetVisible(true);
                 mainapp->GetMainLayout()->SetElementOnFocus(mainapp->GetMainLayout()->GetMainMenu());
                 mainapp->GetMainLayout()->selectionChange();
@@ -42,22 +44,22 @@ namespace ui
     {
         this->emuiiboMenu->ClearItems();
 
-        pu::element::MenuItem *item = new pu::element::MenuItem("Enable");
+        pu::element::MenuItem *item = new pu::element::MenuItem(lang::GetDictionaryEntry(42));
         item->SetIcon(utils::GetRomFsResource("Common/toggle.png"));
         item->AddOnClick(std::bind(&EmuiiboLayout::enable_Click, this), KEY_A);
         this->emuiiboMenu->AddItem(item);
         
-        item = new pu::element::MenuItem("Enable once");
+        item = new pu::element::MenuItem(lang::GetDictionaryEntry(43));
         item->SetIcon(utils::GetRomFsResource("Common/toggleonce.png"));
         item->AddOnClick(std::bind(&EmuiiboLayout::enableonce_Click, this), KEY_A);
         this->emuiiboMenu->AddItem(item);
 
-        item = new pu::element::MenuItem("Disable");
+        item = new pu::element::MenuItem(lang::GetDictionaryEntry(44));
         item->SetIcon(utils::GetRomFsResource("Common/untoggle.png"));
         item->AddOnClick(std::bind(&EmuiiboLayout::disable_Click, this), KEY_A);
         this->emuiiboMenu->AddItem(item);
 
-        item = new pu::element::MenuItem("Scan for new Amiibos");
+        item = new pu::element::MenuItem(lang::GetDictionaryEntry(45));
         item->SetIcon(utils::GetRomFsResource("Common/scan.png"));
         item->AddOnClick(std::bind(&EmuiiboLayout::scan_Click, this), KEY_A);
         this->emuiiboMenu->AddItem(item);
@@ -67,21 +69,21 @@ namespace ui
     {
         nfpemuUntoggle();
         nfpemuToggle();
-        pu::overlay::Toast *toast = new pu::overlay::Toast("Emuiibo enabled", 20, {255,255,255,255}, {0,51,102,255});
+        pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetDictionaryEntry(46), 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);     
     }
 
     void EmuiiboLayout::enableonce_Click()
     {
         nfpemuToggleOnce();
-        pu::overlay::Toast *toast = new pu::overlay::Toast("Emuiibo enabled once", 20, {255,255,255,255}, {0,51,102,255});
+        pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetDictionaryEntry(47), 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);      
     }
     
     void EmuiiboLayout::disable_Click()
     {
         nfpemuUntoggle();
-        pu::overlay::Toast *toast = new pu::overlay::Toast("Emuiibo disabled", 20, {255,255,255,255}, {0,51,102,255});
+        pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetDictionaryEntry(48), 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);
     }
     
@@ -98,17 +100,18 @@ namespace ui
         nfpemuRescanAmiibos();
         this->progressBar->IncrementProgress(50.0f);
         mainapp->CallForRender();
-        mainapp->InitSettings();
+        //mainapp->InitSettings();
+		set::Initialize();
         this->progressBar->SetProgress(75.0f);
         mainapp->CallForRender();
-        mainapp->GetManageLayout()->populateGamesMenu();
+        //mainapp->GetGamesLayout()->populateGamesMenu();
         nfpemuSetAmiibo(amiibo);
         this->progressBar->SetProgress(100.0f);
         mainapp->CallForRender();
         this->progressBar->SetVisible(false);
         mainapp->CallForRender();
         this->SetElementOnFocus(this->emuiiboMenu);
-        pu::overlay::Toast *toast = new pu::overlay::Toast("Scan complete", 20, {255,255,255,255}, {0,51,102,255});
+        pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetDictionaryEntry(49), 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);
     }
 
@@ -121,16 +124,16 @@ namespace ui
     {
         switch(this->emuiiboMenu->GetSelectedIndex()){
             case 0:
-                mainapp->SetFooterText("Activate amiibo emulation");
+                mainapp->SetFooterText(lang::GetDictionaryEntry(50));
                 break;
             case 1:
-                mainapp->SetFooterText("Activate amiibo emulation once");
+                mainapp->SetFooterText(lang::GetDictionaryEntry(51));
                 break;
             case 2:
-                mainapp->SetFooterText("Deactivate amiibo emulation");
+                mainapp->SetFooterText(lang::GetDictionaryEntry(52));
                 break;
             case 3:
-                mainapp->SetFooterText("Scan emuiibo folder for new .bin");
+                mainapp->SetFooterText(lang::GetDictionaryEntry(53));
                 break;
             default:
                 mainapp->SetFooterText("");
