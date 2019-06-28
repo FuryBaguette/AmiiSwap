@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <malloc.h>
 #include <filesystem>
+#include <regex>
 #include "json.hpp"
 
 using json = nlohmann::json;
@@ -53,4 +54,16 @@ namespace utils
     {
         return s.substr( 0, s.find_last_not_of( delimiters ) + 1 );
     }
+
+	inline std::string replace(const std::string& s, const std::string& f, const std::string& r)
+	{
+		/*
+		size_t i = 0;
+		i = s.find(f, i);
+		if (i != std::string::npos)
+			s.replace(i, f.length(), r);
+		return s;
+		*/
+		return std::regex_replace(s, std::regex(f), r);
+	}
 }

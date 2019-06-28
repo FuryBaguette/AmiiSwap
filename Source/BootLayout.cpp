@@ -10,7 +10,7 @@ namespace ui
     {
         this->bground = new pu::element::Rectangle(0, 0, 1280, 720, {0,102,153,255});
         this->Add(this->bground);
-        this->bootText = new pu::element::TextBlock(640, 360, lang::GetDictionaryEntry(11), 40);//"Loading AmiiSwap..."
+        this->bootText = new pu::element::TextBlock(640, 360, lang::GetLabel(lang::Label::BOOT_LOADING), 40);
         this->bootText->SetColor({255,255,255,255});
         this->bootText->SetHorizontalAlign(pu::element::HorizontalAlign::Center);
         this->Add(this->bootText);

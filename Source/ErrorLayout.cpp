@@ -12,7 +12,6 @@ namespace ui
         this->warningText->SetColor({204,0,0,255});
         this->warningText->SetHorizontalAlign(pu::element::HorizontalAlign::Center);
         this->Add(this->warningText);
-        //this->SetOnInput(std::bind(&ErrorLayout::error_Input, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     }
 
     ErrorLayout::~ErrorLayout()

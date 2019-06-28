@@ -25,7 +25,7 @@ namespace ui
         this->SetOnInput([&](u64 Down, u64 Up, u64 Held, bool Touch)
         {
             if (Down & KEY_B){
-                mainapp->SetHelpText(lang::GetDictionaryEntry(2));
+                mainapp->SetHelpText(lang::GetLabel(lang::Label::HELP_SELECT));
                 mainapp->GetMainLayout()->GetMainMenu()->SetVisible(true);
                 mainapp->GetMainLayout()->SetElementOnFocus(mainapp->GetMainLayout()->GetMainMenu());
                 mainapp->GetMainLayout()->selectionChange();
@@ -44,22 +44,22 @@ namespace ui
     {
         this->emuiiboMenu->ClearItems();
 
-        pu::element::MenuItem *item = new pu::element::MenuItem(lang::GetDictionaryEntry(42));
+        pu::element::MenuItem *item = new pu::element::MenuItem(lang::GetLabel(lang::Label::EMUIIBO_ENABLE));
         item->SetIcon(utils::GetRomFsResource("Common/toggle.png"));
         item->AddOnClick(std::bind(&EmuiiboLayout::enable_Click, this), KEY_A);
         this->emuiiboMenu->AddItem(item);
         
-        item = new pu::element::MenuItem(lang::GetDictionaryEntry(43));
+        item = new pu::element::MenuItem(lang::GetLabel(lang::Label::EMUIIBO_ENABLE_ONCE));
         item->SetIcon(utils::GetRomFsResource("Common/toggleonce.png"));
         item->AddOnClick(std::bind(&EmuiiboLayout::enableonce_Click, this), KEY_A);
         this->emuiiboMenu->AddItem(item);
 
-        item = new pu::element::MenuItem(lang::GetDictionaryEntry(44));
+        item = new pu::element::MenuItem(lang::GetLabel(lang::Label::EMUIIBO_DISABLE));
         item->SetIcon(utils::GetRomFsResource("Common/untoggle.png"));
         item->AddOnClick(std::bind(&EmuiiboLayout::disable_Click, this), KEY_A);
         this->emuiiboMenu->AddItem(item);
 
-        item = new pu::element::MenuItem(lang::GetDictionaryEntry(45));
+        item = new pu::element::MenuItem(lang::GetLabel(lang::Label::EMUIIBO_SCAN));
         item->SetIcon(utils::GetRomFsResource("Common/scan.png"));
         item->AddOnClick(std::bind(&EmuiiboLayout::scan_Click, this), KEY_A);
         this->emuiiboMenu->AddItem(item);
@@ -69,21 +69,21 @@ namespace ui
     {
         nfpemuUntoggle();
         nfpemuToggle();
-        pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetDictionaryEntry(46), 20, {255,255,255,255}, {0,51,102,255});
+        pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_EMUIIBO_ENABLED), 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);     
     }
 
     void EmuiiboLayout::enableonce_Click()
     {
         nfpemuToggleOnce();
-        pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetDictionaryEntry(47), 20, {255,255,255,255}, {0,51,102,255});
+        pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_EMUIIBO_ENABLED_ONCE), 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);      
     }
     
     void EmuiiboLayout::disable_Click()
     {
         nfpemuUntoggle();
-        pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetDictionaryEntry(48), 20, {255,255,255,255}, {0,51,102,255});
+        pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_EMUIIBO_DISABLED), 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);
     }
     
@@ -100,18 +100,16 @@ namespace ui
         nfpemuRescanAmiibos();
         this->progressBar->IncrementProgress(50.0f);
         mainapp->CallForRender();
-        //mainapp->InitSettings();
-		set::Initialize();
+        set::Initialize();
         this->progressBar->SetProgress(75.0f);
         mainapp->CallForRender();
-        //mainapp->GetGamesLayout()->populateGamesMenu();
         nfpemuSetAmiibo(amiibo);
         this->progressBar->SetProgress(100.0f);
         mainapp->CallForRender();
         this->progressBar->SetVisible(false);
         mainapp->CallForRender();
         this->SetElementOnFocus(this->emuiiboMenu);
-        pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetDictionaryEntry(49), 20, {255,255,255,255}, {0,51,102,255});
+        pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_EMUIIBO_SCAN), 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);
     }
 
@@ -124,16 +122,16 @@ namespace ui
     {
         switch(this->emuiiboMenu->GetSelectedIndex()){
             case 0:
-                mainapp->SetFooterText(lang::GetDictionaryEntry(50));
+                mainapp->SetFooterText(lang::GetLabel(lang::Label::FOOTER_EMUIIBO_ENABLE));
                 break;
             case 1:
-                mainapp->SetFooterText(lang::GetDictionaryEntry(51));
+                mainapp->SetFooterText(lang::GetLabel(lang::Label::FOOTER_EMUIIBO_ENABLE_ONCE));
                 break;
             case 2:
-                mainapp->SetFooterText(lang::GetDictionaryEntry(52));
+                mainapp->SetFooterText(lang::GetLabel(lang::Label::FOOTER_EMUIIBO_DISABLE));
                 break;
             case 3:
-                mainapp->SetFooterText(lang::GetDictionaryEntry(53));
+                mainapp->SetFooterText(lang::GetLabel(lang::Label::FOOTER_EMUIIBO_SCAN));
                 break;
             default:
                 mainapp->SetFooterText("");

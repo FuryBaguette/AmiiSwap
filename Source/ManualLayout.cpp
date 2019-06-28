@@ -16,7 +16,7 @@ namespace ui
         this->SetOnInput([&](u64 Down, u64 Up, u64 Held, bool Touch)
         {
             if (Down & KEY_B){
-                mainapp->SetHelpText(lang::GetDictionaryEntry(2));
+                mainapp->SetHelpText(lang::GetLabel(lang::Label::HELP_SELECT));
                 mainapp->GetMainLayout()->GetMainMenu()->SetVisible(true);
                 mainapp->GetMainLayout()->SetElementOnFocus(mainapp->GetMainLayout()->GetMainMenu());
                 mainapp->GetMainLayout()->selectionChange();

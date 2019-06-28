@@ -25,7 +25,7 @@ namespace ui
 	void GamesLayout::manage_Input(u64 Down, u64 Up, u64 Held)
 	{
 		if (Down & KEY_B && !this->waitInput){
-            mainapp->SetHelpText(lang::GetDictionaryEntry(2));
+            mainapp->SetHelpText(lang::GetLabel(lang::Label::HELP_SELECT));
             mainapp->GetMainLayout()->GetMainMenu()->SetVisible(true);
             mainapp->GetMainLayout()->SetElementOnFocus(mainapp->GetMainLayout()->GetMainMenu());
             mainapp->GetMainLayout()->selectionChange();
@@ -38,13 +38,8 @@ namespace ui
         delete this->gamesMenu;
         delete this->allAmiibosMenu;
     }
-	/*
-    std::vector<amiibo::Game*> GamesLayout::GetAmiiboGames()
-    {
-        return this->amiiboGames;
-    }
-	*/
-    void GamesLayout::populateGamesMenu()
+	
+	void GamesLayout::populateGamesMenu()
     {
         this->gamesMenu->ClearItems();
 		for (auto & game : set::GetGames()) {
@@ -55,14 +50,16 @@ namespace ui
     pu::element::MenuItem *GamesLayout::CreateItem(amiibo::Game *game)
     {
         pu::element::MenuItem *item = new pu::element::MenuItem(game->GetName());
-        std::string iconFile = game->GetName() + ".png";
         std::string amiiswapFolder ="sdmc:/switch/AmiiSwap/game_icons/";
-        if(std::fstream{amiiswapFolder+iconFile}){
-            item->SetIcon(amiiswapFolder+iconFile);
-        }else{
-            item->SetIcon(utils::GetRomFsResource("Common/game.png"));
-        }
-        item->AddOnClick(std::bind(&GamesLayout::category_Click, this, game), KEY_A);
+        item->SetIcon(utils::GetRomFsResource("Common/game.png"));
+		std::vector<std::string> iconFileCandidates = { game->GetName() + ".png",game->GetName() + ".jpg",game->GetName() + ".jpeg" };
+		for (auto& iconfile : iconFileCandidates) {
+			if (utils::fileExists(amiiswapFolder + iconfile)) {
+				item->SetIcon(amiiswapFolder + iconfile);
+				break;
+			}
+		}
+		item->AddOnClick(std::bind(&GamesLayout::category_Click, this, game), KEY_A);
         item->AddOnClick(std::bind(&GamesLayout::addGame_Click, this), KEY_X);
         item->AddOnClick(std::bind(&GamesLayout::addAmiibos_Click, this, game), KEY_Y);
         item->AddOnClick(std::bind(&GamesLayout::removeGame_Click, this), KEY_MINUS);
@@ -72,11 +69,11 @@ namespace ui
     void GamesLayout::category_Click(amiibo::Game *game)
     {
     	if (game->GetAmiibos().empty()) {
-            pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetDictionaryEntry(54), 20, {255,255,255,255}, {0,51,102,255});
+            pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_GAMES_NO_AMIIBO), 20, {255,255,255,255}, {0,51,102,255});
             mainapp->StartOverlayWithTimeout(toast, 1500);
         } else {
-            mainapp->SetFooterText(lang::GetDictionaryEntry(55) + game->GetName() +": " + std::to_string(game->GetAmiibos().size()));
-            mainapp->SetHelpText(lang::GetDictionaryEntry(2) + lang::GetDictionaryEntry(7));
+            mainapp->SetFooterText(lang::GetLabel(lang::Label::FOOTER_AMIIBO) + game->GetName() +": " + std::to_string(game->GetAmiibos().size()));
+            mainapp->SetHelpText(lang::GetLabel(lang::Label::HELP_SELECT) + lang::GetLabel(lang::Label::HELP_TOGGLE));
             mainapp->GetAmiibosLayout()->populateAmiibosMenu(game);
             mainapp->LoadLayout(mainapp->GetAmiibosLayout());
         }
@@ -84,8 +81,8 @@ namespace ui
 
     pu::element::Menu *GamesLayout::GetGamesMenu()
     {
-        mainapp->SetFooterText(lang::GetDictionaryEntry(30) + std::to_string(set::GetGamesSize()));
-        mainapp->SetHelpText(lang::GetDictionaryEntry(2) + lang::GetDictionaryEntry(6) + lang::GetDictionaryEntry(8) + lang::GetDictionaryEntry(9));
+        mainapp->SetFooterText(lang::GetLabel(lang::Label::FOOTER_GAMES) + std::to_string(set::GetGamesSize()));
+        mainapp->SetHelpText(lang::GetLabel(lang::Label::HELP_SELECT) + lang::GetLabel(lang::Label::HELP_ADD) + lang::GetLabel(lang::Label::HELP_MANAGE) + lang::GetLabel(lang::Label::HELP_MINUS));
     	return (this->gamesMenu);
     }
 
@@ -96,25 +93,21 @@ namespace ui
 
     void GamesLayout::addGame_Click()
     {
-        std::string name = utils::UserInput(lang::GetDictionaryEntry(56), "");
+        std::string name = utils::UserInput(lang::GetLabel(lang::Label::KEYBOARD_HINT), "");
         std::transform(name.begin(), name.end(), name.begin(), utils::ClearForbidden);
        
         if(name == "ALL"){
-            pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetDictionaryEntry(57), 20, {255,255,255,255}, {0,51,102,255});
+            pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_GAME_ALL_RESERVED), 20, {255,255,255,255}, {0,51,102,255});
             mainapp->StartOverlayWithTimeout(toast, 1500);
             return;
         }
 
         if(name != ""){
             amiibo::Game *game = new amiibo::Game(name);
-            //this->amiiboGames.insert(this->amiiboGames.end(), game);
-			set::AddGame(game);
-            //this->gamesMenu->AddItem(CreateItem(game));
-            //mainapp->UpdateSettings();
-			//set::Initialize();
+            set::AddGame(game);
             populateGamesMenu();
-            mainapp->SetFooterText(lang::GetDictionaryEntry(30) + std::to_string(set::GetGamesSize()));
-            pu::overlay::Toast *toast = new pu::overlay::Toast(name + lang::GetDictionaryEntry(58), 20, {255,255,255,255}, {0,51,102,255});
+            mainapp->SetFooterText(lang::GetLabel(lang::Label::FOOTER_GAMES) + std::to_string(set::GetGamesSize()));
+            pu::overlay::Toast *toast = new pu::overlay::Toast(name + lang::GetLabel(lang::Label::GAME_ADDED), 20, {255,255,255,255}, {0,51,102,255});
             mainapp->StartOverlayWithTimeout(toast, 1500);
         }
     }
@@ -123,38 +116,19 @@ namespace ui
     {
         std::string gameName = this->gamesMenu->GetSelectedItem()->GetName();
         if(gameName == "ALL"){
-            pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetDictionaryEntry(59), 20, {255,255,255,255}, {0,51,102,255});
+            pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_GAME_ALL_CANT_DELETE), 20, {255,255,255,255}, {0,51,102,255});
             mainapp->StartOverlayWithTimeout(toast, 1500);
             return;
         }
 		set::RemoveGame(gameName);
-        mainapp->SetFooterText(lang::GetDictionaryEntry(30) + std::to_string(set::GetGamesSize()));
-        pu::overlay::Toast *toast = new pu::overlay::Toast(gameName + lang::GetDictionaryEntry(60), 20, {255,255,255,255}, {0,51,102,255});
+        mainapp->SetFooterText(lang::GetLabel(lang::Label::FOOTER_GAMES) + std::to_string(set::GetGamesSize()));
+        pu::overlay::Toast *toast = new pu::overlay::Toast(gameName + lang::GetLabel(lang::Label::GAME_REMOVED), 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);
-        //mainapp->UpdateSettings();
         populateGamesMenu();
         this->gamesMenu->SetSelectedIndex(0);
     }
-	/*
-    void GamesLayout::GetAllAmiibos()
-    {
-        std::vector<std::string> amiibos;
-		std::string name;
-        char emuiiboFolder[] = "sdmc:/emuiibo";
-        utils::get_amiibos_directories(emuiiboFolder, &amiibos);
-        std::sort(amiibos.begin(), amiibos.end(), &utils::NoPathSort);
-        for (auto & amiibo : amiibos) {
-            std::size_t found = amiibo.find_last_of("/\\");
-			if (found != std::string::npos)
-				name = amiibo.substr(found + 1);
-            if (name != "miis") {
-                amiibo::Amiibo *file = new amiibo::Amiibo(name, amiibo, amiibo + "amiibo.icon");
-                this->allAmiibos.insert(this->allAmiibos.end(), file);
-            }
-        }
-    }
-	*/
-    void GamesLayout::multiSelectItem_Click(amiibo::Amiibo *amiibo, amiibo::Game *game)
+
+	void GamesLayout::multiSelectItem_Click(amiibo::Amiibo *amiibo, amiibo::Game *game)
     {
         std::string amiiboName = amiibo->GetName();
         size_t size = amiiboName.find_last_of("/\\");
@@ -174,17 +148,15 @@ namespace ui
         if (!isInGame) {
             game->AddAmiibo(amiiboName);
             this->allAmiibosMenu->GetSelectedItem()->SetIcon(utils::GetRomFsResource("Common/ingame2.png"));
-            toast = new pu::overlay::Toast(lang::GetDictionaryEntry(61) + amiiboName, 20, {255,255,255,255}, {0,51,102,255});
+            toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_GAME_ADDED) + amiiboName, 20, {255,255,255,255}, {0,51,102,255});
         } else {
             amiibosInGame.erase(amiibosInGame.begin() + position);
             game->SetAmiibos(amiibosInGame);
             this->allAmiibosMenu->GetSelectedItem()->SetIcon(utils::GetRomFsResource("Common/notingame2.png"));
-            toast = new pu::overlay::Toast(lang::GetDictionaryEntry(62) + amiiboName, 20, {255,255,255,255}, {0,51,102,255});
+            toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_GAME_REMOVED) + amiiboName, 20, {255,255,255,255}, {0,51,102,255});
         }
-        //this->amiiboGames.erase(std::remove(this->amiiboGames.begin(), this->amiiboGames.end(), game), this->amiiboGames.end());
-		set::RemoveGame(game->GetName());
-        //this->amiiboGames.insert(this->amiiboGames.end(), game);
-		set::AddGame(game);
+        set::RemoveGame(game->GetName());
+        set::AddGame(game);
         mainapp->StartOverlayWithTimeout(toast, 700);
     }
 
@@ -193,17 +165,17 @@ namespace ui
         this->allAmiibosMenu->ClearItems();
         this->waitInput = true;
         if(game->GetName() == "ALL"){
-            pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetDictionaryEntry(63), 20, {255,255,255,255}, {0,51,102,255});
+            pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_GAME_ALL_POPULATED), 20, {255,255,255,255}, {0,51,102,255});
             mainapp->StartOverlayWithTimeout(toast, 1500);
             return;
         }
         if (set::GetAllAmiibos().empty()) {
-            pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetDictionaryEntry(64), 20, {255,255,255,255}, {0,51,102,255});
+            pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_NO_AMIIBO), 20, {255,255,255,255}, {0,51,102,255});
             mainapp->StartOverlayWithTimeout(toast, 1500);
             return;
         } else {
-            mainapp->SetFooterText(lang::GetDictionaryEntry(65) + game->GetName());
-            mainapp->SetHelpText(lang::GetDictionaryEntry(2) + lang::GetDictionaryEntry(4));
+            mainapp->SetFooterText(lang::GetLabel(lang::Label::FOOTER_AMIIBO_SELECT) + game->GetName());
+            mainapp->SetHelpText(lang::GetLabel(lang::Label::HELP_SELECT) + lang::GetLabel(lang::Label::HELP_FINISH));
         	for (auto & amiibo : set::GetAllAmiibos()) {
                 bool inGame = false;
                 std::string amiiboName = amiibo->GetName();
@@ -234,10 +206,9 @@ namespace ui
 
     void GamesLayout::backToGame_Click()
     {
-        //mainapp->UpdateSettings();
         populateGamesMenu();
-        mainapp->SetFooterText(lang::GetDictionaryEntry(30) + std::to_string(set::GetGamesSize()));
-        mainapp->SetHelpText(lang::GetDictionaryEntry(2) + lang::GetDictionaryEntry(6) + lang::GetDictionaryEntry(8) + lang::GetDictionaryEntry(9));
+        mainapp->SetFooterText(lang::GetLabel(lang::Label::FOOTER_GAMES) + std::to_string(set::GetGamesSize()));
+        mainapp->SetHelpText(lang::GetLabel(lang::Label::HELP_SELECT) + lang::GetLabel(lang::Label::HELP_ADD) + lang::GetLabel(lang::Label::HELP_MANAGE) + lang::GetLabel(lang::Label::HELP_MINUS));
         this->SetElementOnFocus(this->gamesMenu);
         this->allAmiibosMenu->SetVisible(false);
         this->gamesMenu->SetVisible(true);  

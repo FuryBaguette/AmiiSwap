@@ -81,8 +81,6 @@ namespace amiibo
 
 	void Game::SetAmiibos(std::vector<std::string> newAmiibos)
 	{
-		//this->amiibos.clear();
-		//this->amiibos.insert(this->amiibos.begin(), newAmiibos.begin(), newAmiibos.end());
 		newAmiibos.swap(this->amiibos);
 	}
 }

@@ -41,9 +41,9 @@ namespace ui
 		this->logo->SetHeight(60);
 		this->logo->SetWidth(60);
 
-		this->headerText = new pu::element::TextBlock(80, 20, lang::GetDictionaryEntry(0) + std::string(AMIISWAP_VERSION), 40);
+		this->headerText = new pu::element::TextBlock(80, 20, lang::GetLabel(lang::Label::APP_NAME) + std::string(AMIISWAP_VERSION), 40);
 		this->headerText->SetColor({255,255,255,255});
-		
+
 		this->emuiiboLed = new pu::element::Rectangle(1255, 10, 15, 15, {0,102,153,255}, 5);
 		this->emuiiboLed->SetBorderRadius(5);
 
@@ -55,13 +55,13 @@ namespace ui
 		this->amiiboText->SetColor({255,255,255,255});
 		this->amiiboText->SetHorizontalAlign(pu::element::HorizontalAlign::Right);
 
-		this->footerText = new pu::element::TextBlock(10, 690, lang::GetDictionaryEntry(1), 20);
+		this->footerText = new pu::element::TextBlock(10, 690, lang::GetLabel(lang::Label::FOOTER_MAIN_AMIIBO), 20);
 		this->footerText->SetColor({255,255,255,255});
 
 		this->helpText = new pu::element::TextBlock(10, 690, "", 20);
 		this->helpText->SetColor({255,255,255,255});
 		this->helpText->SetHorizontalAlign(pu::element::HorizontalAlign::Right);
-		this->helpText->SetText(lang::GetDictionaryEntry(2));
+		this->helpText->SetText(lang::GetLabel(lang::Label::HELP_SELECT));
 		
 		this->bootLayout->SetProgress(3.0f);
 		this->CallForRender();
@@ -223,10 +223,9 @@ namespace ui
 		
 		this->SetOnInput(std::bind(&MainApplication::OnInput, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 		
-		this->bootLayout->SetText(lang::GetDictionaryEntry(12));
+		this->bootLayout->SetText(lang::GetLabel(lang::Label::BOOT_SETTINGS));
 		this->bootLayout->SetProgress(36.0f);
 		this->CallForRender();
-		//InitSettings();
 		set::Initialize();
 		this->bootLayout->SetProgress(90.0f);
 		this->CallForRender();
@@ -236,7 +235,7 @@ namespace ui
 		if (!utils::IsEmuiiboPresent()) {
 			this->header->SetColor({204,0,0,255});
 			this->footer->SetColor({204,0,0,255});
-			this->emuiiboText->SetText(lang::GetDictionaryEntry(10));
+			this->emuiiboText->SetText(lang::GetLabel(lang::Label::ERROR_NOT_INSTALLED));
 			this->LoadLayout(this->mainLayout);
 		} else {
 			nfpemuInitialize();
@@ -301,7 +300,6 @@ namespace ui
 	{
 		this->header->SetColor({204,0,0,255});
 		this->footer->SetColor({204,0,0,255});
-		//this->LoadLayout(this->errorLayout);
 		this->errorLayout->SetText(text);
 	}
 
@@ -359,180 +357,7 @@ namespace ui
     {
         return this->amiibosLayout;
     }
-	/*
-	void MainApplication::InitSettings()
-    {
-        std::string settingsPath = "sdmc:/switch/AmiiSwap/settings.txt";
-        char emuiiboFolder[] = "sdmc:/emuiibo";
-        std::vector<std::string> allAmiibos;
-		float progress = 36.0f;
-        utils::get_amiibos_directories(emuiiboFolder, &allAmiibos);
-        allAmiibos.erase(std::remove(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/miis"), allAmiibos.end());
-		allAmiibos.shrink_to_fit();
-		std::sort(allAmiibos.begin(), allAmiibos.end(), &utils::NoPathSort);
-        std::ifstream settingsIfs(settingsPath);
-        if(!settingsIfs.good()){ //no settings.txt found, generate.
-			this->bootLayout->SetText(lang::GetDictionaryEntry(13));
-           	std::ofstream settingsOfs(settingsPath);
-			settingsOfs << "[ALL]" << "\r" << "\n";
-            for (auto & elem : allAmiibos) {
-				progress++;
-                settingsOfs << elem.substr(sizeof(emuiiboFolder)) << "\r" << "\n";
-				this->bootLayout->SetProgress((progress/float(allAmiibos.size()))*100.0f);
-				this->CallForRender();
-            }
-            if(settingsOfs.is_open())
-                settingsOfs.close();
-			//set::Settings *s = new set::Settings(settingsPath);
-            //this->SetSettings(s);
-			std::vector<std::string>().swap(allAmiibos);
-        } else { // settings.txt available compare with actually available amiibos and rewrite
-			this->bootLayout->SetText(lang::GetDictionaryEntry(14));
-           	if(settingsIfs.is_open())
-                settingsIfs.close();
-			//set::Settings *s = new set::Settings(settingsPath);
-            //this->SetSettings(s);
-            std::vector<amiibo::Game*> gamesInConfig = set::GetGames();
-            std::vector<std::string> amiibosInConfig;
-            std::vector<std::string> removedAmiibos;
-			bool all=false;
-            for(auto & game : gamesInConfig) {
-				if (game->GetName()=="ALL"){
-					all=true;
-				} else {
-					std::vector<std::string> files = game->GetAmiibos();
-					for (auto element : files) {
-						if(find(amiibosInConfig.begin(), amiibosInConfig.end(), std::string(element)) == amiibosInConfig.end())
-							amiibosInConfig.insert(amiibosInConfig.end(), element);
-					}
-					std::vector<std::string>().swap(files);
-				}
-            }
-			this->bootLayout->SetProgress(45.0f);
-			this->CallForRender();
-			std::sort(amiibosInConfig.begin(), amiibosInConfig.end(), &utils::NoPathSort);
-			
-			this->bootLayout->SetProgress(50.0f);
-			progress=50.0f;
-			this->CallForRender();
-		    for(auto & element : amiibosInConfig){
-                if(find(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/" + element) != allAmiibos.end()){
-                    allAmiibos.erase(std::remove(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/" + element), allAmiibos.end());
-					this->bootLayout->SetProgress(progress + (progress/float(amiibosInConfig.size())*25.0f));
-					this->CallForRender();
-                } else {
-                    removedAmiibos.insert(removedAmiibos.end(), element);
-                }
-            }
-			allAmiibos.shrink_to_fit();
-
-			this->bootLayout->SetProgress(75.0f);
-			progress=75.0f;
-			this->CallForRender();
-		    std::ofstream settingsOfs(settingsPath,std::ofstream::trunc);
-			
-			if(!all) {
-				settingsOfs << "[ALL]" << "\r" << "\n";
-				for(auto & element : allAmiibos){
-						settingsOfs << element.substr(sizeof(emuiiboFolder)) << "\r" << "\n";
-						this->bootLayout->SetProgress(progress + (progress/float(amiibosInConfig.size())*10.0f));
-				}
-			}
-
-			this->bootLayout->SetProgress(85.0f);
-			progress=85.0f;
-			this->CallForRender();
-		    for(auto & game : gamesInConfig) {
-				if (game->GetName() == "ALL"){
-					settingsOfs << "[ALL]" << "\r" << "\n";
-					for(auto & element : allAmiibos){
-						settingsOfs << element.substr(sizeof(emuiiboFolder)) << "\r" << "\n";
-					}
-				} else {
-					std::vector<std::string> files = game->GetAmiibos();
-					settingsOfs << "[" << game->GetName() <<"]" << "\r" << "\n";
-					for (auto element : files) {
-						if(find(removedAmiibos.begin(), removedAmiibos.end(), std::string(element)) == removedAmiibos.end()) // missing amiibos are already ignored when creating menu but let's keep settings clean
-							settingsOfs << element << "\r" << "\n";
-					}
-					std::vector<std::string>().swap(files);
-				}
-				this->bootLayout->SetProgress(progress + (progress/float(amiibosInConfig.size())*10.0f));
-            }
-
-			this->bootLayout->SetProgress(95.0f);
-			this->CallForRender();
-		   	if(settingsOfs.is_open())
-                settingsOfs.close();
-			//s = new set::Settings(settingsPath);
-            //this->SetSettings(s);
-		std::vector<amiibo::Game*>().swap(gamesInConfig);
-		std::vector<std::string>().swap(amiibosInConfig);
-		std::vector<std::string>().swap(removedAmiibos);
-		std::vector<std::string>().swap(allAmiibos);
-        }
-		this->bootLayout->SetProgress(97.5f);
-		this->CallForRender();
-	}
-	*/
-	/*
-	void MainApplication::UpdateSettings()
-	{
-        std::string settingsPath = "sdmc:/switch/AmiiSwap/settings.txt";
-        char emuiiboFolder[] = "sdmc:/emuiibo";
-        std::vector<std::string> allAmiibos;
-        utils::get_amiibos_directories(emuiiboFolder, &allAmiibos);
-        allAmiibos.erase(std::remove(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/miis"), allAmiibos.end());
-		allAmiibos.shrink_to_fit();
-		std::sort(allAmiibos.begin(), allAmiibos.end(), &utils::NoPathSort);
-		std::vector<amiibo::Game*> gamesInConfig = this->gamesLayout->GetAmiiboGames();
-		std::vector<std::string> amiibosInConfig;
-		std::vector<std::string> removedAmiibos;
-		for(auto & game : gamesInConfig) {
-			std::vector<std::string> files = game->GetAmiibos();
-			for (auto element : files) {
-				if(find(amiibosInConfig.begin(), amiibosInConfig.end(), std::string(element)) == amiibosInConfig.end())
-					amiibosInConfig.insert(amiibosInConfig.end(), element);
-			}
-			std::vector<std::string>().swap(files);
-		}
-		std::sort(amiibosInConfig.begin(), amiibosInConfig.end(), &utils::NoPathSort);
-
-		for(auto & element : amiibosInConfig){
-			if(find(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/" + element) != allAmiibos.end()){
-				allAmiibos.erase(std::remove(allAmiibos.begin(), allAmiibos.end(), std::string(emuiiboFolder) + "/" + element), allAmiibos.end());
-			} else {
-				removedAmiibos.insert(removedAmiibos.end(), element);
-			}
-		}
-		allAmiibos.shrink_to_fit();
-		std::ofstream settingsOfs(settingsPath,std::ofstream::trunc);
-		for(auto & game : gamesInConfig) {
-			settingsOfs << "[" << game->GetName() <<"]" << "\r" << "\n";
-			if (game->GetName() == "ALL"){
-				for(auto & element : allAmiibos){
-					settingsOfs << element.substr(sizeof(emuiiboFolder)) << "\r" << "\n";
-				}
-			} else {
-				std::vector<std::string> files = game->GetAmiibos();
-				for (auto element : files) {
-					if(find(removedAmiibos.begin(), removedAmiibos.end(), element) == removedAmiibos.end()) // missing amiibos are already ignored when creating menu but let's keep settings clean
-						settingsOfs << element << "\r" << "\n";
-				}
-				std::vector<std::string>().swap(files);
-			}
-		}
-
-		if(settingsOfs.is_open())
-			settingsOfs.close();
-		//set::Settings *s = new set::Settings(settingsPath);
-        //    this->SetSettings(s);
-		std::vector<amiibo::Game*>().swap(gamesInConfig);
-		std::vector<std::string>().swap(amiibosInConfig);
-		std::vector<std::string>().swap(removedAmiibos);
-		std::vector<std::string>().swap(allAmiibos);
-	}
-	*/
+	
 	int MainApplication::GetEmuiiboStatus()
 	{
 		NfpEmuToggleStatus nfpStatus;
@@ -551,24 +376,24 @@ namespace ui
         {
 			switch(this->GetEmuiiboStatus()){
 				case NfpEmuToggleStatus_Off:
-					this->emuiiboText->SetText(lang::GetDictionaryEntry(15));
+					this->emuiiboText->SetText(lang::GetLabel(lang::Label::HEADER_EMUIIBO_NOT_ACTIVE));
 					this->emuiiboLed->SetColor({255,0,0,255});
 					break;
 				case NfpEmuToggleStatus_On:
-					this->emuiiboText->SetText(lang::GetDictionaryEntry(16));
+					this->emuiiboText->SetText(lang::GetLabel(lang::Label::HEADER_EMUIIBO_ACTIVE));
 					this->emuiiboLed->SetColor({0,255,0,255});
 					break;
 				case NfpEmuToggleStatus_Once:
-					this->emuiiboText->SetText(lang::GetDictionaryEntry(17));
+					this->emuiiboText->SetText(lang::GetLabel(lang::Label::HEADER_EMUIIBO_ACTIVE_ONCE));
 					this->emuiiboLed->SetColor({255,128,0,255});
 					break;
 				default:
-					this->emuiiboText->SetText(lang::GetDictionaryEntry(18));
+					this->emuiiboText->SetText(lang::GetLabel(lang::Label::HEADER_EMUIIBO_UNKNOWN));
 					this->emuiiboLed->SetColor({0,102,153,255});
 					break;
 			}
 			this->activeAmiibo = utils::getActiveAmiibo();
-			this->amiiboText->SetText(lang::GetDictionaryEntry(19) + this->activeAmiibo + " ");
+			this->amiiboText->SetText(lang::GetLabel(lang::Label::HEADER_AMIIBO) + this->activeAmiibo + " ");
 		}
 	}
 

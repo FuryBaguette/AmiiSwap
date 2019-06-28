@@ -53,24 +53,15 @@ namespace ui
 			BootLayout *GetBootLayout();
 			AmiiboDetailsLayout *GetAmiiboDetailsLayout();
 			AmiibosLayout *GetAmiibosLayout();
-			//set::Settings *GetSettings();
-			//void SetSettings(set::Settings *s);
-			//void SetWaitBack(bool state);
-			//bool GetWaitBack();
 			void SetFooterText(std::string Text);
 			void SetHelpText(std::string Text);
 			void ShowError(std::string text);
-			//void InitSettings();
-			//void UpdateSettings();
-			//void MakeGamesLayout();
-			//void DeleteManageLayout();
 			void OnInput(u64 Down, u64 Up, u64 Held);
 			int MainApplication::GetEmuiiboStatus();
 			void MainApplication::UpdateEmuiiboStatus();
 			std::string activeAmiibo;
 	    private:
-			//set::Settings *settings;
-	        ui::MainLayout *mainLayout;
+			ui::MainLayout *mainLayout;
 	        ui::GamesLayout *gamesLayout;
 			ui::SettingsLayout *setLayout;
 			ui::ErrorLayout *errorLayout;
@@ -81,8 +72,6 @@ namespace ui
 			ui::BootLayout *bootLayout;
 			ui::AmiiboDetailsLayout *amiiboDetailsLayout;
 			ui::AmiibosLayout *amiibosLayout;
-			//bool waitBack = false;
-			//bool manage = true;
 			pu::element::Image *logo;
 			pu::element::Rectangle *header;
 			pu::element::Rectangle *headerShadow;
@@ -94,7 +83,6 @@ namespace ui
 			pu::element::TextBlock *amiiboText;
 			pu::element::TextBlock *footerText;
 			pu::element::TextBlock *helpText;
-			//NfpEmuToggleStatus *nfpStatus;
 			std::chrono::time_point<std::chrono::steady_clock> start;
 	};
 

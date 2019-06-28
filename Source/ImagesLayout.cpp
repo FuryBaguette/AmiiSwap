@@ -24,7 +24,7 @@ namespace ui
         this->SetOnInput([&](u64 Down, u64 Up, u64 Held, bool Touch)
         {
             if (Down & KEY_B){
-                mainapp->SetHelpText(lang::GetDictionaryEntry(2));
+                mainapp->SetHelpText(lang::GetLabel(lang::Label::HELP_SELECT));
                 mainapp->GetMainLayout()->GetMainMenu()->SetVisible(true);
                 mainapp->GetMainLayout()->SetElementOnFocus(mainapp->GetMainLayout()->GetMainMenu());
                 mainapp->GetMainLayout()->selectionChange();
@@ -43,17 +43,17 @@ namespace ui
     {
         this->imagesMenu->ClearItems();
 
-        pu::element::MenuItem *item = new pu::element::MenuItem(lang::GetDictionaryEntry(66));
+        pu::element::MenuItem *item = new pu::element::MenuItem(lang::GetLabel(lang::Label::IMAGES_SEARCH));
         item->SetIcon(utils::GetRomFsResource("Common/search-folder.png"));
         item->AddOnClick(std::bind(&ImagesLayout::search_Click, this), KEY_A);
         this->imagesMenu->AddItem(item);
         
-        item = new pu::element::MenuItem(lang::GetDictionaryEntry(67));
+        item = new pu::element::MenuItem(lang::GetLabel(lang::Label::IMAGES_RENAME));
         item->SetIcon(utils::GetRomFsResource("Common/edit-image.png"));
         item->AddOnClick(std::bind(&ImagesLayout::rename_Click, this), KEY_A);
         this->imagesMenu->AddItem(item);
         
-        item = new pu::element::MenuItem(lang::GetDictionaryEntry(68));
+        item = new pu::element::MenuItem(lang::GetLabel(lang::Label::IMAGES_DELETE));
         item->SetIcon(utils::GetRomFsResource("Common/remove-image.png"));
         item->AddOnClick(std::bind(&ImagesLayout::remove_Click, this), KEY_A);
         this->imagesMenu->AddItem(item);
@@ -73,7 +73,6 @@ namespace ui
         utils::getImages(emuiiboFolder, &images);
         utils::getImages(amiiswapFolder, &images);
         utils::get_amiibos_directories(emuiiboFolder, &amiibos);
-        //this->progressBar->ClearProgress();
         this->progressBar->SetY(120);
         this->progressBar->SetMaxValue(double(images.size()));
         this->progressBar->SetVisible(true);
@@ -102,7 +101,7 @@ namespace ui
         this->progressBar->SetVisible(false);
         mainapp->CallForRender();
         this->SetElementOnFocus(this->imagesMenu);
-        pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetDictionaryEntry(69) + std::to_string(imgCount) + lang::GetDictionaryEntry(72), 20, {255,255,255,255}, {0,51,102,255});
+        pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_IMAGES_FOUND) + std::to_string(imgCount) + lang::GetLabel(lang::Label::TOAST_IMAGES_IMAGES), 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);     
     }
 
@@ -115,7 +114,6 @@ namespace ui
         utils::get_amiibos_directories(emuiiboFolder, &amiibos);
         std::string oldname;
         std::string newname;
-        //this->progressBar->ClearProgress();
         this->progressBar->SetY(220);
         this->progressBar->SetMaxValue(double(amiibos.size()));
         this->progressBar->SetVisible(true);
@@ -148,7 +146,7 @@ namespace ui
         this->progressBar->SetVisible(false);
         mainapp->CallForRender();
         this->SetElementOnFocus(this->imagesMenu);
-        pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetDictionaryEntry(70) + std::to_string(imgCount) + lang::GetDictionaryEntry(72), 20, {255,255,255,255}, {0,51,102,255});
+        pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_IMAGES_RENAMED) + std::to_string(imgCount) + lang::GetLabel(lang::Label::TOAST_IMAGES_IMAGES), 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);      
     }
 
@@ -188,7 +186,7 @@ namespace ui
         this->progressBar->SetVisible(false);
         mainapp->CallForRender();
         this->SetElementOnFocus(this->imagesMenu);
-        pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetDictionaryEntry(71) + std::to_string(imgCount) + lang::GetDictionaryEntry(72), 20, {255,255,255,255}, {0,51,102,255});
+        pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_IMAGES_DELETED) + std::to_string(imgCount) + lang::GetLabel(lang::Label::TOAST_IMAGES_IMAGES), 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);      
     }
 
@@ -201,13 +199,13 @@ namespace ui
     {
         switch(this->imagesMenu->GetSelectedIndex()){
             case 0:
-                mainapp->SetFooterText(lang::GetDictionaryEntry(73));
+                mainapp->SetFooterText(lang::GetLabel(lang::Label::FOOTER_IMAGES_SEARCH));
                 break;
             case 1:
-                mainapp->SetFooterText(lang::GetDictionaryEntry(74));
+                mainapp->SetFooterText(lang::GetLabel(lang::Label::FOOTER_IMAGES_RENAME));
                 break;
             case 2:
-                mainapp->SetFooterText(lang::GetDictionaryEntry(75));
+                mainapp->SetFooterText(lang::GetLabel(lang::Label::FOOTER_IMAGES_DELETE));
                 break;
             default:
                 mainapp->SetFooterText("");

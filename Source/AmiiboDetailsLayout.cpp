@@ -31,7 +31,7 @@ namespace ui
         this->SetOnInput([&](u64 Down, u64 Up, u64 Held, bool Touch)
         {
             if (Down & KEY_B){
-                mainapp->SetHelpText(lang::GetDictionaryEntry(2));
+                mainapp->SetHelpText(lang::GetLabel(lang::Label::HELP_SELECT));
                 mainapp->GetMainLayout()->GetMainMenu()->SetVisible(true);
                 mainapp->GetMainLayout()->SetElementOnFocus(mainapp->GetMainLayout()->GetMainMenu());
                 mainapp->GetMainLayout()->selectionChange();
@@ -60,13 +60,12 @@ namespace ui
             ifs.close();
         this->randomuuid = amiiboJson.value<bool>("randomizeUuid", false);
         if(randomuuid)
-            this->amiiboRandom->SetText(lang::GetDictionaryEntry(24) + lang::GetDictionaryEntry(25));
+            this->amiiboRandom->SetText(lang::GetLabel(lang::Label::RANDOM_UUID) + lang::GetLabel(lang::Label::ENABLED));
         else
-            this->amiiboRandom->SetText(lang::GetDictionaryEntry(24) + lang::GetDictionaryEntry(26));
+            this->amiiboRandom->SetText(lang::GetLabel(lang::Label::RANDOM_UUID) + lang::GetLabel(lang::Label::DISABLED));
         this->amiiboName->SetText((std::string)amiiboJson["name"].get<std::string>());
-        this->amiiboPath->SetText(lang::GetDictionaryEntry(27) + path);
-        this->firstWrite->SetText(lang::GetDictionaryEntry(28) + std::to_string((u16)amiiboJson["firstWriteDate"][0].get<int>()) + "/" + std::to_string((u8)amiiboJson["firstWriteDate"][1].get<int>()) + "/" + std::to_string((u8)amiiboJson["firstWriteDate"][2].get<int>()));
-        this->lastWrite->SetText(lang::GetDictionaryEntry(29) + std::to_string((u16)amiiboJson["lastWriteDate"][0].get<int>()) + "/" + std::to_string((u8)amiiboJson["lastWriteDate"][1].get<int>()) + "/" + std::to_string((u8)amiiboJson["lastWriteDate"][2].get<int>()));
-        //mainapp->CallForRender();
+        this->amiiboPath->SetText(lang::GetLabel(lang::Label::AMIIBO_DETAILS_PATH) + path);
+        this->firstWrite->SetText(lang::GetLabel(lang::Label::AMIIBO_DETAILS_FIRST_DATE) + std::to_string((u16)amiiboJson["firstWriteDate"][0].get<int>()) + "/" + std::to_string((u8)amiiboJson["firstWriteDate"][1].get<int>()) + "/" + std::to_string((u8)amiiboJson["firstWriteDate"][2].get<int>()));
+        this->lastWrite->SetText(lang::GetLabel(lang::Label::AMIIBO_DETAILS_LAST_DATE) + std::to_string((u16)amiiboJson["lastWriteDate"][0].get<int>()) + "/" + std::to_string((u8)amiiboJson["lastWriteDate"][1].get<int>()) + "/" + std::to_string((u8)amiiboJson["lastWriteDate"][2].get<int>()));
     }
 }
