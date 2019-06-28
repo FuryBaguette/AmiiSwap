@@ -107,7 +107,7 @@ namespace ui
             set::AddGame(game);
             populateGamesMenu();
             mainapp->SetFooterText(lang::GetLabel(lang::Label::FOOTER_GAMES) + std::to_string(set::GetGamesSize()));
-            pu::overlay::Toast *toast = new pu::overlay::Toast(name + lang::GetLabel(lang::Label::GAME_ADDED), 20, {255,255,255,255}, {0,51,102,255});
+            pu::overlay::Toast *toast = new pu::overlay::Toast(utils::replace(lang::GetLabel(lang::Label::TOAST_GAME_ADDED), "{{GAME_NAME}}", name), 20, {255,255,255,255}, {0,51,102,255});
             mainapp->StartOverlayWithTimeout(toast, 1500);
         }
     }
@@ -122,7 +122,7 @@ namespace ui
         }
 		set::RemoveGame(gameName);
         mainapp->SetFooterText(lang::GetLabel(lang::Label::FOOTER_GAMES) + std::to_string(set::GetGamesSize()));
-        pu::overlay::Toast *toast = new pu::overlay::Toast(gameName + lang::GetLabel(lang::Label::GAME_REMOVED), 20, {255,255,255,255}, {0,51,102,255});
+        pu::overlay::Toast *toast = new pu::overlay::Toast(utils::replace(lang::GetLabel(lang::Label::TOAST_GAME_REMOVED), "{{GAME_NAME}}", gameName), 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);
         populateGamesMenu();
         this->gamesMenu->SetSelectedIndex(0);
@@ -148,12 +148,12 @@ namespace ui
         if (!isInGame) {
             game->AddAmiibo(amiiboName);
             this->allAmiibosMenu->GetSelectedItem()->SetIcon(utils::GetRomFsResource("Common/ingame2.png"));
-            toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_GAME_ADDED) + amiiboName, 20, {255,255,255,255}, {0,51,102,255});
+            toast = new pu::overlay::Toast(utils::replace(lang::GetLabel(lang::Label::TOAST_AMIIBO_ADDED), "{{AMIIBO_NAME}}", amiiboName), 20, {255,255,255,255}, {0,51,102,255});
         } else {
             amiibosInGame.erase(amiibosInGame.begin() + position);
             game->SetAmiibos(amiibosInGame);
             this->allAmiibosMenu->GetSelectedItem()->SetIcon(utils::GetRomFsResource("Common/notingame2.png"));
-            toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_GAME_REMOVED) + amiiboName, 20, {255,255,255,255}, {0,51,102,255});
+            toast = new pu::overlay::Toast(utils::replace(lang::GetLabel(lang::Label::TOAST_AMIIBO_REMOVED), "{{AMIIBO_NAME}}", amiiboName), 20, {255,255,255,255}, {0,51,102,255});
         }
         set::RemoveGame(game->GetName());
         set::AddGame(game);
@@ -174,7 +174,7 @@ namespace ui
             mainapp->StartOverlayWithTimeout(toast, 1500);
             return;
         } else {
-            mainapp->SetFooterText(lang::GetLabel(lang::Label::FOOTER_AMIIBO_SELECT) + game->GetName());
+            mainapp->SetFooterText(utils::replace(lang::GetLabel(lang::Label::FOOTER_AMIIBO_SELECT), "{{GAME_NAME}}", game->GetName()));
             mainapp->SetHelpText(lang::GetLabel(lang::Label::HELP_SELECT) + lang::GetLabel(lang::Label::HELP_FINISH));
         	for (auto & amiibo : set::GetAllAmiibos()) {
                 bool inGame = false;

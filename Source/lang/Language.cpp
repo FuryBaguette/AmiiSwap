@@ -42,6 +42,11 @@ namespace lang
 		MainLanguage.Labels = json::parse(ifs);
 		ifs.close();
 
+		InitLabelMap();
+	}
+
+	void InitLabelMap()
+	{
 		MainLanguage.labelMap[Label::ABOUT_AUTHOR] = "ABOUT_AUTHOR";
 		MainLanguage.labelMap[Label::ABOUT_CREDITS] = "ABOUT_CREDITS";
 		MainLanguage.labelMap[Label::ABOUT_DEVS] = "ABOUT_DEVS";
@@ -80,8 +85,6 @@ namespace lang
 		MainLanguage.labelMap[Label::FOOTER_MAIN_SELECTED_AMIIBO] = "FOOTER_MAIN_SELECTED_AMIIBO";
 		MainLanguage.labelMap[Label::FOOTER_MAIN_USER_MANUAL] = "FOOTER_MAIN_USER_MANUAL";
 		MainLanguage.labelMap[Label::FOOTER_SELECTED_AMIIBO] = "FOOTER_SELECTED_AMIIBO";
-		MainLanguage.labelMap[Label::GAME_ADDED] = "GAME_ADDED";
-		MainLanguage.labelMap[Label::GAME_REMOVED] = "GAME_REMOVED";
 		MainLanguage.labelMap[Label::HEADER_AMIIBO] = "HEADER_AMIIBO";
 		MainLanguage.labelMap[Label::HEADER_EMUIIBO_ACTIVE] = "HEADER_EMUIIBO_ACTIVE";
 		MainLanguage.labelMap[Label::HEADER_EMUIIBO_ACTIVE_ONCE] = "HEADER_EMUIIBO_ACTIVE_ONCE";
@@ -108,13 +111,14 @@ namespace lang
 		MainLanguage.labelMap[Label::MAIN_SETTINGS] = "MAIN_SETTINGS";
 		MainLanguage.labelMap[Label::MAIN_USER_MANUAL] = "MAIN_USER_MANUAL";
 		MainLanguage.labelMap[Label::NO] = "NO";
-		MainLanguage.labelMap[Label::RANDOM_DIALOG_TEXT_1] = "RANDOM_DIALOG_TEXT_1";
-		MainLanguage.labelMap[Label::RANDOM_DIALOG_TEXT_2] = "RANDOM_DIALOG_TEXT_2";
+		MainLanguage.labelMap[Label::RANDOM_DIALOG_TEXT] = "RANDOM_DIALOG_TEXT";
 		MainLanguage.labelMap[Label::RANDOM_DIALOG_TITLE] = "RANDOM_DIALOG_TITLE";
 		MainLanguage.labelMap[Label::RANDOM_UUID] = "RANDOM_UUID";
 		MainLanguage.labelMap[Label::SELECT_DIALOG_TEXT] = "SELECT_DIALOG_TEXT";
 		MainLanguage.labelMap[Label::SELECT_DIALOG_TITLE] = "SELECT_DIALOG_TITLE";
 		MainLanguage.labelMap[Label::TOAST_ACTIVE_AMIIBO] = "TOAST_ACTIVE_AMIIBO";
+		MainLanguage.labelMap[Label::TOAST_AMIIBO_ADDED] = "TOAST_AMIIBO_ADDED";
+		MainLanguage.labelMap[Label::TOAST_AMIIBO_REMOVED] = "TOAST_AMIIBO_REMOVED";
 		MainLanguage.labelMap[Label::TOAST_EMUIIBO_DISABLED] = "TOAST_EMUIIBO_DISABLED";
 		MainLanguage.labelMap[Label::TOAST_EMUIIBO_ENABLED] = "TOAST_EMUIIBO_ENABLED";
 		MainLanguage.labelMap[Label::TOAST_EMUIIBO_ENABLED_ONCE] = "TOAST_EMUIIBO_ENABLED_ONCE";

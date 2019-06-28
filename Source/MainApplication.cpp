@@ -393,7 +393,7 @@ namespace ui
 					break;
 			}
 			this->activeAmiibo = utils::getActiveAmiibo();
-			this->amiiboText->SetText(lang::GetLabel(lang::Label::HEADER_AMIIBO) + this->activeAmiibo + " ");
+			this->amiiboText->SetText(utils::replace(lang::GetLabel(lang::Label::HEADER_AMIIBO), "{{AMIIBO_NAME}}", this->activeAmiibo) + " ");
 		}
 	}
 

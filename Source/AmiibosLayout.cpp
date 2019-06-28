@@ -64,10 +64,10 @@ namespace ui
         size_t size = amiibo.find_last_of("/\\");
         if (size != std::string::npos)
             amiiboName = amiibo.substr(size + 1);
-        int sopt = mainapp->CreateShowDialog(lang::GetLabel(lang::Label::SELECT_DIALOG_TITLE) + amiiboName + " ?", lang::GetLabel(lang::Label::SELECT_DIALOG_TEXT) + amiiboName, { lang::GetLabel(lang::Label::YES), lang::GetLabel(lang::Label::NO) }, true, amiiboPath + "/amiibo.icon");
+        int sopt = mainapp->CreateShowDialog(utils::replace(lang::GetLabel(lang::Label::SELECT_DIALOG_TITLE), "{{AMIIBO_NAME}}", amiiboName), utils::replace(lang::GetLabel(lang::Label::SELECT_DIALOG_TEXT), "{{AMIIBO_NAME}}", amiiboName), { lang::GetLabel(lang::Label::YES), lang::GetLabel(lang::Label::NO) }, true, amiiboPath + "/amiibo.icon");
         if (sopt == 0) {
             nfpemuSetAmiibo(amiiboPath.c_str());
-            pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_ACTIVE_AMIIBO) + amiiboName, 20, {255,255,255,255}, {0,51,102,255});
+            pu::overlay::Toast *toast = new pu::overlay::Toast(utils::replace(lang::GetLabel(lang::Label::TOAST_ACTIVE_AMIIBO), "{{AMIIBO_NAME}}", amiiboName), 20, {255,255,255,255}, {0,51,102,255});
             mainapp->StartOverlayWithTimeout(toast, 1500);
         }
     }
@@ -81,10 +81,10 @@ namespace ui
         if (size != std::string::npos)
             amiiboName = amiibo.substr(size + 1);
         bool randomStatus = utils::isRandomUuid(jsonPath);
-        int sopt = mainapp->CreateShowDialog(lang::GetLabel(lang::Label::RANDOM_DIALOG_TITLE), lang::GetLabel(lang::Label::RANDOM_DIALOG_TEXT_1) + amiiboName + lang::GetLabel(lang::Label::RANDOM_DIALOG_TEXT_2) + (randomStatus ? lang::GetLabel(lang::Label::ENABLED) : lang::GetLabel(lang::Label::DISABLED)), { lang::GetLabel(lang::Label::TOGGLE), lang::GetLabel(lang::Label::CANCEL) }, true, amiiboPath + "/amiibo.icon");
+		int sopt = mainapp->CreateShowDialog(lang::GetLabel(lang::Label::RANDOM_DIALOG_TITLE), utils::replace(utils::replace(lang::GetLabel(lang::Label::RANDOM_DIALOG_TEXT), "{{AMIIBO_NAME}}", amiiboName), "{{STATUS}}", (randomStatus ? lang::GetLabel(lang::Label::ENABLED) : lang::GetLabel(lang::Label::DISABLED))), { lang::GetLabel(lang::Label::TOGGLE), lang::GetLabel(lang::Label::CANCEL) }, true, amiiboPath + "/amiibo.icon");
         if(sopt == 0){
             toggleRandomUuid(jsonPath, !randomStatus);
-            pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_RANDOM) + amiiboName + ((!randomStatus) ? lang::GetLabel(lang::Label::ENABLED) : lang::GetLabel(lang::Label::DISABLED)), 20, {255,255,255,255}, {0,51,102,255});
+            pu::overlay::Toast *toast = new pu::overlay::Toast(utils::replace(utils::replace(lang::GetLabel(lang::Label::TOAST_RANDOM), "{{AMIIBO_NAME}}", amiiboName), "{{STATUS}}", (randomStatus ? lang::GetLabel(lang::Label::ENABLED) : lang::GetLabel(lang::Label::DISABLED))), 20, {255,255,255,255}, {0,51,102,255});
             mainapp->StartOverlayWithTimeout(toast, 1500);
         }
     }
