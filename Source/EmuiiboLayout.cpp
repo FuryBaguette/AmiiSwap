@@ -48,7 +48,7 @@ namespace ui
         item->SetIcon(utils::GetRomFsResource("Common/toggle.png"));
         item->AddOnClick(std::bind(&EmuiiboLayout::enable_Click, this), KEY_A);
         this->emuiiboMenu->AddItem(item);
-        
+
         item = new pu::element::MenuItem(lang::GetLabel(lang::Label::EMUIIBO_ENABLE_ONCE));
         item->SetIcon(utils::GetRomFsResource("Common/toggleonce.png"));
         item->AddOnClick(std::bind(&EmuiiboLayout::enableonce_Click, this), KEY_A);
@@ -67,26 +67,26 @@ namespace ui
 
     void EmuiiboLayout::enable_Click()
     {
-        nfpemuUntoggle();
-        nfpemuToggle();
+        nfpemuSetEmulationOff();
+        nfpemuSetEmulationOnForever();
         pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_EMUIIBO_ENABLED), 20, {255,255,255,255}, {0,51,102,255});
-        mainapp->StartOverlayWithTimeout(toast, 1500);     
+        mainapp->StartOverlayWithTimeout(toast, 1500);
     }
 
     void EmuiiboLayout::enableonce_Click()
     {
-        nfpemuToggleOnce();
+        nfpemuSetEmulationOnOnce();
         pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_EMUIIBO_ENABLED_ONCE), 20, {255,255,255,255}, {0,51,102,255});
-        mainapp->StartOverlayWithTimeout(toast, 1500);      
+        mainapp->StartOverlayWithTimeout(toast, 1500);
     }
-    
+
     void EmuiiboLayout::disable_Click()
     {
-        nfpemuUntoggle();
+        nfpemuSetEmulationOff();
         pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_EMUIIBO_DISABLED), 20, {255,255,255,255}, {0,51,102,255});
         mainapp->StartOverlayWithTimeout(toast, 1500);
     }
-    
+
     void EmuiiboLayout::scan_Click()
     {
         this->progressBar->ClearProgress();
@@ -94,16 +94,17 @@ namespace ui
         mainapp->CallForRender();
         this->SetElementOnFocus(this->progressBar);
         char amiibo[FS_MAX_PATH] = { 0 };
-		nfpemuGetAmiibo(amiibo);
+        bool isOk;
+		nfpemuGetCurrentAmiibo(amiibo, &isOk);
         this->progressBar->SetProgress(25.0f);
         mainapp->CallForRender();
-        nfpemuRescanAmiibos();
+        nfpemuRefresh();
         this->progressBar->IncrementProgress(50.0f);
         mainapp->CallForRender();
         set::Initialize();
         this->progressBar->SetProgress(75.0f);
         mainapp->CallForRender();
-        nfpemuSetAmiibo(amiibo);
+        nfpemuSetCustomAmiibo(amiibo);
         this->progressBar->SetProgress(100.0f);
         mainapp->CallForRender();
         this->progressBar->SetVisible(false);
@@ -117,7 +118,7 @@ namespace ui
     {
         return (this->emuiiboMenu);
     }
-    
+
     void EmuiiboLayout::selectionChange()
     {
         switch(this->emuiiboMenu->GetSelectedIndex()){
@@ -135,7 +136,7 @@ namespace ui
                 break;
             default:
                 mainapp->SetFooterText("");
-                break;    
+                break;
         }
     }
 }

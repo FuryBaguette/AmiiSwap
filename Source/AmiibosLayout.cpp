@@ -33,7 +33,7 @@ namespace ui
     {
         delete this->amiibosMenu;
     }
-   
+
     void AmiibosLayout::populateAmiibosMenu(amiibo::Game *game)
     {
         for (auto amiibo : game->GetAmiibos()) {
@@ -66,7 +66,7 @@ namespace ui
             amiiboName = amiibo.substr(size + 1);
         int sopt = mainapp->CreateShowDialog(utils::replace(lang::GetLabel(lang::Label::SELECT_DIALOG_TITLE), "{{AMIIBO_NAME}}", amiiboName), utils::replace(lang::GetLabel(lang::Label::SELECT_DIALOG_TEXT), "{{AMIIBO_NAME}}", amiiboName), { lang::GetLabel(lang::Label::YES), lang::GetLabel(lang::Label::NO) }, true, amiiboPath + "/amiibo.icon");
         if (sopt == 0) {
-            nfpemuSetAmiibo(amiiboPath.c_str());
+            nfpemuSetCustomAmiibo(amiiboPath.c_str());
             pu::overlay::Toast *toast = new pu::overlay::Toast(utils::replace(lang::GetLabel(lang::Label::TOAST_ACTIVE_AMIIBO), "{{AMIIBO_NAME}}", amiiboName), 20, {255,255,255,255}, {0,51,102,255});
             mainapp->StartOverlayWithTimeout(toast, 1500);
         }

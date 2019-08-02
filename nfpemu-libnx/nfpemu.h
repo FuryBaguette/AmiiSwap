@@ -11,20 +11,28 @@ Result nfpemuInitialize();
 void nfpemuExit();
 
 typedef enum {
-    NfpEmuToggleStatus_Off = 0,
-    NfpEmuToggleStatus_On = 1,
-    NfpEmuToggleStatus_Once = 2,
-} NfpEmuToggleStatus;
+    EmuEmulationStatus_OnForever = 0,
+    EmuEmulationStatus_OnOnce = 1,
+    EmuEmulationStatus_Off = 2,
+} EmuEmulationStatus;
 
-Result nfpemuGetAmiibo(char *out);
-Result nfpemuSetAmiibo(const char *path);
-Result nfpemuResetAmiibo();
-Result nfpemuToggle();
-Result nfpemuToggleOnce();
-Result nfpemuUntoggle();
-Result nfpemuSwapNext();
-Result nfpemuGetToggleStatus(NfpEmuToggleStatus *out);
-Result nfpemuRescanAmiibos();
+typedef struct {
+    u8 Major;
+    u8 Minor;
+    u8 Micro;
+} EmuVersion;
+
+Result nfpemuGetCurrentAmiibo(char *out, bool *out_ok);
+Result nfpemuSetCustomAmiibo(const char *path);
+Result nfpemuHasCustomAmiibo(bool *out_has);
+Result nfpemuResetCustomAmiibo();
+Result nfpemuSetEmulationOnForever();
+Result nfpemuSetEmulationOnOnce();
+Result nfpemuSetEmulationOff();
+Result nfpemuMoveToNextAmiibo(bool *out_ok);
+Result nfpemuGetStatus(EmuEmulationStatus *out);
+Result nfpemuRefresh();
+Result nfpemuGetVersion(EmuVersion *out_ver);
 
 #ifdef __cplusplus
 }

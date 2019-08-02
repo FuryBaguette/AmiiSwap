@@ -27,7 +27,7 @@ void nfpemuExit()
     if(atomicDecrement64(&g_refCnt) == 0) serviceClose(&g_nfpEmuSrv);
 }
 
-Result nfpemuGetAmiibo(char *out)
+Result nfpemuGetCurrentAmiibo(char *out, bool *out_ok)
 {
     IpcCommand c;
     ipcInitialize(&c);
@@ -51,15 +51,17 @@ Result nfpemuGetAmiibo(char *out)
         struct {
             u64 magic;
             u64 result;
+            bool ok;
         } *resp = r.Raw;
 
         rc = resp->result;
+        if(R_SUCCEEDED(rc) && out_ok) *out_ok = resp->ok;
     }
 
     return rc;
 }
 
-Result nfpemuSetAmiibo(const char *path)
+Result nfpemuSetCustomAmiibo(const char *path)
 {
     IpcCommand c;
     ipcInitialize(&c);
@@ -93,7 +95,7 @@ Result nfpemuSetAmiibo(const char *path)
     return rc;
 }
 
-Result nfpemuRequestResetAmiibo()
+Result nfpemuHasCustomAmiibo(bool *out_has)
 {
     IpcCommand c;
     ipcInitialize(&c);
@@ -115,15 +117,17 @@ Result nfpemuRequestResetAmiibo()
         struct {
             u64 magic;
             u64 result;
+            bool has;
         } *resp = r.Raw;
 
         rc = resp->result;
+        if(R_SUCCEEDED(rc) && out_has) *out_has = resp->has;
     }
 
     return rc;
 }
 
-Result nfpemuToggle()
+Result nfpemuResetCustomAmiibo()
 {
     IpcCommand c;
     ipcInitialize(&c);
@@ -153,7 +157,7 @@ Result nfpemuToggle()
     return rc;
 }
 
-Result nfpemuToggleOnce()
+Result nfpemuSetEmulationOnForever()
 {
     IpcCommand c;
     ipcInitialize(&c);
@@ -183,7 +187,7 @@ Result nfpemuToggleOnce()
     return rc;
 }
 
-Result nfpemuUntoggle()
+Result nfpemuSetEmulationOnOnce()
 {
     IpcCommand c;
     ipcInitialize(&c);
@@ -213,7 +217,7 @@ Result nfpemuUntoggle()
     return rc;
 }
 
-Result nfpemuSwapNext()
+Result nfpemuSetEmulationOff()
 {
     IpcCommand c;
     ipcInitialize(&c);
@@ -243,10 +247,11 @@ Result nfpemuSwapNext()
     return rc;
 }
 
-Result nfpemuGetToggleStatus(NfpEmuToggleStatus *out)
+Result nfpemuMoveToNextAmiibo(bool *out_ok)
 {
     IpcCommand c;
     ipcInitialize(&c);
+
     struct {
         u64 magic;
         u64 cmd_id;
@@ -265,17 +270,17 @@ Result nfpemuGetToggleStatus(NfpEmuToggleStatus *out)
         struct {
             u64 magic;
             u64 result;
-            u32 status;
+            bool ok;
         } *resp = r.Raw;
 
         rc = resp->result;
-        if(R_SUCCEEDED(rc)) *out = (NfpEmuToggleStatus)resp->status;
+        if(R_SUCCEEDED(rc) && out_ok) *out_ok = resp->ok;
     }
 
     return rc;
 }
 
-Result nfpemuRescanAmiibos()
+Result nfpemuGetStatus(EmuEmulationStatus *out)
 {
     IpcCommand c;
     ipcInitialize(&c);
@@ -297,9 +302,81 @@ Result nfpemuRescanAmiibos()
         struct {
             u64 magic;
             u64 result;
+            u32 status;
         } *resp = r.Raw;
 
         rc = resp->result;
+        if(R_SUCCEEDED(rc)) *out = (EmuEmulationStatus)resp->status;
+    }
+
+    return rc;
+}
+
+Result nfpemuRefresh()
+{
+    IpcCommand c;
+    ipcInitialize(&c);
+    struct {
+        u64 magic;
+        u64 cmd_id;
+    } *raw;
+
+    raw = ipcPrepareHeader(&c, sizeof(*raw));
+    raw->magic = SFCI_MAGIC;
+    raw->cmd_id = 9;
+    Result rc = serviceIpcDispatch(&g_nfpEmuSrv);
+
+    if(R_SUCCEEDED(rc))
+    {
+        IpcParsedCommand r;
+        ipcParse(&r);
+
+        struct {
+            u64 magic;
+            u64 result;
+        } *resp = r.Raw;
+
+        rc = resp->result;
+    }
+
+    return rc;
+}
+
+Result nfpemuGetVersion(EmuVersion *out_ver)
+{
+    IpcCommand c;
+    ipcInitialize(&c);
+
+    struct {
+        u64 magic;
+        u64 cmd_id;
+    } *raw;
+
+    raw = ipcPrepareHeader(&c, sizeof(*raw));
+    raw->magic = SFCI_MAGIC;
+    raw->cmd_id = 10;
+    Result rc = serviceIpcDispatch(&g_nfpEmuSrv);
+
+    if(R_SUCCEEDED(rc))
+    {
+        IpcParsedCommand r;
+        ipcParse(&r);
+
+        struct {
+            u64 magic;
+            u64 result;
+            u32 major;
+            u32 minor;
+            u32 micro;
+        } *resp = r.Raw;
+
+        rc = resp->result;
+        if(R_SUCCEEDED(rc))
+        {
+            out_ver->Major = resp->major;
+            out_ver->Minor = resp->minor;
+            out_ver->Micro = resp->micro;
+        }
     }
 
     return rc;

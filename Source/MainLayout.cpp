@@ -36,7 +36,7 @@ namespace ui
             item->SetColor({204,0,0,255});
         }
         this->mainMenu->AddItem(item);
-        
+
         item = new pu::element::MenuItem(lang::GetLabel(lang::Label::MAIN_EMUIIBO));
         item->SetIcon(utils::GetRomFsResource("Common/emuiibo.png"));
         if(emuiibo) {
@@ -75,7 +75,7 @@ namespace ui
             item->AddOnClick(std::bind(&MainLayout::disabled_Click, this), KEY_A);
             item->SetColor({204,0,0,255});
         }
-        
+
         item = new pu::element::MenuItem(lang::GetLabel(lang::Label::MAIN_USER_MANUAL));
         item->SetIcon(utils::GetRomFsResource("Common/user-manual.png"));
         item->AddOnClick(std::bind(&MainLayout::manual_Click, this), KEY_A);
@@ -144,8 +144,9 @@ namespace ui
 	{
         char key[] = { 0 };
 		char amiibo[FS_MAX_PATH] = { 0 };
-		Result rs = nfpemuGetAmiibo(amiibo);
-        if(rs == 0 && R_FAILED(strcmp(key,amiibo))) {
+        bool isOk;
+		Result rs = nfpemuGetCurrentAmiibo(amiibo, &isOk);
+        if(rs == 0 && R_FAILED(strcmp(key,amiibo)) && isOk) {
             std::string path = std::string(amiibo);
             mainapp->LoadLayout(mainapp->GetAmiiboDetailsLayout());
             mainapp->SetFooterText(lang::GetLabel(lang::Label::FOOTER_SELECTED_AMIIBO));
@@ -191,7 +192,7 @@ namespace ui
                 break;
             default:
                 mainapp->SetFooterText("");
-                break;    
+                break;
         }
     }
 }

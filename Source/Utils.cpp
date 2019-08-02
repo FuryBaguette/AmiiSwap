@@ -70,7 +70,7 @@ namespace utils
 
             entry = readdir(dir);
         }
-        closedir(dir);        
+        closedir(dir);
         r.shrink_to_fit();
         return r;
     }
@@ -106,7 +106,7 @@ namespace utils
         if(path.at(0)=='/')
             return "romfs:" + path;
         else
-            return "romfs:/" + path;            
+            return "romfs:/" + path;
     }
 
     void Log(std::string Text)
@@ -218,8 +218,9 @@ namespace utils
     {
         char key[] = { 0 };
         char amiibo[FS_MAX_PATH] = { 0 };
-		Result rs = nfpemuGetAmiibo(amiibo);
-        if(rs == 0 && R_FAILED(strcmp(key,amiibo)))
+        bool isOk;
+		Result rs = nfpemuGetCurrentAmiibo(amiibo, &isOk);
+        if(rs == 0 && R_FAILED(strcmp(key,amiibo)) && isOk)
             return utils::getLastFromPath(std::string(amiibo));
         return "none";
     }
