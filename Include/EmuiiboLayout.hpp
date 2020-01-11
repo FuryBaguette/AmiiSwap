@@ -4,20 +4,21 @@
 
 namespace ui
 {
-	class EmuiiboLayout : public pu::Layout
+	class EmuiiboLayout : public pu::ui::Layout
 	{
 	    public:
 	        EmuiiboLayout();
-			~EmuiiboLayout();
+			PU_SMART_CTOR(EmuiiboLayout);
 			void enable_Click();
 			void enableonce_Click();
 			void disable_Click();
 			void scan_Click();
 			void populateEmuiiboMenu();
 			void selectionChange();
-			pu::element::Menu *EmuiiboLayout::GetEmuiiboMenu();
+			pu::ui::elm::Menu::Ref EmuiiboLayout::GetEmuiiboMenu();
+			void emuiibo_Input(u64 Down, u64 Up, u64 Held);
 	    private:
-	        pu::element::Menu *emuiiboMenu;
-			pu::element::ProgressBar *progressBar;
+	        pu::ui::elm::Menu::Ref emuiiboMenu;
+			pu::ui::elm::ProgressBar::Ref progressBar;
 	};
 }

@@ -6,54 +6,50 @@ namespace ui
 {
     extern MainApplication *mainapp;
 
-    ImagesLayout::ImagesLayout() : pu::Layout()
+    ImagesLayout::ImagesLayout()
     {
-        this->imagesMenu = new pu::element::Menu(0, 80, 1280, {255,255,255,255}, 100, 6);
-        this->progressBar = new pu::element::ProgressBar(640,120,600,20,100.0f);
-        this->progressBar->SetColor({255,255,255,255});
-        this->progressBar->SetProgressColor({0,102,153,255});
+        this->imagesMenu = pu::ui::elm::Menu::New(0, 80, 1280, pu::ui::Color(255,255,255,255), 100, 6);
+        this->progressBar = pu::ui::elm::ProgressBar::New(640,120,600,20,100.0f);
+        this->progressBar->SetColor(pu::ui::Color(255,255,255,255));
+        this->progressBar->SetProgressColor(pu::ui::Color(0,102,153,255));
         this->progressBar->SetVisible(false);
-        this->imagesMenu->SetOnFocusColor({102,153,204,255});
-        this->imagesMenu->SetScrollbarColor({102,153,204,255});
+        this->imagesMenu->SetOnFocusColor(pu::ui::Color(102,153,204,255));
+        this->imagesMenu->SetScrollbarColor(pu::ui::Color(102,153,204,255));
         this->imagesMenu->SetOnSelectionChanged(std::bind(&ImagesLayout::selectionChange,this));
         this->Add(this->imagesMenu);
         this->Add(this->progressBar);
-        this->SetElementOnFocus(this->imagesMenu);
+        //this->SetElementOnFocus(this->imagesMenu);
         populateImagesMenu();
 
-        this->SetOnInput([&](u64 Down, u64 Up, u64 Held, bool Touch)
-        {
-            if (Down & KEY_B){
-                mainapp->SetHelpText(lang::GetLabel(lang::Label::HELP_SELECT));
-                mainapp->GetMainLayout()->GetMainMenu()->SetVisible(true);
-                mainapp->GetMainLayout()->SetElementOnFocus(mainapp->GetMainLayout()->GetMainMenu());
-                mainapp->GetMainLayout()->selectionChange();
-                mainapp->LoadLayout(mainapp->GetMainLayout());
-            }
-        });
+        this->SetOnInput(std::bind(&ImagesLayout::images_Input, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     }
-
-    ImagesLayout::~ImagesLayout()
-    {
-        delete this->imagesMenu;
-        delete this->progressBar;
-    }
+	
+	void ImagesLayout::images_Input(u64 Down, u64 Up, u64 Held)
+	{
+		if (Down & KEY_B){
+			mainapp->SetHelpText(lang::GetLabel(lang::Label::HELP_SELECT));
+			mainapp->GetMainLayout()->GetMainMenu()->SetVisible(true);
+			//mainapp->GetMainLayout()->SetElementOnFocus(mainapp->GetMainLayout()->GetMainMenu());
+			mainapp->GetMainLayout()->selectionChange();
+			mainapp->LoadLayout(mainapp->GetMainLayout());
+		}
+	}
 
     void ImagesLayout::populateImagesMenu()
     {
         this->imagesMenu->ClearItems();
 
-        pu::element::MenuItem *item = new pu::element::MenuItem(lang::GetLabel(lang::Label::IMAGES_SEARCH));
+        pu::ui::elm::MenuItem::Ref item = pu::ui::elm::MenuItem::New(lang::GetLabel(lang::Label::IMAGES_SEARCH));
         item->SetIcon(utils::GetRomFsResource("Common/search-folder.png"));
         item->AddOnClick(std::bind(&ImagesLayout::search_Click, this), KEY_A);
         this->imagesMenu->AddItem(item);
         
-        item = new pu::element::MenuItem(lang::GetLabel(lang::Label::IMAGES_RENAME));
+        item = pu::ui::elm::MenuItem::New(lang::GetLabel(lang::Label::IMAGES_RENAME));
         item->SetIcon(utils::GetRomFsResource("Common/edit-image.png"));
         item->AddOnClick(std::bind(&ImagesLayout::rename_Click, this), KEY_A);
         this->imagesMenu->AddItem(item);
         
-        item = new pu::element::MenuItem(lang::GetLabel(lang::Label::IMAGES_DELETE));
+        item = pu::ui::elm::MenuItem::New(lang::GetLabel(lang::Label::IMAGES_DELETE));
         item->SetIcon(utils::GetRomFsResource("Common/remove-image.png"));
         item->AddOnClick(std::bind(&ImagesLayout::remove_Click, this), KEY_A);
         this->imagesMenu->AddItem(item);
@@ -77,7 +73,7 @@ namespace ui
         this->progressBar->SetMaxValue(double(images.size()));
         this->progressBar->SetVisible(true);
         mainapp->CallForRender();
-        this->SetElementOnFocus(this->progressBar);
+        //this->SetElementOnFocus(this->progressBar);
         for(auto image : images){
             progress++;
             this->progressBar->SetProgress((progress/double(images.size()))*100.0f);
@@ -100,8 +96,8 @@ namespace ui
         mainapp->CallForRender();
         this->progressBar->SetVisible(false);
         mainapp->CallForRender();
-        this->SetElementOnFocus(this->imagesMenu);
-        pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_IMAGES_FOUND) + std::to_string(imgCount) + lang::GetLabel(lang::Label::TOAST_IMAGES_IMAGES), 20, {255,255,255,255}, {0,51,102,255});
+        //this->SetElementOnFocus(this->imagesMenu);
+        pu::ui::extras::Toast::Ref toast = pu::ui::extras::Toast::New(lang::GetLabel(lang::Label::TOAST_IMAGES_FOUND) + std::to_string(imgCount) + lang::GetLabel(lang::Label::TOAST_IMAGES_IMAGES), 20, pu::ui::Color(255,255,255,255), pu::ui::Color(0,51,102,255));
         mainapp->StartOverlayWithTimeout(toast, 1500);     
     }
 
@@ -118,7 +114,7 @@ namespace ui
         this->progressBar->SetMaxValue(double(amiibos.size()));
         this->progressBar->SetVisible(true);
         mainapp->CallForRender();
-        this->SetElementOnFocus(this->progressBar);
+        //this->SetElementOnFocus(this->progressBar);
         for(auto amiibo : amiibos){
             progress++;
             this->progressBar->SetProgress((progress/double(amiibos.size()))*100.0f);
@@ -145,8 +141,8 @@ namespace ui
         mainapp->CallForRender();
         this->progressBar->SetVisible(false);
         mainapp->CallForRender();
-        this->SetElementOnFocus(this->imagesMenu);
-        pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_IMAGES_RENAMED) + std::to_string(imgCount) + lang::GetLabel(lang::Label::TOAST_IMAGES_IMAGES), 20, {255,255,255,255}, {0,51,102,255});
+        //this->SetElementOnFocus(this->imagesMenu);
+        pu::ui::extras::Toast::Ref toast = pu::ui::extras::Toast::New(lang::GetLabel(lang::Label::TOAST_IMAGES_RENAMED) + std::to_string(imgCount) + lang::GetLabel(lang::Label::TOAST_IMAGES_IMAGES), 20, pu::ui::Color(255,255,255,255), pu::ui::Color(0,51,102,255));
         mainapp->StartOverlayWithTimeout(toast, 1500);      
     }
 
@@ -162,7 +158,7 @@ namespace ui
         this->progressBar->SetMaxValue(double(amiibos.size()));
         this->progressBar->SetVisible(true);
         mainapp->CallForRender();
-        this->SetElementOnFocus(this->progressBar);
+        //this->SetElementOnFocus(this->progressBar);
         for(auto amiibo : amiibos){
             progress++;
             this->progressBar->SetProgress((progress/double(amiibos.size()))*100.0f);
@@ -185,12 +181,12 @@ namespace ui
         mainapp->CallForRender();
         this->progressBar->SetVisible(false);
         mainapp->CallForRender();
-        this->SetElementOnFocus(this->imagesMenu);
-        pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_IMAGES_DELETED) + std::to_string(imgCount) + lang::GetLabel(lang::Label::TOAST_IMAGES_IMAGES), 20, {255,255,255,255}, {0,51,102,255});
+        //this->SetElementOnFocus(this->imagesMenu);
+        pu::ui::extras::Toast::Ref toast = pu::ui::extras::Toast::New(lang::GetLabel(lang::Label::TOAST_IMAGES_DELETED) + std::to_string(imgCount) + lang::GetLabel(lang::Label::TOAST_IMAGES_IMAGES), 20, pu::ui::Color(255,255,255,255), pu::ui::Color(0,51,102,255));
         mainapp->StartOverlayWithTimeout(toast, 1500);      
     }
 
-    pu::element::Menu *ImagesLayout::GetImagesMenu()
+    pu::ui::elm::Menu::Ref ImagesLayout::GetImagesMenu()
     {
         return (this->imagesMenu);
     }

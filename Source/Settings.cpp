@@ -1,5 +1,6 @@
 #include "MainApplication.hpp"
-
+#include <iostream>
+#include <fstream>
 namespace set
 {
 	void Initialize(std::string settingsPath)
@@ -36,7 +37,7 @@ namespace set
 		UpdateSettingsFile("sdmc:/switch/AmiiSwap/settings.txt");
 	}
 
-	void RemoveGame(std::string gameName)
+	void RemoveGame(pu::String gameName)
 	{
 		int position = 0;
 		for (auto & game : MainSettings.games) {
@@ -117,7 +118,7 @@ namespace set
 			}
 			else {
 				std::vector<std::string> amiibos = game->GetAmiibos();
-				settingsOfs << "[" << game->GetName() << "]" << "\r" << "\n";
+				settingsOfs << "[" << game->GetName().AsUTF8() << "]" << "\r" << "\n";
 				for (auto element : amiibos) {
 					settingsOfs << element << "\r" << "\n";
 				}

@@ -48,7 +48,7 @@ namespace amiibo
 		std::string parents;
 
 		for (auto & elem : amiiboParents) {
-			parents += elem->GetName() + ", ";
+			parents += elem->GetName().AsUTF8() + ", ";
 		}
 		return parents;
 	}
@@ -58,7 +58,7 @@ namespace amiibo
 		this->Name = Name;
 	}
 
-	std::string Game::GetName()
+	pu::String Game::GetName()
 	{
 		return this->Name;
 	}

@@ -6,7 +6,7 @@ namespace ui
 {
     extern MainApplication *mainapp;
 
-    SettingsLayout::SettingsLayout()  : pu::Layout()
+    SettingsLayout::SettingsLayout()
     {
 
 

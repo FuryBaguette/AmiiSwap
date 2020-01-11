@@ -1,14 +1,15 @@
 #include <MainApplication.hpp>
-
-extern char *fake_heap_end;
+#include <iostream>
+#include <fstream>
+//extern char *fake_heap_end;
 extern lang::Language *language;
 extern set::Settings *settings;
 
 
 namespace ui
 {
-	MainApplication *mainapp;
-	static void *ghaddr;
+	MainApplication::Ref mainapp;
+	/*static void *ghaddr;
 
 	void Initialize()
 	{
@@ -23,61 +24,60 @@ namespace ui
 		if (utils::IsEmuiiboPresent())
 			nfpemuExit();
 		svcSetHeapSize(&ghaddr, ((u8*)envGetHeapOverrideAddr() + envGetHeapOverrideSize()) - (u8*)ghaddr);
-	}
+	}*/
 
-	MainApplication::MainApplication() : pu::Application()
+	void MainApplication::OnLoad()
 	{
+		utils::EnsureDirectories();
 		lang::Initialize();
-		this->bootLayout = new BootLayout();
+		this->bootLayout = BootLayout::New();
 		this->LoadLayout(this->bootLayout);
 		this->CallForRender();
 
-		this->header = new pu::element::Rectangle(0, 0, 1280, 79, {0,102,153,255});
-		this->footer = new pu::element::Rectangle(0, 681, 1280, 39, {0,102,153,255});
-		this->headerShadow = new pu::element::Rectangle(0, 79, 1280, 1, {0,51,102,255});
-		this->footerShadow = new pu::element::Rectangle(0, 680, 1280, 1, {0,51,102,255});
-
-		this->logo = new pu::element::Image(10, 10, utils::GetRomFsResource("Common/logo.png"));
+		this->header = pu::ui::elm::Rectangle::New(0, 0, 1280, 79, pu::ui::Color(0,102,153,255));
+		this->footer = pu::ui::elm::Rectangle::New(0, 681, 1280, 39, pu::ui::Color(0,102,153,255));
+		this->headerShadow = pu::ui::elm::Rectangle::New(0, 79, 1280, 1, pu::ui::Color(0,51,102,255));
+		this->footerShadow = pu::ui::elm::Rectangle::New(0, 680, 1280, 1, pu::ui::Color(0,51,102,255));
+		this->logo = pu::ui::elm::Image::New(10, 10, utils::GetRomFsResource("Common/logo.png"));
 		this->logo->SetHeight(60);
 		this->logo->SetWidth(60);
 
-		this->headerText = new pu::element::TextBlock(80, 20, lang::GetLabel(lang::Label::APP_NAME) + std::string(AMIISWAP_VERSION), 40);
-		this->headerText->SetColor({255,255,255,255});
+		this->headerText = pu::ui::elm::TextBlock::New(80, 20, lang::GetLabel(lang::Label::APP_NAME) + std::string(AMIISWAP_VERSION), 40);
+		this->headerText->SetColor(pu::ui::Color(255,255,255,255));
 
-		this->emuiiboLed = new pu::element::Rectangle(1255, 10, 15, 15, {0,102,153,255}, 5);
+		this->emuiiboLed = pu::ui::elm::Rectangle::New(1255, 10, 15, 15, pu::ui::Color(0,102,153,255), 5);
 		this->emuiiboLed->SetBorderRadius(5);
 
-		this->emuiiboText = new pu::element::TextBlock(80, 30, "", 20);
-		this->emuiiboText->SetColor({255,255,255,255});
-		this->emuiiboText->SetHorizontalAlign(pu::element::HorizontalAlign::Right);
+		this->emuiiboText = pu::ui::elm::TextBlock::New(80, 30, "", 20);
+		this->emuiiboText->SetColor(pu::ui::Color(255,255,255,255));
+		this->emuiiboText->SetHorizontalAlign(pu::ui::elm::HorizontalAlign::Right);
 
-		this->amiiboText = new pu::element::TextBlock(80, 55, "", 20);
-		this->amiiboText->SetColor({255,255,255,255});
-		this->amiiboText->SetHorizontalAlign(pu::element::HorizontalAlign::Right);
+		this->amiiboText = pu::ui::elm::TextBlock::New(80, 55, "", 20);
+		this->amiiboText->SetColor(pu::ui::Color(255,255,255,255));
+		this->amiiboText->SetHorizontalAlign(pu::ui::elm::HorizontalAlign::Right);
 
-		this->footerText = new pu::element::TextBlock(10, 690, lang::GetLabel(lang::Label::FOOTER_MAIN_AMIIBO), 20);
-		this->footerText->SetColor({255,255,255,255});
+		this->footerText = pu::ui::elm::TextBlock::New(10, 690, lang::GetLabel(lang::Label::FOOTER_MAIN_AMIIBO), 20);
+		this->footerText->SetColor(pu::ui::Color(255,255,255,255));
 
-		this->helpText = new pu::element::TextBlock(10, 690, "", 20);
-		this->helpText->SetColor({255,255,255,255});
-		this->helpText->SetHorizontalAlign(pu::element::HorizontalAlign::Right);
+		this->helpText = pu::ui::elm::TextBlock::New(10, 690, "", 20);
+		this->helpText->SetColor(pu::ui::Color(255,255,255,255));
+		this->helpText->SetHorizontalAlign(pu::ui::elm::HorizontalAlign::Right);
 		this->helpText->SetText(lang::GetLabel(lang::Label::HELP_SELECT));
 
 		this->bootLayout->SetProgress(3.0f);
 		this->CallForRender();
 
-		this->errorLayout = new ErrorLayout();
+		this->errorLayout = ErrorLayout::New();
 		this->errorLayout->Add(this->header);
 		this->errorLayout->Add(this->footer);
 		this->errorLayout->Add(this->logo);
 		this->errorLayout->Add(this->headerText);
 		this->errorLayout->Add(this->footerText);
 		this->errorLayout->Add(this->helpText);
-
 		this->bootLayout->SetProgress(6.0f);
 		this->CallForRender();
 
-		this->gamesLayout = new GamesLayout();
+		this->gamesLayout = GamesLayout::New();
 		this->gamesLayout->Add(this->header);
 		this->gamesLayout->Add(this->footer);
 		this->gamesLayout->Add(this->headerShadow);
@@ -93,7 +93,7 @@ namespace ui
 		this->bootLayout->SetProgress(9.0f);
 		this->CallForRender();
 
-		this->amiibosLayout = new AmiibosLayout();
+		this->amiibosLayout = AmiibosLayout::New();
 		this->amiibosLayout->Add(this->header);
 		this->amiibosLayout->Add(this->footer);
 		this->amiibosLayout->Add(this->headerShadow);
@@ -109,7 +109,7 @@ namespace ui
 		this->bootLayout->SetProgress(12.0f);
 		this->CallForRender();
 
-		this->emuiiboLayout = new EmuiiboLayout();
+		this->emuiiboLayout = EmuiiboLayout::New();
 		this->emuiiboLayout->Add(this->header);
 		this->emuiiboLayout->Add(this->footer);
 		this->emuiiboLayout->Add(this->headerShadow);
@@ -125,7 +125,7 @@ namespace ui
 		this->bootLayout->SetProgress(15.0f);
 		this->CallForRender();
 
-		this->imagesLayout = new ImagesLayout();
+		this->imagesLayout = ImagesLayout::New();
 		this->imagesLayout->Add(this->header);
 		this->imagesLayout->Add(this->footer);
 		this->imagesLayout->Add(this->headerShadow);
@@ -141,7 +141,7 @@ namespace ui
 		this->bootLayout->SetProgress(18.0f);
 		this->CallForRender();
 
-		this->setLayout = new SettingsLayout();
+		this->setLayout = SettingsLayout::New();
 		this->setLayout->Add(this->header);
 		this->setLayout->Add(this->footer);
 		this->setLayout->Add(this->headerShadow);
@@ -157,7 +157,7 @@ namespace ui
 		this->bootLayout->SetProgress(21.0f);
 		this->CallForRender();
 
-		this->manualLayout = new ManualLayout();
+		this->manualLayout = ManualLayout::New();
 		this->manualLayout->Add(this->header);
 		this->manualLayout->Add(this->footer);
 		this->manualLayout->Add(this->headerShadow);
@@ -173,7 +173,7 @@ namespace ui
 		this->bootLayout->SetProgress(24.0f);
 		this->CallForRender();
 
-		this->aboutLayout = new AboutLayout();
+		this->aboutLayout = AboutLayout::New();
 		this->aboutLayout->Add(this->header);
 		this->aboutLayout->Add(this->footer);
 		this->aboutLayout->Add(this->headerShadow);
@@ -189,7 +189,7 @@ namespace ui
 		this->bootLayout->SetProgress(27.0f);
 		this->CallForRender();
 
-		this->amiiboDetailsLayout = new AmiiboDetailsLayout();
+		this->amiiboDetailsLayout = AmiiboDetailsLayout::New();
 		this->amiiboDetailsLayout->Add(this->header);
 		this->amiiboDetailsLayout->Add(this->footer);
 		this->amiiboDetailsLayout->Add(this->headerShadow);
@@ -205,7 +205,7 @@ namespace ui
 		this->bootLayout->SetProgress(30.0f);
 		this->CallForRender();
 
-		this->mainLayout = new MainLayout();
+		this->mainLayout = MainLayout::New();
 		this->mainLayout->Add(this->header);
 		this->mainLayout->Add(this->footer);
 		this->mainLayout->Add(this->headerShadow);
@@ -220,21 +220,20 @@ namespace ui
 
 		this->bootLayout->SetProgress(33.0f);
 		this->CallForRender();
-
 		this->SetOnInput(std::bind(&MainApplication::OnInput, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-
+		
 		this->bootLayout->SetText(lang::GetLabel(lang::Label::BOOT_SETTINGS));
 		this->bootLayout->SetProgress(36.0f);
 		this->CallForRender();
-		set::Initialize();
+		set::Initialize("sdmc:/switch/AmiiSwap/settings.txt");
 		this->bootLayout->SetProgress(90.0f);
 		this->CallForRender();
 		this->gamesLayout->populateGamesMenu();
 		this->bootLayout->SetProgress(100.0f);
 		this->CallForRender();
 		if (!utils::IsEmuiiboPresent()) {
-			this->header->SetColor({204,0,0,255});
-			this->footer->SetColor({204,0,0,255});
+			this->header->SetColor(pu::ui::Color(204,0,0,255));
+			this->footer->SetColor(pu::ui::Color(204,0,0,255));
 			this->emuiiboText->SetText(lang::GetLabel(lang::Label::ERROR_NOT_INSTALLED));
 			this->LoadLayout(this->mainLayout);
 		} else {
@@ -243,32 +242,6 @@ namespace ui
 			this->LoadLayout(this->mainLayout);
 			this->start = std::chrono::steady_clock::now();
 		}
-	}
-
-    MainApplication::~MainApplication()
-    {
-		delete this->mainLayout;
-		delete this->bootLayout;
-		delete this->errorLayout;
-		delete this->manualLayout;
-		delete this->aboutLayout;
-		delete this->gamesLayout;
-		delete this->amiibosLayout;
-		delete this->setLayout;
-		delete this->emuiiboLayout;
-		delete this->imagesLayout;
-		delete this->amiiboDetailsLayout;
-		delete this->logo;
-		delete this->header;
-		delete this->headerText;
-		delete this->amiiboText;
-		delete this->emuiiboText;
-		delete this->footer;
-		delete this->footerText;
-		delete this->helpText;
-		delete this->headerShadow;
-		delete this->footerShadow;
-		delete this->emuiiboLed;
 	}
 	/*
 	void MainApplication::SetWaitBack(bool state)
@@ -281,12 +254,12 @@ namespace ui
 		return this->waitBack;
 	}
 	*/
-	void SetMainApplication(MainApplication *MainApp)
+	void SetMainApplication(MainApplication::Ref MainApp)
 	{
 		mainapp = MainApp;
 	}
 
-	void MainApplication::SetFooterText(std::string Text)
+	void MainApplication::SetFooterText(pu::String Text)
 	{
 		if(this->footerText != NULL) this->footerText->SetText(Text);
 	}
@@ -298,62 +271,62 @@ namespace ui
 
 	void MainApplication::ShowError(std::string text)
 	{
-		this->header->SetColor({204,0,0,255});
-		this->footer->SetColor({204,0,0,255});
+		this->header->SetColor(pu::ui::Color(204,0,0,255));
+		this->footer->SetColor(pu::ui::Color(204,0,0,255));
 		this->errorLayout->SetText(text);
 	}
 
-	AboutLayout *MainApplication::GetAboutLayout()
+	AboutLayout::Ref &MainApplication::GetAboutLayout()
     {
         return this->aboutLayout;
     }
 
-	GamesLayout *MainApplication::GetGamesLayout()
+	GamesLayout::Ref &MainApplication::GetGamesLayout()
     {
         return this->gamesLayout;
     }
 
-	MainLayout *MainApplication::GetMainLayout()
+	MainLayout::Ref &MainApplication::GetMainLayout()
     {
         return this->mainLayout;
     }
 
-	SettingsLayout *MainApplication::GetSettingsLayout()
+	SettingsLayout::Ref &MainApplication::GetSettingsLayout()
     {
         return this->setLayout;
     }
 
-	ErrorLayout *MainApplication::GetErrorLayout()
+	ErrorLayout::Ref &MainApplication::GetErrorLayout()
     {
         return this->errorLayout;
     }
 
-	EmuiiboLayout *MainApplication::GetEmuiiboLayout()
+	EmuiiboLayout::Ref &MainApplication::GetEmuiiboLayout()
     {
         return this->emuiiboLayout;
     }
 
-	ImagesLayout *MainApplication::GetImagesLayout()
+	ImagesLayout::Ref &MainApplication::GetImagesLayout()
     {
         return this->imagesLayout;
     }
 
-	ManualLayout *MainApplication::GetManualLayout()
+	ManualLayout::Ref &MainApplication::GetManualLayout()
     {
         return this->manualLayout;
     }
 
-	BootLayout *MainApplication::GetBootLayout()
+	BootLayout::Ref &MainApplication::GetBootLayout()
     {
         return this->bootLayout;
     }
 
-	AmiiboDetailsLayout *MainApplication::GetAmiiboDetailsLayout()
+	AmiiboDetailsLayout::Ref &MainApplication::GetAmiiboDetailsLayout()
     {
         return this->amiiboDetailsLayout;
     }
 
-	AmiibosLayout *MainApplication::GetAmiibosLayout()
+	AmiibosLayout::Ref &MainApplication::GetAmiibosLayout()
     {
         return this->amiibosLayout;
     }
@@ -377,19 +350,19 @@ namespace ui
 			switch(this->GetEmuiiboStatus()){
 				case EmuEmulationStatus_Off:
 					this->emuiiboText->SetText(lang::GetLabel(lang::Label::HEADER_EMUIIBO_NOT_ACTIVE));
-					this->emuiiboLed->SetColor({255,0,0,255});
+					this->emuiiboLed->SetColor(pu::ui::Color(255,0,0,255));
 					break;
 				case EmuEmulationStatus_OnForever:
 					this->emuiiboText->SetText(lang::GetLabel(lang::Label::HEADER_EMUIIBO_ACTIVE));
-					this->emuiiboLed->SetColor({0,255,0,255});
+					this->emuiiboLed->SetColor(pu::ui::Color(0,255,0,255));
 					break;
 				case EmuEmulationStatus_OnOnce:
 					this->emuiiboText->SetText(lang::GetLabel(lang::Label::HEADER_EMUIIBO_ACTIVE_ONCE));
-					this->emuiiboLed->SetColor({255,128,0,255});
+					this->emuiiboLed->SetColor(pu::ui::Color(255,128,0,255));
 					break;
 				default:
 					this->emuiiboText->SetText(lang::GetLabel(lang::Label::HEADER_EMUIIBO_UNKNOWN));
-					this->emuiiboLed->SetColor({0,102,153,255});
+					this->emuiiboLed->SetColor(pu::ui::Color(0,102,153,255));
 					break;
 			}
 			this->activeAmiibo = utils::getActiveAmiibo();

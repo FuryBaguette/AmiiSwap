@@ -4,16 +4,16 @@
 
 namespace ui
 {
-	class BootLayout : public pu::Layout
+	class BootLayout : public pu::ui::Layout
 	{
 	    public:
 	        BootLayout();
-			~BootLayout();
+			PU_SMART_CTOR(BootLayout);
 			void SetText(std::string Text);	
 			void SetProgress(float Progress);
 	    private:
-	        pu::element::TextBlock *bootText;
-			pu::element::Rectangle *bground;
-			pu::element::ProgressBar *progressBar;
+	        pu::ui::elm::TextBlock::Ref bootText;
+			pu::ui::elm::Rectangle::Ref bground;
+			pu::ui::elm::ProgressBar::Ref progressBar;
 	};
 }

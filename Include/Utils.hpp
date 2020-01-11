@@ -45,9 +45,10 @@ namespace utils
         return (false);
     }
 
-    inline bool fileExists(const std::string& name) {
+    inline bool fileExists(pu::String name) {
 	    struct stat buffer;
-	    return (stat (name.c_str(), &buffer) == 0);
+		std::string file = name.AsUTF8();
+	    return (stat(file.c_str(), &buffer) == 0);
 	}
 
     inline std::string trim_right_copy(const std::string& s, const std::string& delimiters = " \f\n\r\t\v\0" )
@@ -55,7 +56,7 @@ namespace utils
         return s.substr( 0, s.find_last_not_of( delimiters ) + 1 );
     }
 
-	inline std::string replace(std::string s, const std::string& f, const std::string& r)
+	inline pu::String replace(pu::String s, const std::string& f, pu::String r)
 	{
 		size_t i = 0;
 		i = s.find(f, i);

@@ -89,13 +89,19 @@ namespace utils
 
         while (auto entry = readdir(dir))
         {
-            if (strcasecmp(entry->d_name,"amiibo.bin")==0){
+            /*if (strcasecmp(entry->d_name,"amiibo.bin")==0){
                 r->insert(r->end(), std::string(path));
                 continue;
             }
             if (entry->d_type == DT_DIR){
                 std::string subfolder = std::string(path) + "/" + entry->d_name;
                 get_amiibos_directories(subfolder.c_str(), r);
+            }*/
+			if (entry->d_type == DT_DIR){
+				r->insert(r->end(), std::string(path) + "/" + entry->d_name);
+                continue;
+                /*std::string subfolder = std::string(path) + "/" + entry->d_name;
+                get_amiibos_directories(subfolder.c_str(), r);*/
             }
         }
         closedir(dir);
@@ -152,8 +158,8 @@ namespace utils
 
     bool GamesSort(const amiibo::Game* a, const amiibo::Game* b)
     {
-        std::string astring = a->GetName();
-        std::string bstring = b->GetName();
+        std::string astring = a->GetName().AsUTF8();
+        std::string bstring = b->GetName().AsUTF8();
         if(astring == "ALL") return true;
         if(bstring == "ALL") return false;
         transform(astring.begin(), astring.end(), astring.begin(), ::tolower);

@@ -4,14 +4,14 @@
 
 namespace ui
 {
-	class ErrorLayout : public pu::Layout
+	class ErrorLayout : public pu::ui::Layout
 	{
 	    public:
 	        ErrorLayout();
-			~ErrorLayout();
+			PU_SMART_CTOR(ErrorLayout);
 			void SetText(std::string Text);
 			void error_Input(u64 Down, u64 Up, u64 Held);
 	    private:
-	        pu::element::TextBlock *warningText;
+	        pu::ui::elm::TextBlock::Ref warningText;
 	};
 }

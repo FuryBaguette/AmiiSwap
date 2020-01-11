@@ -1,5 +1,4 @@
 #include "MainApplication.hpp"
-
 extern lang::Language *language;
 extern set::Settings *settings;
 
@@ -7,18 +6,18 @@ namespace ui
 {
     extern MainApplication *mainapp;
 
-    GamesLayout::GamesLayout() : pu::Layout()
+    GamesLayout::GamesLayout()
     {
-        this->gamesMenu = new pu::element::Menu(0, 80, 1280, {255,255,255,255}, 100, 6);
-        this->allAmiibosMenu = new pu::element::Menu(0, 80, 1280, {255,255,255,255}, 60, 10);
-        this->gamesMenu->SetOnFocusColor({102,153,204,255});
-        this->allAmiibosMenu->SetOnFocusColor({102,153,204,255});
-        this->gamesMenu->SetScrollbarColor({102,153,204,255});
-        this->allAmiibosMenu->SetScrollbarColor({102,153,204,255});
+        this->gamesMenu = pu::ui::elm::Menu::New(0, 80, 1280, pu::ui::Color(255,255,255,255), 100, 6);
+        this->allAmiibosMenu = pu::ui::elm::Menu::New(0, 80, 1280, pu::ui::Color(255,255,255,255), 60, 10);
+        this->gamesMenu->SetOnFocusColor(pu::ui::Color(102,153,204,255));
+        this->allAmiibosMenu->SetOnFocusColor(pu::ui::Color(102,153,204,255));
+        this->gamesMenu->SetScrollbarColor(pu::ui::Color(102,153,204,255));
+        this->allAmiibosMenu->SetScrollbarColor(pu::ui::Color(102,153,204,255));
         this->allAmiibosMenu->SetVisible(false);
-        this->Add(this->gamesMenu);
         this->Add(this->allAmiibosMenu);
-        this->SetElementOnFocus(this->gamesMenu);
+		this->Add(this->gamesMenu);
+        //this->SetElementOnFocus(this->gamesMenu);
         this->SetOnInput(std::bind(&GamesLayout::manage_Input, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     }
 
@@ -27,35 +26,30 @@ namespace ui
 		if (Down & KEY_B && !this->waitInput){
             mainapp->SetHelpText(lang::GetLabel(lang::Label::HELP_SELECT));
             mainapp->GetMainLayout()->GetMainMenu()->SetVisible(true);
-            mainapp->GetMainLayout()->SetElementOnFocus(mainapp->GetMainLayout()->GetMainMenu());
+            //mainapp->GetMainLayout()->SetElementOnFocus(mainapp->GetMainLayout()->GetMainMenu());
             mainapp->GetMainLayout()->selectionChange();
             mainapp->LoadLayout(mainapp->GetMainLayout());
 		}
 	}
-
-    GamesLayout::~GamesLayout()
-    {
-        delete this->gamesMenu;
-        delete this->allAmiibosMenu;
-    }
 	
 	void GamesLayout::populateGamesMenu()
     {
         this->gamesMenu->ClearItems();
 		for (auto & game : set::GetGames()) {
-			this->gamesMenu->AddItem(CreateItem(game));
+			CreateItem(game);
         }
     }
 
-    pu::element::MenuItem *GamesLayout::CreateItem(amiibo::Game *game)
+    void GamesLayout::CreateItem(amiibo::Game *game)
     {
-        pu::element::MenuItem *item = new pu::element::MenuItem(game->GetName());
+        pu::ui::elm::MenuItem::Ref item = pu::ui::elm::MenuItem::New(game->GetName());
         std::string amiiswapFolder ="sdmc:/switch/AmiiSwap/game_icons/";
         item->SetIcon(utils::GetRomFsResource("Common/game.png"));
-		std::vector<std::string> iconFileCandidates = { game->GetName() + ".png",game->GetName() + ".jpg",game->GetName() + ".jpeg" };
+		std::vector<pu::String> iconFileCandidates = { game->GetName() + ".png",game->GetName() + ".jpg",game->GetName() + ".jpeg" };
 		for (auto& iconfile : iconFileCandidates) {
 			if (utils::fileExists(amiiswapFolder + iconfile)) {
-				item->SetIcon(amiiswapFolder + iconfile);
+				std::string icon = amiiswapFolder + iconfile.AsUTF8();
+				item->SetIcon(icon);
 				break;
 			}
 		}
@@ -63,13 +57,13 @@ namespace ui
         item->AddOnClick(std::bind(&GamesLayout::addGame_Click, this), KEY_X);
         item->AddOnClick(std::bind(&GamesLayout::addAmiibos_Click, this, game), KEY_Y);
         item->AddOnClick(std::bind(&GamesLayout::removeGame_Click, this), KEY_MINUS);
-        return item;
+        this->gamesMenu->AddItem(item);
     }
 
     void GamesLayout::category_Click(amiibo::Game *game)
     {
     	if (game->GetAmiibos().empty()) {
-            pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_GAMES_NO_AMIIBO), 20, {255,255,255,255}, {0,51,102,255});
+            pu::ui::extras::Toast::Ref toast = pu::ui::extras::Toast::New(lang::GetLabel(lang::Label::TOAST_GAMES_NO_AMIIBO), 20, pu::ui::Color(255,255,255,255), pu::ui::Color(0,51,102,255));
             mainapp->StartOverlayWithTimeout(toast, 1500);
         } else {
             mainapp->SetFooterText(lang::GetLabel(lang::Label::FOOTER_AMIIBO) + game->GetName() +": " + std::to_string(game->GetAmiibos().size()));
@@ -79,14 +73,14 @@ namespace ui
         }
     }
 
-    pu::element::Menu *GamesLayout::GetGamesMenu()
+    pu::ui::elm::Menu::Ref GamesLayout::GetGamesMenu()
     {
         mainapp->SetFooterText(lang::GetLabel(lang::Label::FOOTER_GAMES) + std::to_string(set::GetGamesSize()));
         mainapp->SetHelpText(lang::GetLabel(lang::Label::HELP_SELECT) + lang::GetLabel(lang::Label::HELP_ADD) + lang::GetLabel(lang::Label::HELP_MANAGE) + lang::GetLabel(lang::Label::HELP_MINUS));
     	return (this->gamesMenu);
     }
 
-    pu::element::Menu *GamesLayout::GetAllAmiibosMenu()
+    pu::ui::elm::Menu::Ref GamesLayout::GetAllAmiibosMenu()
     {
     	return this->allAmiibosMenu;
     }
@@ -97,7 +91,7 @@ namespace ui
         std::transform(name.begin(), name.end(), name.begin(), utils::ClearForbidden);
        
         if(name == "ALL"){
-            pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_GAME_ALL_RESERVED), 20, {255,255,255,255}, {0,51,102,255});
+            pu::ui::extras::Toast::Ref toast = pu::ui::extras::Toast::New(lang::GetLabel(lang::Label::TOAST_GAME_ALL_RESERVED), 20, pu::ui::Color(255,255,255,255), pu::ui::Color(0,51,102,255));
             mainapp->StartOverlayWithTimeout(toast, 1500);
             return;
         }
@@ -107,22 +101,22 @@ namespace ui
             set::AddGame(game);
             populateGamesMenu();
             mainapp->SetFooterText(lang::GetLabel(lang::Label::FOOTER_GAMES) + std::to_string(set::GetGamesSize()));
-            pu::overlay::Toast *toast = new pu::overlay::Toast(utils::replace(lang::GetLabel(lang::Label::TOAST_GAME_ADDED), "{{GAME_NAME}}", name), 20, {255,255,255,255}, {0,51,102,255});
+            pu::ui::extras::Toast::Ref toast = pu::ui::extras::Toast::New(utils::replace(lang::GetLabel(lang::Label::TOAST_GAME_ADDED), "{{GAME_NAME}}", name), 20, pu::ui::Color(255,255,255,255), pu::ui::Color(0,51,102,255));
             mainapp->StartOverlayWithTimeout(toast, 1500);
         }
     }
 
     void GamesLayout::removeGame_Click()
     {
-        std::string gameName = this->gamesMenu->GetSelectedItem()->GetName();
+        pu::String gameName = this->gamesMenu->GetSelectedItem()->GetName();
         if(gameName == "ALL"){
-            pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_GAME_ALL_CANT_DELETE), 20, {255,255,255,255}, {0,51,102,255});
+            pu::ui::extras::Toast::Ref toast = pu::ui::extras::Toast::New(lang::GetLabel(lang::Label::TOAST_GAME_ALL_CANT_DELETE), 20, pu::ui::Color(255,255,255,255), pu::ui::Color(0,51,102,255));
             mainapp->StartOverlayWithTimeout(toast, 1500);
             return;
         }
 		set::RemoveGame(gameName);
         mainapp->SetFooterText(lang::GetLabel(lang::Label::FOOTER_GAMES) + std::to_string(set::GetGamesSize()));
-        pu::overlay::Toast *toast = new pu::overlay::Toast(utils::replace(lang::GetLabel(lang::Label::TOAST_GAME_REMOVED), "{{GAME_NAME}}", gameName), 20, {255,255,255,255}, {0,51,102,255});
+        pu::ui::extras::Toast::Ref toast = pu::ui::extras::Toast::New(utils::replace(lang::GetLabel(lang::Label::TOAST_GAME_REMOVED), "{{GAME_NAME}}", gameName), 20, pu::ui::Color(255,255,255,255), pu::ui::Color(0,51,102,255));
         mainapp->StartOverlayWithTimeout(toast, 1500);
         populateGamesMenu();
         this->gamesMenu->SetSelectedIndex(0);
@@ -137,7 +131,7 @@ namespace ui
         std::vector<std::string> amiibosInGame = game->GetAmiibos();
         bool isInGame = false;
         int position = 0;
-        pu::overlay::Toast *toast;
+        pu::ui::extras::Toast::Ref toast;
         for (auto aig : amiibosInGame) {
             if (aig == amiibo->GetName()) {
                 isInGame = true;
@@ -148,12 +142,12 @@ namespace ui
         if (!isInGame) {
             game->AddAmiibo(amiiboName);
             this->allAmiibosMenu->GetSelectedItem()->SetIcon(utils::GetRomFsResource("Common/ingame2.png"));
-            toast = new pu::overlay::Toast(utils::replace(lang::GetLabel(lang::Label::TOAST_AMIIBO_ADDED), "{{AMIIBO_NAME}}", amiiboName), 20, {255,255,255,255}, {0,51,102,255});
+            toast = pu::ui::extras::Toast::New(utils::replace(lang::GetLabel(lang::Label::TOAST_AMIIBO_ADDED), "{{AMIIBO_NAME}}", amiiboName), 20, pu::ui::Color(255,255,255,255), pu::ui::Color(0,51,102,255));
         } else {
             amiibosInGame.erase(amiibosInGame.begin() + position);
             game->SetAmiibos(amiibosInGame);
             this->allAmiibosMenu->GetSelectedItem()->SetIcon(utils::GetRomFsResource("Common/notingame2.png"));
-            toast = new pu::overlay::Toast(utils::replace(lang::GetLabel(lang::Label::TOAST_AMIIBO_REMOVED), "{{AMIIBO_NAME}}", amiiboName), 20, {255,255,255,255}, {0,51,102,255});
+            toast = pu::ui::extras::Toast::New(utils::replace(lang::GetLabel(lang::Label::TOAST_AMIIBO_REMOVED), "{{AMIIBO_NAME}}", amiiboName), 20, pu::ui::Color(255,255,255,255), pu::ui::Color(0,51,102,255));
         }
         set::RemoveGame(game->GetName());
         set::AddGame(game);
@@ -165,12 +159,12 @@ namespace ui
         this->allAmiibosMenu->ClearItems();
         this->waitInput = true;
         if(game->GetName() == "ALL"){
-            pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_GAME_ALL_POPULATED), 20, {255,255,255,255}, {0,51,102,255});
+            pu::ui::extras::Toast::Ref toast = pu::ui::extras::Toast::New(lang::GetLabel(lang::Label::TOAST_GAME_ALL_POPULATED), 20, pu::ui::Color(255,255,255,255), pu::ui::Color(0,51,102,255));
             mainapp->StartOverlayWithTimeout(toast, 1500);
             return;
         }
         if (set::GetAllAmiibos().empty()) {
-            pu::overlay::Toast *toast = new pu::overlay::Toast(lang::GetLabel(lang::Label::TOAST_NO_AMIIBO), 20, {255,255,255,255}, {0,51,102,255});
+            pu::ui::extras::Toast::Ref toast = pu::ui::extras::Toast::New(lang::GetLabel(lang::Label::TOAST_NO_AMIIBO), 20, pu::ui::Color(255,255,255,255), pu::ui::Color(0,51,102,255));
             mainapp->StartOverlayWithTimeout(toast, 1500);
             return;
         } else {
@@ -182,7 +176,7 @@ namespace ui
                 size_t size = amiiboName.find_last_of("/\\");
                 if (size != std::string::npos)
                     amiiboName = amiiboName.substr(size + 1);
-                pu::element::MenuItem *item = new pu::element::MenuItem(amiiboName);
+                pu::ui::elm::MenuItem::Ref item = pu::ui::elm::MenuItem::New(amiiboName);
                 std::vector<amiibo::Game*> parents = amiibo->GetParents(set::GetGames());
                 for (auto & elem : parents) {
                     if (elem->GetName() == game->GetName()) {
@@ -198,7 +192,7 @@ namespace ui
                 this->allAmiibosMenu->AddItem(item);
         	}
         	this->allAmiibosMenu->SetSelectedIndex(0);
-        	this->SetElementOnFocus(this->allAmiibosMenu);
+        	//this->SetElementOnFocus(this->allAmiibosMenu);
         	this->allAmiibosMenu->SetVisible(true);
         	this->gamesMenu->SetVisible(false);
         }
@@ -209,7 +203,7 @@ namespace ui
         populateGamesMenu();
         mainapp->SetFooterText(lang::GetLabel(lang::Label::FOOTER_GAMES) + std::to_string(set::GetGamesSize()));
         mainapp->SetHelpText(lang::GetLabel(lang::Label::HELP_SELECT) + lang::GetLabel(lang::Label::HELP_ADD) + lang::GetLabel(lang::Label::HELP_MANAGE) + lang::GetLabel(lang::Label::HELP_MINUS));
-        this->SetElementOnFocus(this->gamesMenu);
+        //this->SetElementOnFocus(this->gamesMenu);
         this->allAmiibosMenu->SetVisible(false);
         this->gamesMenu->SetVisible(true);  
         this->waitInput = false; 

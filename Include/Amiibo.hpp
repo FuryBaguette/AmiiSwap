@@ -19,7 +19,7 @@ namespace amiibo
     class Game {
     	public:
     		Game(std::string Name);
-    		std::string GetName();
+    		pu::String GetName();
     		std::string GetPath();
     		std::vector<std::string> GetAmiibos();
     		void AddAmiibo(std::string amiibo);

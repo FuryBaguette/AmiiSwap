@@ -6,48 +6,41 @@ namespace ui
 {
     extern MainApplication *mainapp;
 
-    AmiiboDetailsLayout::AmiiboDetailsLayout() : pu::Layout()
+    AmiiboDetailsLayout::AmiiboDetailsLayout()
     {
-        this->amiiboImage = new pu::element::Image(10, 90, utils::GetRomFsResource("Common/logo.png"));
+        this->amiiboImage = pu::ui::elm::Image::New(10, 90, utils::GetRomFsResource("Common/logo.png"));
         this->amiiboImage->SetWidth(200);
         this->amiiboImage->SetHeight(200);
         this->Add(this->amiiboImage);
 
-        this->amiiboName = new pu::element::TextBlock(220, 260, "", 30);
+        this->amiiboName = pu::ui::elm::TextBlock::New(220, 260, "", 30);
         this->Add(this->amiiboName);
 
-        this->firstWrite = new pu::element::TextBlock(10, 310, "", 20);
+        this->firstWrite = pu::ui::elm::TextBlock::New(10, 310, "", 20);
         this->Add(this->firstWrite);
 
-        this->lastWrite = new pu::element::TextBlock(10, 350, "", 20);
+        this->lastWrite = pu::ui::elm::TextBlock::New(10, 350, "", 20);
         this->Add(this->lastWrite);
 
-        this->amiiboPath = new pu::element::TextBlock(10, 390, "", 20);
+        this->amiiboPath = pu::ui::elm::TextBlock::New(10, 390, "", 20);
         this->Add(this->amiiboPath);
 
-        this->amiiboRandom = new pu::element::TextBlock(10, 430, "", 20);
+        this->amiiboRandom = pu::ui::elm::TextBlock::New(10, 430, "", 20);
         this->Add(this->amiiboRandom);
 
-        this->SetOnInput([&](u64 Down, u64 Up, u64 Held, bool Touch)
-        {
-            if (Down & KEY_B){
-                mainapp->SetHelpText(lang::GetLabel(lang::Label::HELP_SELECT));
-                mainapp->GetMainLayout()->GetMainMenu()->SetVisible(true);
-                mainapp->GetMainLayout()->SetElementOnFocus(mainapp->GetMainLayout()->GetMainMenu());
-                mainapp->GetMainLayout()->selectionChange();
-                mainapp->LoadLayout(mainapp->GetMainLayout());
-            }
-        });
+        this->SetOnInput(std::bind(&AmiiboDetailsLayout::amiiboDetails_Input, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     }
-
-    AmiiboDetailsLayout::~AmiiboDetailsLayout()
-    {
-        delete this->amiiboImage;
-		delete this->amiiboName;
-		delete this->amiiboPath;
-		delete this->firstWrite;
-		delete this->lastWrite;
-    }
+	
+	void AmiiboDetailsLayout::amiiboDetails_Input(u64 Down, u64 Up, u64 Held)
+	{
+		if (Down & KEY_B){
+			mainapp->SetHelpText(lang::GetLabel(lang::Label::HELP_SELECT));
+			mainapp->GetMainLayout()->GetMainMenu()->SetVisible(true);
+			//mainapp->GetMainLayout()->SetElementOnFocus(mainapp->GetMainLayout()->GetMainMenu());
+			mainapp->GetMainLayout()->selectionChange();
+			mainapp->LoadLayout(mainapp->GetMainLayout());
+		}
+	}
 
     void AmiiboDetailsLayout::LoadAmiibo(std::string path)
     {

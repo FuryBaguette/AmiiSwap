@@ -8,29 +8,26 @@ namespace ui
 
     ManualLayout::ManualLayout()
     {
-        this->cntText = new pu::element::TextBlock(20, 100, "");
-        this->cntText->SetColor({0,51,102,255});
+        this->cntText = pu::ui::elm::TextBlock::New(20, 100, "");
+        this->cntText->SetColor(pu::ui::Color(0,51,102,255));
         this->Add(this->cntText);
         this->loffset = 0;
 
-        this->SetOnInput([&](u64 Down, u64 Up, u64 Held, bool Touch)
-        {
-            if (Down & KEY_B){
-                mainapp->SetHelpText(lang::GetLabel(lang::Label::HELP_SELECT));
-                mainapp->GetMainLayout()->GetMainMenu()->SetVisible(true);
-                mainapp->GetMainLayout()->SetElementOnFocus(mainapp->GetMainLayout()->GetMainMenu());
-                mainapp->GetMainLayout()->selectionChange();
-                mainapp->LoadLayout(mainapp->GetMainLayout());
-            }
-            else if((Down & KEY_DDOWN) || (Down & KEY_LSTICK_DOWN) || (Held & KEY_RSTICK_DOWN)) this->ScrollDown();
-            else if((Down & KEY_DUP) || (Down & KEY_LSTICK_UP) || (Held & KEY_RSTICK_UP)) this->ScrollUp();
-        });
+		this->SetOnInput(std::bind(&ManualLayout::manual_Input, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     }
-
-    ManualLayout::~ManualLayout()
-    {
-        delete this->cntText;
-    }
+	
+	void ManualLayout::manual_Input(u64 Down, u64 Up, u64 Held)
+	{
+		if (Down & KEY_B){
+			mainapp->SetHelpText(lang::GetLabel(lang::Label::HELP_SELECT));
+			mainapp->GetMainLayout()->GetMainMenu()->SetVisible(true);
+			//mainapp->GetMainLayout()->SetElementOnFocus(mainapp->GetMainLayout()->GetMainMenu());
+			mainapp->GetMainLayout()->selectionChange();
+			mainapp->LoadLayout(mainapp->GetMainLayout());
+		}
+		else if((Down & KEY_DDOWN) || (Down & KEY_LSTICK_DOWN) || (Held & KEY_RSTICK_DOWN)) this->ScrollDown();
+		else if((Down & KEY_DUP) || (Down & KEY_LSTICK_UP) || (Held & KEY_RSTICK_UP)) this->ScrollUp();
+	}
 
     void ManualLayout::LoadFile(std::string Path)
     {

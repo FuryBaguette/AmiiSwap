@@ -4,7 +4,7 @@
 
 namespace ui
 {
-	class SettingsLayout : public pu::Layout
+	class SettingsLayout : public pu::ui::Layout
 	{
 	    public:
 	        SettingsLayout();

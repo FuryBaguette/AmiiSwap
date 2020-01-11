@@ -7,13 +7,13 @@ namespace set
 		std::vector<std::string> allAmiiboNames;
 	};
 
-	const char emuiiboFolder[] = "sdmc:/emuiibo";
+	const char emuiiboFolder[] = "sdmc:/emuiibo/amiibo";
 	static Settings MainSettings;
 	std::vector<amiibo::Game*> GetGames();
 	int GetGamesSize();
 	std::vector<amiibo::Amiibo*> GetAllAmiibos();
 	void AddGame(amiibo::Game* game);
-	void RemoveGame(std::string gameName);
+	void RemoveGame(pu::String gameName);
 	void Initialize(std::string settingsPath = "sdmc:/switch/AmiiSwap/settings.txt");
 	bool SettingsExists(std::string settingsPath);
 	void CreateSettingsFile(std::string settingsPath);

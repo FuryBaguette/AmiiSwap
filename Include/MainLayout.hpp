@@ -4,11 +4,11 @@
 
 namespace ui
 {
-	class MainLayout : public pu::Layout
+	class MainLayout : public pu::ui::Layout
 	{
 	    public:
 	        MainLayout();
-			~MainLayout();
+			PU_SMART_CTOR(MainLayout);
 			void manage_Click();
 			void emuiibo_Click();
 			void images_Click();
@@ -19,8 +19,8 @@ namespace ui
 			void disabled_Click();
 			void populateMainMenu();
 			void selectionChange();
-			pu::element::Menu *MainLayout::GetMainMenu();
+			pu::ui::elm::Menu::Ref MainLayout::GetMainMenu();
 	    private:
-	        pu::element::Menu *mainMenu;
+	        pu::ui::elm::Menu::Ref mainMenu;
 	};
 }

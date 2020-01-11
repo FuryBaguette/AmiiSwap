@@ -4,14 +4,15 @@
 
 namespace ui
 {
-	class AboutLayout : public pu::Layout
+	class AboutLayout : public pu::ui::Layout
 	{
 	    public:
 	        AboutLayout();
-			~AboutLayout();
+			PU_SMART_CTOR(AboutLayout);
+			void about_Input(u64 Down, u64 Up, u64 Held);
 		private:
-			pu::element::TextBlock *leftText;
-			pu::element::TextBlock *rightText;
-			pu::element::Rectangle *bground;
+			pu::ui::elm::TextBlock::Ref leftText;
+			pu::ui::elm::TextBlock::Ref rightText;
+			pu::ui::elm::Rectangle::Ref bground;
 	};
 }
